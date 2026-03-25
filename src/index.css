@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design System tokens Figma (SharePoint Web UI Kit) ── */
+:root {
+  --brand-primary: #303952;   /* Suite header bg – configurable */
+  --brand-color:   #C55000;   /* Accent / BrandBackground.Rest – configurable */
+  --brand-light:   #FFF0E5;   /* NeutralBackground2.Rest */
+
+  /* Neutral foreground */
+  --fg1: #323130;             /* NeutralForeground1 */
+  --fg2: #605e5c;             /* NeutralForeground2 */
+  --fg-inverted: #ffffff;     /* on brand */
+
+  /* Neutral background / border */
+  --bg1: #ffffff;
+  --bg4: #f3f2f1;
+  --bg6: #faf9f8;
+  --stroke1: #d2d0ce;
+  --stroke2: #e1dfdd;
+  --stroke4: #edebe9;
+
+  /* Shadows  */
+  --shadow-4: 0px 2px 4px rgba(0,0,0,0.14), 0px 0px 2px rgba(0,0,0,0.12);
+}
+
+* {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f0f0f0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c5c5c5; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+
+/* Section dividers in the SharePoint page */
+.sp-section {
+  background: #ffffff;
+}
+
+/* Active nav underline uses brand color */
+.sp-nav-active {
+  border-bottom: 2px solid var(--brand-color);
+}
+
+/* Brand-colored elements */
+.sp-brand-bg   { background-color: var(--brand-color) !important; }
+.sp-brand-text { color: var(--brand-color) !important; }
+.sp-header-bg  { background-color: var(--brand-primary) !important; }
