@@ -115,87 +115,88 @@ Les utilisateurs internes et partenaires n'ont aucun moyen autonome de produire 
 | US-15 | En tant qu'utilisateur, je veux choisir une couleur primaire et voir le thème se propager instantanément à tous les webparts (9 slots palette) | P0 | 1 |
 | US-16 | En tant qu'utilisateur, je veux choisir la variante de header (extended/compact × neutral/soft/strong/mixed) | P0 | 1 |
 | US-17 | En tant qu'utilisateur, je veux que le logo SVG s'adapte au thème du header (blanc sur fond sombre, couleur sur fond clair) | P1 | 2 |
+| US-18 | En tant qu'utilisateur, je veux charger la font de la charte graphique du prospect (via URL Google Fonts ou upload de fichier) et l'appliquer sur les titres des webparts, le header et le footer | P1 | 2 |
 
 ### Partage & livrable
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-18 | En tant que Sales, je veux partager un lien de preview live avec le prospect | P0 | 2 |
-| US-19 | En tant que Sales, je veux que la démo soit navigable (cliquer entre les pages, UEX, flows) | P0 | 2 |
-| US-20 | En tant que Sales, je veux retrouver mes démos précédentes et les dupliquer | P1 | 2 |
-| US-21 | En tant que Sales, je veux voir combien de fois un prospect a consulté le lien de démo partagé (nombre de vues, dernière consultation) | P1 | 4 |
-| US-22 | En tant que Sales, je veux savoir quelles pages de la démo le prospect a visitées et combien de temps il a passé | P2 | 4 |
+| US-19 | En tant que Sales, je veux partager un lien de preview live avec le prospect | P0 | 2 |
+| US-20 | En tant que Sales, je veux que la démo soit navigable (cliquer entre les pages, UEX, flows) | P0 | 2 |
+| US-21 | En tant que Sales, je veux retrouver mes démos précédentes et les dupliquer | P1 | 2 |
+| US-22 | En tant que Sales, je veux voir combien de fois un prospect a consulté le lien de démo partagé (nombre de vues, dernière consultation) | P1 | 4 |
+| US-23 | En tant que Sales, je veux savoir quelles pages de la démo le prospect a visitées et combien de temps il a passé | P2 | 4 |
 
 ### Dashboard & gestion de projets
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-23 | En tant qu'utilisateur, je veux voir la liste de tous mes projets de démo sur un dashboard | P0 | 1 |
-| US-24 | En tant qu'utilisateur, je veux créer un nouveau projet depuis le dashboard (mode IA ou manuel) | P0 | 1 |
-| US-25 | En tant qu'utilisateur, je veux dupliquer un projet existant pour l'adapter à un autre prospect | P1 | 2 |
-| US-26 | En tant qu'utilisateur, je veux supprimer un projet dont je n'ai plus besoin | P1 | 2 |
+| US-24 | En tant qu'utilisateur, je veux voir la liste de tous mes projets de démo sur un dashboard | P0 | 1 |
+| US-25 | En tant qu'utilisateur, je veux créer un nouveau projet depuis le dashboard (mode IA ou manuel) | P0 | 1 |
+| US-26 | En tant qu'utilisateur, je veux dupliquer un projet existant pour l'adapter à un autre prospect | P1 | 2 |
+| US-27 | En tant qu'utilisateur, je veux supprimer un projet dont je n'ai plus besoin | P1 | 2 |
 
 ### Profils & personnalisation
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-27 | En tant que Sales, je veux switcher entre 3 profils (1 contributeur + 2 utilisateurs) via un écran de login Microsoft simulé | P0 | 2 |
-| US-28 | En tant qu'utilisateur, je veux éditer les noms, photos et postes des 20 profils de la démo | P1 | 2 |
-| US-29 | En tant que Sales, je veux que les webparts personnalisés (My tasks, My emails, My meetings) changent de contenu quand je switch de profil | P0 | 2 |
-| US-30 | En tant que Sales, je veux que la toolbar contributeur n'apparaisse que lorsque le profil actif est le contributeur | P0 | 2 |
+| US-28 | En tant que Sales, je veux switcher entre 3 profils (1 contributeur + 2 utilisateurs) via un écran de login Microsoft simulé | P0 | 2 |
+| US-29 | En tant qu'utilisateur, je veux éditer les noms, photos et postes des 20 profils de la démo | P1 | 2 |
+| US-30 | En tant que Sales, je veux que les webparts personnalisés (My tasks, My emails, My meetings) changent de contenu quand je switch de profil | P0 | 2 |
+| US-31 | En tant que Sales, je veux que la toolbar contributeur n'apparaisse que lorsque le profil actif est le contributeur | P0 | 2 |
 
 ### UEX (Unified Experience Bar)
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-31 | En tant que Sales, je veux montrer la barre UEX latérale gauche avec ses 5 sections (naviguer, s'informer, rechercher, contribuer, partager) | P0 | 1 |
-| US-32 | En tant que Sales, je veux ouvrir le centre de contribution (créer un article, créer une page, accéder aux paramètres) depuis la UEX | P0 | 2 |
-| US-33 | En tant que Sales, je veux montrer le partage de contenu depuis la UEX (vers Teams, Engage, Newsletter) | P1 | 2 |
-| US-34 | En tant que Sales, je veux montrer la recherche globale depuis la UEX | P1 | 2 |
-| US-35 | En tant que Sales, je veux montrer le feed d'actualités et d'événements dans le panneau UEX | P1 | 2 |
+| US-32 | En tant que Sales, je veux montrer la barre UEX latérale gauche avec ses 5 sections (naviguer, s'informer, rechercher, contribuer, partager) | P0 | 1 |
+| US-33 | En tant que Sales, je veux ouvrir le centre de contribution (créer un article, créer une page, accéder aux paramètres) depuis la UEX | P0 | 2 |
+| US-34 | En tant que Sales, je veux montrer le partage de contenu depuis la UEX (vers Teams, Engage, Newsletter) | P1 | 2 |
+| US-35 | En tant que Sales, je veux montrer la recherche globale depuis la UEX | P1 | 2 |
+| US-36 | En tant que Sales, je veux montrer le feed d'actualités et d'événements dans le panneau UEX | P1 | 2 |
 
 ### Newsletter
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-36 | En tant que Sales, je veux montrer le dashboard de gestion des newsletters (KPIs, tableau paginé avec statuts) | P0 | 2 |
-| US-37 | En tant que Sales, je veux démontrer le flow complet de création d'une newsletter en 7 étapes (choix template → éditeur drag & drop → configuration → envoi → confirmation) | P0 | 2 |
-| US-38 | En tant que Sales, je veux montrer l'éditeur de newsletter avec ses composants drag & drop (header, texte, image, bouton, séparateur, etc.) | P1 | 2 |
+| US-37 | En tant que Sales, je veux montrer le dashboard de gestion des newsletters (KPIs, tableau paginé avec statuts) | P0 | 2 |
+| US-38 | En tant que Sales, je veux démontrer le flow complet de création d'une newsletter en 7 étapes (choix template → éditeur drag & drop → configuration → envoi → confirmation) | P0 | 2 |
+| US-39 | En tant que Sales, je veux montrer l'éditeur de newsletter avec ses composants drag & drop (header, texte, image, bouton, séparateur, etc.) | P1 | 2 |
 
 ### Création d'article
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-39 | En tant que Sales, je veux démontrer le flow de création et publication d'un article intranet | P0 | 2 |
-| US-40 | En tant que Sales, je veux montrer une page article complète avec hero image, auteur, contenu riche, barre d'engagement (likes, commentaires, vues) et section commentaires | P0 | 2 |
+| US-40 | En tant que Sales, je veux démontrer le flow de création et publication d'un article intranet | P0 | 2 |
+| US-41 | En tant que Sales, je veux montrer une page article complète avec hero image, auteur, contenu riche, barre d'engagement (likes, commentaires, vues) et section commentaires | P0 | 2 |
 
 ### Partage Teams & Engage
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-41 | En tant que Sales, je veux démontrer le partage de contenu vers Microsoft Teams depuis la UEX | P1 | 3 |
-| US-42 | En tant que Sales, je veux démontrer le partage de contenu vers Viva Engage depuis la UEX | P1 | 3 |
+| US-42 | En tant que Sales, je veux démontrer le partage de contenu vers Microsoft Teams depuis la UEX | P1 | 3 |
+| US-43 | En tant que Sales, je veux démontrer le partage de contenu vers Viva Engage depuis la UEX | P1 | 3 |
 
 ### Traduction
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-43 | En tant que Sales, je veux montrer la traduction instantanée d'un article (panneau langues + modal sélection) | P1 | 2 |
-| US-44 | En tant que Sales, je veux montrer la traduction automatique d'une page complète (panel latéral + ajout langues + navigation entre versions) | P2 | 3 |
+| US-44 | En tant que Sales, je veux montrer la traduction instantanée d'un article (panneau langues + modal sélection) | P1 | 2 |
+| US-45 | En tant que Sales, je veux montrer la traduction automatique d'une page complète (panel latéral + ajout langues + navigation entre versions) | P2 | 3 |
 
 ### Configurateur / Analytics
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-45 | En tant que Sales, je veux montrer le back-office Configurateur Jint avec ses 7 écrans analytics (données statiques IA) | P2 | 4 |
-| US-46 | En tant que Sales, je veux naviguer entre les onglets du Configurateur (Engagement : Utilisateurs, Sites, Pages, Actualités / Fonctionnalités : Licences, WebParts, Détails WebPart) | P2 | 4 |
+| US-46 | En tant que Sales, je veux montrer le back-office Configurateur Jint avec ses 7 écrans analytics (données statiques IA) | P2 | 4 |
+| US-47 | En tant que Sales, je veux naviguer entre les onglets du Configurateur (Engagement : Utilisateurs, Sites, Pages, Actualités / Fonctionnalités : Licences, WebParts, Détails WebPart) | P2 | 4 |
 
 ### Images & médias
 
 | ID | Story | Priorité | Phase |
 |----|-------|----------|-------|
-| US-47 | En tant qu'utilisateur, je veux rechercher et insérer des images depuis Unsplash directement dans un webpart | P1 | 2 |
-| US-48 | En tant qu'utilisateur, je veux uploader mes propres images pour les utiliser dans les webparts | P0 | 2 |
+| US-48 | En tant qu'utilisateur, je veux rechercher et insérer des images depuis Unsplash directement dans un webpart | P1 | 2 |
+| US-49 | En tant qu'utilisateur, je veux uploader mes propres images pour les utiliser dans les webparts | P0 | 2 |
 
 ---
 
@@ -308,7 +309,26 @@ Ajouté en dernière priorité. Le chat latéral permet de modifier des élémen
 - Panneau de configuration par webpart (contenu, design, comportement)
 - Color picker pour le thème global
 - Upload de logo
+- **Sélection de font prospect** (voir section Gestion des fonts ci-dessous)
 - Gestion des pages (ajout, suppression, renommage, réorganisation)
+
+**Gestion des fonts :**
+
+Deux fonts coexistent dans l'app :
+
+| Font | Usage | Source |
+|------|-------|--------|
+| **Segoe UI** (défaut) | Font par défaut si aucune font prospect n'est chargée. Aussi utilisée pour : les éléments d'interface SharePoint natifs, et dans le header pour le hub navigation (ligne 1), le titre du site, les labels, les boutons Follow/Share (ligne 2). | Système — pas de chargement nécessaire |
+| **Font prospect** (optionnelle) | **S'applique sur** : body text des webparts, titres des webparts, **local navigation uniquement dans le header** (ligne 3 : onglets Home, Documents, Pages, Site contents, Edit), footer, pages articles (titres + body). **Ne s'applique PAS sur** : hub navigation (ligne 1), titre du site (ligne 2), labels (ligne 2), boutons Follow/Share (ligne 2). | Chargée par l'utilisateur via URL (Google Fonts, fichier woff2/woff/ttf uploadé) |
+
+L'utilisateur peut :
+- Saisir une URL Google Fonts (ex: `https://fonts.googleapis.com/css2?family=Montserrat`) → la font est chargée via `@font-face`
+- Uploader un fichier de font (woff2 recommandé) → stocké dans le projet, chargé via `@font-face`
+- Laisser vide → tout reste en Segoe UI
+
+Quand une font prospect est chargée, elle s'applique au contenu de la démo : body text des webparts, titres, descriptions, footer, pages articles, et la **local navigation** (onglets de pages : Home, Documents, Pages, etc.) dans le header. Le reste du header — hub navigation (ligne 1), titre du site, labels, boutons Follow/Share (ligne 2) — reste toujours en Segoe UI.
+
+En mode IA (Phase 3), le brand detection peut aussi détecter la font du prospect depuis le CSS du site web (propriété `font-family` sur le body ou les headings).
 
 **Propriétés configurables par webpart :**
 

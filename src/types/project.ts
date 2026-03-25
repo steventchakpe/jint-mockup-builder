@@ -52,7 +52,9 @@ export interface Theme {
   secondaryColor: string;
   accentColor: string;
   backgroundColor: string;
-  fontFamily: string;
+  fontFamily: string; // Default: 'Segoe UI' (SharePoint standard)
+  prospectFontFamily: string | null; // Custom font from prospect's brand (loaded via @font-face)
+  prospectFontUrl: string | null; // URL to the font file (woff2/woff/ttf) or Google Fonts URL
   logo: string;
   sharepointThemeOverrides: Record<string, string>;
 }
