@@ -33,7 +33,7 @@
  * ```
  */
 
-import { figmaTokens } from '@/theme/tokens';
+import { figmaTokens } from '../theme/tokens';
 
 export const figmaTailwindExtend = {
   spacing: figmaTokens.spacing,

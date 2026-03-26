@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+/* ═══════════════════════════════════════════════════════════════════
+   JINT BUILDER — Global CSS (Tailwind v4)
+   ═══════════════════════════════════════════════════════════════════
+
+   Token sources:
+     • tailwind.config.ts  → spacing, fontSize, borderRadius (static Figma tokens)
+                           → sp-* colors (also declared below for CSS var chain)
+     • @theme below        → sp-* dynamic chain only (must be CSS to support
+                             runtime CSS var injection by useThemePalette)
+
+   Chain: bg-sp-primary
+     → var(--color-sp-primary)         [Tailwind utility]
+     → var(--sp-theme-primary, #0078d4) [injected by useThemePalette or fallback]
+   ═══════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── SharePoint Theme Palette — dynamic CSS var chain ─────────────
+     Runtime values injected by useThemePalette() on :root as --sp-theme-*.
+     Fallbacks = SharePoint default blue (#0078d4) palette.
+     These override the identical declarations from tailwind.config.ts
+     because CSS @theme takes precedence — and add the fallback values.
+     ────────────────────────────────────────────────────────────── */
+  --color-sp-primary:     var(--sp-theme-primary,     #0078d4);
+  --color-sp-lighter-alt: var(--sp-theme-lighter-alt, #f3f9fd);
+  --color-sp-lighter:     var(--sp-theme-lighter,     #d0e7f8);
+  --color-sp-light:       var(--sp-theme-light,       #a9d3f2);
+  --color-sp-tertiary:    var(--sp-theme-tertiary,    #5ca9e5);
+  --color-sp-secondary:   var(--sp-theme-secondary,   #1a86d9);
+  --color-sp-dark-alt:    var(--sp-theme-dark-alt,    #006cbe);
+  --color-sp-dark:        var(--sp-theme-dark,        #005ba1);
+  --color-sp-darker:      var(--sp-theme-darker,      #004377);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Base styles
+   ═══════════════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #323130;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}

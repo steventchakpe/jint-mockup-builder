@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import type { WebpartDefinition } from '@/types/webparts';
+import { newsDefaultConfig, newsConfigMeta } from '@/components/webparts/news';
 
 /**
  * Webpart Registry
@@ -17,8 +18,26 @@ const registry: Record<string, WebpartDefinition> = {
   // WAVE 1 — High-impact demo (Phase 1)
   // ============================================
 
-  // Uncomment as each webpart is generated:
-  // 'news': { typeId: 'news', name: 'Actualités', nameEn: 'News', category: 'actualites', icon: 'newspaper', wave: 1, source: 'jint', component: lazy(() => import('@/components/webparts/news')), configurableProperties: [], defaultConfig: {}, defaultContent: {} },
+  'news': {
+    typeId: newsConfigMeta.typeId,
+    name: 'Actualités',
+    nameEn: newsConfigMeta.displayName,
+    category: newsConfigMeta.category as WebpartDefinition['category'],
+    icon: newsConfigMeta.icon,
+    wave: newsConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/news').then((m) => ({ default: m.News as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/news/News.skeleton').then((m) => ({ default: m.NewsSkeleton as never }))),
+    configurableProperties: newsConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: 'options' in p ? p.options : undefined,
+      defaultValue: newsDefaultConfig[p.key as keyof typeof newsDefaultConfig],
+    })),
+    defaultConfig: newsDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: { articles: [] },
+  },
   // 'focus': { ... },
   // 'events': { ... },
   // 'employee-directory': { ... },

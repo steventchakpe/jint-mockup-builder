@@ -41,18 +41,39 @@ export function useThemePalette(
     if (!injectCSSVars) return;
 
     const root = document.documentElement;
-    const prefix = cssVarPrefix;
-
-    root.style.setProperty(`--${prefix}-theme-primary`, palette.themePrimary);
-    root.style.setProperty(`--${prefix}-theme-lighter-alt`, palette.themeLighterAlt);
-    root.style.setProperty(`--${prefix}-theme-lighter`, palette.themeLighter);
-    root.style.setProperty(`--${prefix}-theme-light`, palette.themeLight);
-    root.style.setProperty(`--${prefix}-theme-tertiary`, palette.themeTertiary);
-    root.style.setProperty(`--${prefix}-theme-secondary`, palette.themeSecondary);
-    root.style.setProperty(`--${prefix}-theme-dark-alt`, palette.themeDarkAlt);
-    root.style.setProperty(`--${prefix}-theme-dark`, palette.themeDark);
-    root.style.setProperty(`--${prefix}-theme-darker`, palette.themeDarker);
+    const vars = getThemeCssVars(palette, cssVarPrefix);
+    for (const [key, value] of Object.entries(vars)) {
+      root.style.setProperty(key, value);
+    }
   }, [palette, injectCSSVars, cssVarPrefix]);
 
   return palette;
+}
+
+/**
+ * Returns the CSS variable map for a given palette.
+ * Use this for SSR (inline style on <html>) in the Presentation mode route.
+ *
+ * ```tsx
+ * // In a Next.js layout or page:
+ * const palette = generateThemePalette(project.theme.primaryColor);
+ * const vars = getThemeCssVars(palette);
+ * return <html style={vars}>...</html>;
+ * ```
+ */
+export function getThemeCssVars(
+  palette: ThemePalette,
+  prefix = 'sp',
+): Record<string, string> {
+  return {
+    [`--${prefix}-theme-primary`]:     palette.themePrimary,
+    [`--${prefix}-theme-lighter-alt`]: palette.themeLighterAlt,
+    [`--${prefix}-theme-lighter`]:     palette.themeLighter,
+    [`--${prefix}-theme-light`]:       palette.themeLight,
+    [`--${prefix}-theme-tertiary`]:    palette.themeTertiary,
+    [`--${prefix}-theme-secondary`]:   palette.themeSecondary,
+    [`--${prefix}-theme-dark-alt`]:    palette.themeDarkAlt,
+    [`--${prefix}-theme-dark`]:        palette.themeDark,
+    [`--${prefix}-theme-darker`]:      palette.themeDarker,
+  };
 }
