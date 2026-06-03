@@ -148,6 +148,21 @@ export interface WebpartInstance {
   config: Record<string, unknown>; // webpart-specific configurable properties
   content: Record<string, unknown>; // webpart-specific content
   order: number;
+  // Positionnement dans une section "flexible" (grille 12 colonnes 2D SharePoint).
+  // Ignoré dans les sections à colonnes fixes.
+  flex?: FlexPosition;
+}
+
+/**
+ * Position d'un webpart dans une section flexible (SharePoint).
+ * Grille 12 colonnes : `x` = colonne de départ (0-11), `w` = largeur en colonnes
+ * (1-12), `y` = ligne de départ (1+), `z` = z-index pour le chevauchement.
+ */
+export interface FlexPosition {
+  x: number;
+  w: number;
+  y: number;
+  z?: number;
 }
 
 export interface VerticalSection {

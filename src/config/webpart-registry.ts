@@ -1,6 +1,10 @@
 import { lazy } from 'react';
 import type { WebpartDefinition } from '@/types/webparts';
 import { newsDefaultConfig, newsConfigMeta } from '@/components/webparts/news';
+import { eventsDefaultConfig, eventsConfigMeta } from '@/components/webparts/events';
+import { focusDefaultConfig, focusConfigMeta } from '@/components/webparts/focus';
+import { separatorDefaultConfig, separatorConfigMeta } from '@/components/webparts/separator';
+import { employeeDirectoryDefaultConfig, employeeDirectoryConfigMeta } from '@/components/webparts/employee-directory';
 
 /**
  * Webpart Registry
@@ -38,13 +42,91 @@ const registry: Record<string, WebpartDefinition> = {
     defaultConfig: newsDefaultConfig as unknown as Record<string, unknown>,
     defaultContent: { articles: [] },
   },
-  // 'focus': { ... },
-  // 'events': { ... },
-  // 'employee-directory': { ... },
+  'focus': {
+    typeId: focusConfigMeta.typeId,
+    name: 'Focus',
+    nameEn: focusConfigMeta.displayName,
+    category: focusConfigMeta.category as WebpartDefinition['category'],
+    icon: focusConfigMeta.icon,
+    wave: focusConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/focus').then((m) => ({ default: m.Focus as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/focus/Focus.skeleton').then((m) => ({ default: m.FocusSkeleton as never }))),
+    configurableProperties: focusConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: focusDefaultConfig[p.key as keyof typeof focusDefaultConfig],
+    })),
+    defaultConfig: focusDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: { card: { title: { value: '' }, description: { value: '' } } },
+  },
+
+  'events': {
+    typeId: eventsConfigMeta.typeId,
+    name: 'Événements',
+    nameEn: eventsConfigMeta.displayName,
+    category: eventsConfigMeta.category as WebpartDefinition['category'],
+    icon: eventsConfigMeta.icon,
+    wave: eventsConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/events').then((m) => ({ default: m.Events as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/events/Events.skeleton').then((m) => ({ default: m.EventsSkeleton as never }))),
+    configurableProperties: eventsConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: eventsDefaultConfig[p.key as keyof typeof eventsDefaultConfig],
+    })),
+    defaultConfig: eventsDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: { events: [] },
+  },
+
+  'employee-directory': {
+    typeId: employeeDirectoryConfigMeta.typeId,
+    name: 'Trombinoscope',
+    nameEn: employeeDirectoryConfigMeta.displayName,
+    category: employeeDirectoryConfigMeta.category as WebpartDefinition['category'],
+    icon: employeeDirectoryConfigMeta.icon,
+    wave: employeeDirectoryConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/employee-directory').then((m) => ({ default: m.EmployeeDirectory as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/employee-directory/EmployeeDirectory.skeleton').then((m) => ({ default: m.EmployeeDirectorySkeleton as never }))),
+    configurableProperties: employeeDirectoryConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: employeeDirectoryDefaultConfig[p.key as keyof typeof employeeDirectoryDefaultConfig],
+    })),
+    defaultConfig: employeeDirectoryDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: { people: [] },
+  },
   // 'search': { ... },
   // 'newcomers': { ... },
   // 'anniversary': { ... },
-  // 'separator': { ... },
+  'separator': {
+    typeId: separatorConfigMeta.typeId,
+    name: 'Séparateur',
+    nameEn: separatorConfigMeta.displayName,
+    category: separatorConfigMeta.category as WebpartDefinition['category'],
+    icon: separatorConfigMeta.icon,
+    wave: separatorConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/separator').then((m) => ({ default: m.Separator as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/separator/Separator.skeleton').then((m) => ({ default: m.SeparatorSkeleton as never }))),
+    configurableProperties: separatorConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: separatorDefaultConfig[p.key as keyof typeof separatorDefaultConfig],
+    })),
+    defaultConfig: separatorDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: { text: { html: '<h2>Séparateur</h2>' }, showText: true },
+  },
 
   // ============================================
   // WAVE 2 — Productivity & engagement (Phase 2)

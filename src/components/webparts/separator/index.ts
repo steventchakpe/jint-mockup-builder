@@ -1,5 +1,12 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { Separator } from './Separator';
+export { SeparatorSkeleton } from './Separator.skeleton';
+export { SeparatorEditor } from './Separator.editor';
+export { separatorDefaultConfig, separatorConfigMeta } from './Separator.config';
+export type {
+  SeparatorProps,
+  SeparatorConfig,
+  SeparatorContent,
+  SeparatorAlignment,
+  SeparatorBarHeight,
+  SeparatorTextPosition,
+} from './Separator.types';

@@ -1,5 +1,11 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { Events } from './Events';
+export { EventsSkeleton } from './Events.skeleton';
+export { EventsEditor } from './Events.editor';
+export { eventsDefaultConfig, eventsConfigMeta } from './Events.config';
+export type {
+  EventsProps,
+  EventsConfig,
+  EventsContent,
+  EventItem,
+  EventsShadow,
+} from './Events.types';
