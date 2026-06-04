@@ -12,6 +12,7 @@ import {
   anniversaryConfigMeta,
 } from '@/components/webparts/people';
 import { searchDefaultConfig, searchConfigMeta } from '@/components/webparts/search';
+import { myAppsDefaultConfig, myAppsConfigMeta } from '@/components/webparts/my-apps';
 
 /**
  * Webpart Registry
@@ -197,7 +198,26 @@ const registry: Record<string, WebpartDefinition> = {
   // WAVE 2 — Productivity & engagement (Phase 2)
   // ============================================
 
-  // 'my-apps': { ... },
+  'my-apps': {
+    typeId: myAppsConfigMeta.typeId,
+    name: 'Mes applications',
+    nameEn: myAppsConfigMeta.displayName,
+    category: myAppsConfigMeta.category as WebpartDefinition['category'],
+    icon: myAppsConfigMeta.icon,
+    wave: myAppsConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/my-apps').then((m) => ({ default: m.MyApps as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/my-apps/MyApps.skeleton').then((m) => ({ default: m.MyAppsSkeleton as never }))),
+    configurableProperties: myAppsConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: myAppsDefaultConfig[p.key as keyof typeof myAppsDefaultConfig],
+    })),
+    defaultConfig: myAppsDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: { links: [] },
+  },
   // 'org-chart': { ... },
   // 'profile': { ... },
   // 'newshub': { ... },
