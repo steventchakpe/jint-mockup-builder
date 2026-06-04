@@ -1,6 +1,7 @@
 'use client';
 
 import type { CSSProperties } from 'react';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 import type { SeparatorAlignment, SeparatorProps } from './Separator.types';
 
 /** Constantes portées à l'identique de SeparatorDefaultLayout. */
@@ -26,7 +27,7 @@ function RichText({ html, value, color }: { html?: string; value?: string; color
   return html ? (
     <div style={style} dangerouslySetInnerHTML={{ __html: html }} />
   ) : (
-    <div style={style}>{value}</div>
+    <InlineText as="div" path={['text', 'value']} value={value} style={style} placeholder="Texte" />
   );
 }
 

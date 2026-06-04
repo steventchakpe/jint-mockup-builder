@@ -2,6 +2,8 @@
 
 import { Suspense } from 'react';
 import { getWebpart } from '@/config/webpart-registry';
+import { useProjectStore } from '@/lib/state/project-store';
+import { WebpartEditProvider } from './edit/inline-edit';
 import type { WebpartInstance } from '@/types/project';
 
 interface WebpartHostProps {
@@ -28,7 +30,7 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
   const Component = def.component;
   const Skeleton = def.skeletonComponent;
 
-  return (
+  const element = (
     <Suspense fallback={Skeleton ? <Skeleton /> : null}>
       <Component
         id={instance.id}
@@ -37,5 +39,17 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
         isEditMode={isEditMode}
       />
     </Suspense>
+  );
+
+  if (!isEditMode) return element;
+  return (
+    <WebpartEditProvider
+      content={instance.content}
+      commit={(next) =>
+        useProjectStore.getState().updateWebpartContent(instance.id, next as Record<string, unknown>)
+      }
+    >
+      {element}
+    </WebpartEditProvider>
   );
 }

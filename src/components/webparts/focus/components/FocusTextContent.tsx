@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { cn } from '@/lib/utils';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { useElementSize } from '../hooks/useElementSize';
 import {
   BODY_TEXT_COLOR,
@@ -109,7 +110,7 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
                 {cardContent.tag?.html ? (
                   <span dangerouslySetInnerHTML={{ __html: cardContent.tag.html }} />
                 ) : (
-                  cardContent.tag?.value
+                  <InlineText as="span" path={['card', 'tag', 'value']} value={cardContent.tag?.value} placeholder="Tag" />
                 )}
               </span>
             </div>
@@ -127,16 +128,18 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
                 dangerouslySetInnerHTML={{ __html: cardContent.title.html }}
               />
             ) : (
-              <h3
+              <InlineText
+                as="h3"
+                path={['card', 'title', 'value']}
+                value={cardContent.title.value || ''}
+                placeholder="Titre"
                 className="line-clamp-2 [word-break:keep-all]"
                 style={{
                   fontSize: FONT_SIZE.SubjectTitle,
                   fontWeight: FONT_WEIGHT.Bold,
                   color: cardContent.title.color ?? BODY_TEXT_COLOR,
                 }}
-              >
-                {cardContent.title.value || ''}
-              </h3>
+              />
             )}
           </div>
         </div>
@@ -163,7 +166,11 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
                 dangerouslySetInnerHTML={{ __html: cardContent.description.html }}
               />
             ) : (
-              <p
+              <InlineText
+                as="p"
+                path={['card', 'description', 'value']}
+                value={cardContent.description.value || ''}
+                placeholder="Description"
                 className="overflow-hidden [word-break:keep-all]"
                 style={{
                   fontSize: FONT_SIZE.BodyText,
@@ -173,9 +180,7 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
                   WebkitLineClamp: descriptionMaxLines,
                   WebkitBoxOrient: 'vertical',
                 }}
-              >
-                {cardContent.description.value || ''}
-              </p>
+              />
             ))}
         </div>
       </div>

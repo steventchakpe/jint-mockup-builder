@@ -208,6 +208,7 @@ function SectionEditFrame({
             isEditMode
             pageId={pageId}
             sectionId={section.id}
+            onRemoveWebpart={(wpId) => onRemoveWebpart(section.columns[0].id, wpId)}
           />
           <div className="mt-md">
             <AddWebpartZone compact={false} onPick={(type) => onAddWebpart(section.columns[0].id, type)} />
@@ -302,7 +303,7 @@ function SortableWebpart({
         className="absolute -top-2 left-2 z-20 hidden group-hover/wp:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-sp-primary hover:border-sp-primary items-center justify-center text-caption shadow-sm cursor-grab active:cursor-grabbing"
       >⠿</button>
       <button
-        type="button" title="Supprimer le webpart" onClick={onRemove}
+        type="button" title="Supprimer le webpart" onClick={onRemove} data-testid="wp-delete"
         className="absolute -top-2 -right-2 z-20 hidden group-hover/wp:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-red-600 hover:border-red-300 items-center justify-center text-caption shadow-sm"
       >🗑</button>
       <WebpartHost instance={instance} isEditMode />

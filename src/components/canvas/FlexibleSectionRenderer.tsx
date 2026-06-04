@@ -12,6 +12,8 @@ interface FlexibleSectionRendererProps {
   /** Requis en édition pour persister les déplacements/resize dans le store. */
   pageId?: string;
   sectionId?: string;
+  /** Suppression d'un webpart (édition). */
+  onRemoveWebpart?: (webpartId: string) => void;
 }
 
 const COLS = 12;
@@ -34,6 +36,7 @@ export function FlexibleSectionRenderer({
   isEditMode = false,
   pageId,
   sectionId,
+  onRemoveWebpart,
 }: FlexibleSectionRendererProps) {
   const updateFlex = useProjectStore((s) => s.updateWebpartFlex);
   const editable = isEditMode && !!pageId && !!sectionId;
@@ -154,6 +157,19 @@ export function FlexibleSectionRenderer({
                   >
                     ⠿
                   </button>
+                  {/* Bouton supprimer */}
+                  {onRemoveWebpart && (
+                    <button
+                      type="button"
+                      title="Supprimer"
+                      data-testid="wp-delete"
+                      onPointerDown={(e) => e.stopPropagation()}
+                      onClick={() => onRemoveWebpart(wp.id)}
+                      className="absolute -top-2 right-2 z-30 hidden group-hover/flex:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-red-600 hover:border-red-300 items-center justify-center text-caption shadow-sm"
+                    >
+                      🗑
+                    </button>
+                  )}
                   {/* Poignée de resize largeur (bord droit) */}
                   <div
                     title="Redimensionner"
