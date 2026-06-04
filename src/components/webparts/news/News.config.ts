@@ -37,8 +37,14 @@ export const newsConfigMeta = {
       label: 'Mise en page',
       type: 'select' as const,
       defaultValue: 'topStory',
-      // Layouts portés progressivement depuis jintan.
-      options: [{ value: 'topStory', label: 'Top Story' }],
+      // Layouts portés depuis jintan.
+      options: [
+        { value: 'topStory', label: 'Top Story' },
+        { value: 'hero', label: 'Hero' },
+        { value: 'carousel', label: 'Carousel' },
+        { value: 'verticalTiles', label: 'Tuiles verticales' },
+        { value: 'feed', label: 'Feed' },
+      ],
     },
     {
       key: 'newsAmount',

@@ -2,6 +2,10 @@
 
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { NewsTopStory } from './layouts/NewsTopStory';
+import { NewsCarousel } from './layouts/NewsCarousel';
+import { NewsVerticalTiles } from './layouts/NewsVerticalTiles';
+import { NewsFeed } from './layouts/NewsFeed';
+import { NewsHero } from './layouts/NewsHero';
 import type { NewsProps } from './News.types';
 
 /**
@@ -35,13 +39,11 @@ export function News({ config, content, isEditMode = false, onArticleClick, onSh
         <p className="text-body text-gray-500 py-xl text-center">Aucune actualité à afficher.</p>
       ) : (
         <>
-          {layout === 'topStory' && (
-            <NewsTopStory articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />
-          )}
-          {layout !== 'topStory' && (
-            // Layout non encore porté depuis jintan → repli TopStory (transparent).
-            <NewsTopStory articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />
-          )}
+          {layout === 'topStory' && <NewsTopStory articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />}
+          {layout === 'carousel' && <NewsCarousel articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />}
+          {layout === 'verticalTiles' && <NewsVerticalTiles articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />}
+          {layout === 'feed' && <NewsFeed articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />}
+          {layout === 'hero' && <NewsHero articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />}
         </>
       )}
     </section>
