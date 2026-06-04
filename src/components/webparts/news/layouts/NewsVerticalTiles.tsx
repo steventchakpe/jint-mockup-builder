@@ -72,7 +72,7 @@ export function NewsVerticalTiles({ articles, config, onArticleClick, onShareCli
                     <div className="flex flex-wrap gap-xs overflow-hidden" style={{ height: 28 }}>
                       {a.tags.map((tag) => (
                         <span key={tag.id} className="inline-flex items-center bg-sp-lighter-alt text-sp-primary uppercase"
-                          style={{ borderRadius: 5, fontSize: FONT_SIZE.size10, padding: '3px 12px', letterSpacing: '0.08em' }}>
+                          style={{ borderRadius: 5, fontSize: FONT_SIZE.size10, lineHeight: 1.4, padding: '3px 12px', letterSpacing: '0.08em' }}>
                           {tag.name}
                         </span>
                       ))}

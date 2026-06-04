@@ -1,5 +1,6 @@
 'use client';
 
+import { useLayoutEffect, useRef, useState } from 'react';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, SHADOW, radiusForStack } from '../News.mozzaik';
 import { LikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
@@ -29,8 +30,21 @@ export function NewsHeroCard({ article: a, index, config, onArticleClick, onShar
   const { rounded, shadow, customContent: cc, showPin } = config;
   const radius = radiusForStack(rounded);
 
+  // jintan: showAuthor = !isSmall && customContent.showAuthor (isSmall = carte < 380px).
+  const ref = useRef<HTMLAnchorElement>(null);
+  const [isSmall, setIsSmall] = useState(false);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setIsSmall(el.clientWidth < 380));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const showAuthor = !isSmall && cc.showAuthor;
+
   return (
     <a
+      ref={ref}
       href={a.url}
       onClick={(e) => { if (onArticleClick) { e.preventDefault(); onArticleClick(a.id); } }}
       className="group/hero relative block w-full h-full min-h-[200px] overflow-hidden no-underline"
@@ -71,22 +85,29 @@ export function NewsHeroCard({ article: a, index, config, onArticleClick, onShar
           <div className="flex flex-wrap gap-xs">
             {a.tags.map((tag) => (
               <span key={tag.id} className="inline-flex items-center bg-sp-primary text-white uppercase"
-                style={{ borderRadius: 5, padding: '3px 12px', letterSpacing: '0.08em', fontSize: FONT_SIZE.size10, opacity: 0.85 }}>
+                style={{ borderRadius: 5, padding: '3px 12px', letterSpacing: '0.08em', fontSize: FONT_SIZE.size10, lineHeight: 1.4, opacity: 0.85 }}>
                 {tag.name}
               </span>
             ))}
           </div>
         )}
         <InlineText as="div" path={['news', index, 'title']} value={a.title} placeholder="Titre de l'article"
-          className="line-clamp-2 [word-break:break-word]" style={{ fontSize: FONT_SIZE.size20, fontWeight: 700 }} />
+          className="line-clamp-2 [word-break:break-word]" style={{ fontSize: isSmall ? FONT_SIZE.size20 : FONT_SIZE.size24, fontWeight: 700 }} />
         <div className="flex items-center justify-between">
-          {cc.showAuthor && (
+          {(showAuthor || (cc.showDate && a.date)) && (
             <span className="flex items-center gap-xs min-w-0">
-              <span className="inline-flex items-center justify-center shrink-0 rounded-full overflow-hidden bg-white/30 text-white" style={{ width: 16, height: 16, fontSize: 8, fontWeight: 600 }}>
-                {a.authorAvatar ? <img src={a.authorAvatar} alt={a.author} className="w-full h-full object-cover" /> : getInitials(a.author)}
-              </span>
-              <span className="truncate" style={{ fontSize: FONT_SIZE.small }}>{a.author}</span>
-              {cc.showDate && a.date && <span className="opacity-90" style={{ fontSize: FONT_SIZE.small }}>· {fmtDate(a.date)}</span>}
+              {/* Avatar + nom : masqués sur les petites tuiles (isSmall), comme jintan. */}
+              {showAuthor && (
+                <>
+                  <span className="inline-flex items-center justify-center shrink-0 rounded-full overflow-hidden bg-white/30 text-white" style={{ width: 16, height: 16, fontSize: 8, fontWeight: 600 }}>
+                    {a.authorAvatar ? <img src={a.authorAvatar} alt={a.author} className="w-full h-full object-cover" /> : getInitials(a.author)}
+                  </span>
+                  <span className="truncate" style={{ fontSize: FONT_SIZE.small }}>{a.author}</span>
+                </>
+              )}
+              {cc.showDate && a.date && (
+                <span className="opacity-90" style={{ fontSize: FONT_SIZE.small }}>{showAuthor ? '· ' : ''}{fmtDate(a.date)}</span>
+              )}
             </span>
           )}
           {(cc.showViewCount || cc.showLikeCount) && (
