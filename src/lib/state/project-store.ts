@@ -9,6 +9,7 @@ interface ProjectStore {
   selectedWebpartId: string | null; // webpart sélectionné (panneau de config)
   isLoading: boolean;
   isDirty: boolean; // unsaved changes
+  saveStatus: 'idle' | 'saving' | 'saved' | 'error'; // feedback bouton Sauvegarder
   error: string | null;
 
   // Project lifecycle
@@ -33,6 +34,10 @@ interface ProjectStore {
   ) => void;
   // Position/taille d'un webpart dans une section flexible (grille 12 col).
   updateWebpartFlex: (pageId: string, sectionId: string, webpartId: string, flex: import('@/types/project').FlexPosition) => void;
+
+  // Maquette (nom) + prospect
+  setProjectName: (name: string) => void;
+  updateProspect: (updates: Partial<Project['prospect']>) => void;
 
   // Theme
   updateTheme: (theme: Partial<Project['theme']>) => void;
@@ -71,6 +76,7 @@ interface ProjectStore {
 
   // Metadata
   markSaved: () => void;
+  saveProject: () => Promise<void>;
 }
 
 /** Applique une transformation aux sections d'une page, marque le projet dirty. */
@@ -110,6 +116,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   selectedWebpartId: null,
   isLoading: false,
   isDirty: false,
+  saveStatus: 'idle',
   error: null,
 
   loadProject: (project) =>
@@ -199,6 +206,18 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       }),
       isDirty: true,
     });
+  },
+
+  setProjectName: (name) => {
+    const { project } = get();
+    if (!project) return;
+    set({ project: { ...project, name }, isDirty: true });
+  },
+
+  updateProspect: (updates) => {
+    const { project } = get();
+    if (!project) return;
+    set({ project: { ...project, prospect: { ...project.prospect, ...updates } }, isDirty: true });
   },
 
   updateTheme: (theme) => {
@@ -464,4 +483,25 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   },
 
   markSaved: () => set({ isDirty: false }),
+
+  saveProject: async () => {
+    const { project } = get();
+    if (!project) return;
+    set({ saveStatus: 'saving' });
+    const updated: Project = {
+      ...project,
+      metadata: { ...project.metadata, updatedAt: new Date().toISOString() },
+    };
+    try {
+      const res = await fetch(`/api/projects/${project.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      set({ project: updated, isDirty: false, saveStatus: 'saved' });
+    } catch (e) {
+      set({ saveStatus: 'error', error: e instanceof Error ? e.message : 'Échec de la sauvegarde' });
+    }
+  },
 }));

@@ -14,3 +14,6 @@ out/
 .claude/skills/design-workflow/references/knowledge-base/ui-references/screenshots/*.png
 .claude/skills/design-workflow/references/knowledge-base/ui-references/screenshots/*.jpg
 .claude/skills/design-workflow/references/knowledge-base/learnings.json
+
+# Local project storage (LocalStorageProvider)
+/data
