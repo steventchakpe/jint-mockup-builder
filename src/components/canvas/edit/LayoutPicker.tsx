@@ -1,6 +1,9 @@
 'use client';
 
 import type { SectionLayout } from '@/types/project';
+import type { SectionChoice } from '@/lib/state/section-ops';
+
+export type { SectionChoice };
 
 /** Icônes des 8 layouts de section (reprises du sélecteur SharePoint). */
 const box = 'stroke-current fill-none';
@@ -28,8 +31,6 @@ const ICONS: Record<SectionLayout | 'vertical', React.ReactNode> = {
     </svg>
   ),
 };
-
-export type SectionChoice = SectionLayout | 'vertical';
 
 const OPTIONS: { key: SectionChoice; label: string }[] = [
   { key: 'flexible', label: 'Flexible' },

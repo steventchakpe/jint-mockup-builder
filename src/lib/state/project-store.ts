@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import type { Project, Page, Section, WebpartInstance, Profile } from '@/types/project';
+import { relayoutSection, reorderSections, type SectionChoice } from './section-ops';
 
 interface ProjectStore {
   // State
   project: Project | null;
+  activePageId: string | null; // page en cours d'édition
   isLoading: boolean;
   isDirty: boolean; // unsaved changes
   error: string | null;
@@ -12,6 +14,21 @@ interface ProjectStore {
   loadProject: (project: Project) => void;
   resetProject: () => void;
   setError: (error: string | null) => void;
+  setActivePage: (pageId: string) => void;
+
+  // Édition de sections (par ID, sur une page) — utilisé par l'éditeur
+  insertSection: (pageId: string, index: number, section: Section) => void;
+  changeSectionLayout: (pageId: string, sectionId: string, choice: SectionChoice) => void;
+
+  // Édition de webparts (par ID de colonne) — utilisé par l'éditeur + DnD
+  insertWebpartAt: (pageId: string, sectionId: string, columnId: string, webpart: WebpartInstance, at?: number) => void;
+  removeWebpartById: (pageId: string, sectionId: string, columnId: string, webpartId: string) => void;
+  moveWebpartById: (
+    pageId: string,
+    from: { sectionId: string; columnId: string },
+    to: { sectionId: string; columnId: string; index: number },
+    webpartId: string,
+  ) => void;
 
   // Theme
   updateTheme: (theme: Partial<Project['theme']>) => void;
@@ -52,15 +69,130 @@ interface ProjectStore {
   markSaved: () => void;
 }
 
+/** Applique une transformation aux sections d'une page, marque le projet dirty. */
+function mapPageSections(
+  project: Project,
+  pageId: string,
+  fn: (sections: Section[]) => Section[],
+): Project {
+  return {
+    ...project,
+    pages: project.pages.map((p) => (p.id === pageId ? { ...p, sections: fn(p.sections) } : p)),
+  };
+}
+
+/** Applique une transformation à une colonne donnée (section + colonne par ID). */
+function mapColumn(
+  sections: Section[],
+  sectionId: string,
+  columnId: string,
+  fn: (webparts: WebpartInstance[]) => WebpartInstance[],
+): Section[] {
+  return sections.map((s) =>
+    s.id !== sectionId
+      ? s
+      : {
+          ...s,
+          columns: s.columns.map((c) =>
+            c.id !== columnId ? c : { ...c, webparts: fn(c.webparts).map((w, i) => ({ ...w, order: i })) },
+          ),
+        },
+  );
+}
+
 export const useProjectStore = create<ProjectStore>((set, get) => ({
   project: null,
+  activePageId: null,
   isLoading: false,
   isDirty: false,
   error: null,
 
-  loadProject: (project) => set({ project, isLoading: false, isDirty: false, error: null }),
-  resetProject: () => set({ project: null, isLoading: false, isDirty: false, error: null }),
+  loadProject: (project) =>
+    set({ project, activePageId: project.pages[0]?.id ?? null, isLoading: false, isDirty: false, error: null }),
+  resetProject: () => set({ project: null, activePageId: null, isLoading: false, isDirty: false, error: null }),
   setError: (error) => set({ error }),
+  setActivePage: (activePageId) => set({ activePageId }),
+
+  insertSection: (pageId, index, section) => {
+    const { project } = get();
+    if (!project) return;
+    set({
+      project: mapPageSections(project, pageId, (secs) => {
+        const next = [...secs];
+        next.splice(index, 0, section);
+        return reorderSections(next);
+      }),
+      isDirty: true,
+    });
+  },
+
+  changeSectionLayout: (pageId, sectionId, choice) => {
+    const { project } = get();
+    if (!project) return;
+    set({
+      project: mapPageSections(project, pageId, (secs) =>
+        secs.map((s) => (s.id === sectionId ? relayoutSection(s, choice) : s)),
+      ),
+      isDirty: true,
+    });
+  },
+
+  insertWebpartAt: (pageId, sectionId, columnId, webpart, at) => {
+    const { project } = get();
+    if (!project) return;
+    set({
+      project: mapPageSections(project, pageId, (secs) =>
+        mapColumn(secs, sectionId, columnId, (wps) => {
+          const next = [...wps];
+          next.splice(at ?? next.length, 0, webpart);
+          return next;
+        }),
+      ),
+      isDirty: true,
+    });
+  },
+
+  removeWebpartById: (pageId, sectionId, columnId, webpartId) => {
+    const { project } = get();
+    if (!project) return;
+    set({
+      project: mapPageSections(project, pageId, (secs) =>
+        mapColumn(secs, sectionId, columnId, (wps) => wps.filter((w) => w.id !== webpartId)),
+      ),
+      isDirty: true,
+    });
+  },
+
+  moveWebpartById: (pageId, from, to, webpartId) => {
+    const { project } = get();
+    if (!project) return;
+    // Récupère le webpart source.
+    const page = project.pages.find((p) => p.id === pageId);
+    const srcSection = page?.sections.find((s) => s.id === from.sectionId);
+    const srcCol = srcSection?.columns.find((c) => c.id === from.columnId);
+    const moving = srcCol?.webparts.find((w) => w.id === webpartId);
+    if (!moving) return;
+    // Même colonne + déplacement vers le bas : après retrait, l'index cible se décale de -1.
+    const srcIndex = srcCol!.webparts.findIndex((w) => w.id === webpartId);
+    const sameCol = from.sectionId === to.sectionId && from.columnId === to.columnId;
+    const insertIndex = sameCol && srcIndex < to.index ? to.index - 1 : to.index;
+    set({
+      project: mapPageSections(project, pageId, (secs) => {
+        // 1) retire de la colonne source
+        let next = mapColumn(secs, from.sectionId, from.columnId, (wps) =>
+          wps.filter((w) => w.id !== webpartId),
+        );
+        // 2) insère dans la colonne cible à l'index voulu
+        next = mapColumn(next, to.sectionId, to.columnId, (wps) => {
+          const arr = [...wps];
+          arr.splice(insertIndex, 0, moving);
+          return arr;
+        });
+        return next;
+      }),
+      isDirty: true,
+    });
+  },
 
   updateTheme: (theme) => {
     const { project } = get();

@@ -1,47 +1,34 @@
 'use client';
 
 import { useState } from 'react';
+import {
+  DndContext,
+  PointerSensor,
+  closestCorners,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import { WebpartHost } from '../WebpartHost';
 import { FlexibleSectionRenderer } from '../FlexibleSectionRenderer';
 import {
   SECTION_GAP,
-  getColumnCount,
   getSectionGridClass,
 } from '../section-layout';
-import { LayoutPicker, type SectionChoice } from './LayoutPicker';
+import { LayoutPicker } from './LayoutPicker';
 import { WebpartCatalog } from './WebpartCatalog';
 import { getWebpart } from '@/config/webpart-registry';
+import { useProjectStore } from '@/lib/state/project-store';
+import { genId, makeSection, type SectionChoice } from '@/lib/state/section-ops';
 import { cn } from '@/lib/utils';
-import type { Column, Section, SectionLayout, WebpartInstance } from '@/types/project';
-
-let uid = 0;
-const id = (p: string) => `${p}-${Date.now()}-${uid++}`;
-const emptyCols = (n: number): Column[] => Array.from({ length: n }, (_, i) => ({ id: id('col'), index: i, webparts: [] }));
-
-function makeSection(choice: SectionChoice): Section {
-  const layout: SectionLayout = choice === 'vertical' ? 'one-column' : choice;
-  return {
-    id: id('section'), order: 0, layout, background: 'none', backgroundImage: null,
-    collapsible: false, title: null, columns: emptyCols(getColumnCount(layout)),
-  };
-}
-
-/** Change le layout d'une section en préservant les webparts (fusion si moins de colonnes). */
-function relayout(section: Section, choice: SectionChoice): Section {
-  const layout: SectionLayout = choice === 'vertical' ? 'one-column' : choice;
-  const target = getColumnCount(layout);
-  const cur = section.columns;
-  let columns: Column[];
-  if (target >= cur.length) {
-    columns = [...cur, ...emptyCols(target - cur.length).map((c, i) => ({ ...c, index: cur.length + i }))];
-  } else {
-    // fusionne les webparts des colonnes en trop dans la dernière colonne conservée
-    const kept = cur.slice(0, target).map((c) => ({ ...c, webparts: [...c.webparts] }));
-    cur.slice(target).forEach((c) => kept[target - 1].webparts.push(...c.webparts));
-    columns = kept;
-  }
-  return { ...section, layout, columns: columns.map((c, i) => ({ ...c, index: i })) };
-}
+import type { Column, Section, WebpartInstance } from '@/types/project';
 
 /** Barre « + Section » (ligne légère permanente, bleue + pill au survol). */
 function AddSectionBar({ onAdd }: { onAdd: (c: SectionChoice) => void }) {
@@ -65,60 +52,103 @@ function AddSectionBar({ onAdd }: { onAdd: (c: SectionChoice) => void }) {
 
 /**
  * EditableCanvas — création / modification / suppression de sections (US-12)
- * + ajout de webparts (US-08). Réplique l'expérience d'édition SharePoint.
+ * + ajout de webparts (US-08). State-driven via le store projet (Zustand).
+ * Édite la page `pageId` (défaut : page active du store).
  */
-export function EditableCanvas({ initial = [] }: { initial?: Section[] }) {
-  const [sections, setSections] = useState<Section[]>(initial);
-  const reorder = (arr: Section[]) => arr.map((s, i) => ({ ...s, order: i }));
+export function EditableCanvas({ pageId }: { pageId?: string }) {
+  const activePageId = useProjectStore((s) => s.activePageId);
+  const pid = pageId ?? activePageId ?? '';
+  const sections = useProjectStore((s) => s.project?.pages.find((p) => p.id === pid)?.sections ?? []);
 
-  const addAt = (index: number, choice: SectionChoice) =>
-    setSections((s) => { const n = [...s]; n.splice(index, 0, makeSection(choice)); return reorder(n); });
-  const remove = (sid: string) => setSections((s) => reorder(s.filter((x) => x.id !== sid)));
-  const changeLayout = (sid: string, choice: SectionChoice) =>
-    setSections((s) => s.map((sec) => sec.id === sid ? relayout(sec, choice) : sec));
-  // Insère un webpart dans une colonne à la position `at` (défaut: à la fin).
-  const addWebpart = (sid: string, colId: string, type: string, at?: number) => {
-    const def = getWebpart(type); if (!def) return;
-    const wp: WebpartInstance = { id: id('wp'), type, order: 0, config: { ...def.defaultConfig }, content: { ...def.defaultContent } };
-    setSections((s) => s.map((sec) => sec.id !== sid ? sec : {
-      ...sec, columns: sec.columns.map((c) => {
-        if (c.id !== colId) return c;
-        const wps = [...c.webparts];
-        wps.splice(at ?? wps.length, 0, wp);
-        return { ...c, webparts: wps.map((w, i) => ({ ...w, order: i })) };
-      }),
-    }));
+  const insertSection = useProjectStore((s) => s.insertSection);
+  const removeSection = useProjectStore((s) => s.removeSection);
+  const changeSectionLayout = useProjectStore((s) => s.changeSectionLayout);
+  const insertWebpartAt = useProjectStore((s) => s.insertWebpartAt);
+  const removeWebpartById = useProjectStore((s) => s.removeWebpartById);
+  const moveWebpartById = useProjectStore((s) => s.moveWebpartById);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  // Résout la colonne (section + colonne) depuis les `data` dnd-kit.
+  const findColumn = (sectionId: string, columnId: string) =>
+    sections.find((s) => s.id === sectionId)?.columns.find((c) => c.id === columnId);
+
+  const onDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over) return;
+    const a = active.data.current as DndWp | undefined;
+    const o = over.data.current as DndWp | DndColumn | undefined;
+    if (!a) return;
+
+    let toSection: string, toColumn: string, toIndex: number;
+    if (o && o.kind === 'column') {
+      toSection = o.sectionId; toColumn = o.columnId;
+      toIndex = findColumn(toSection, toColumn)?.webparts.length ?? 0;
+    } else if (o && o.kind === 'wp') {
+      toSection = o.sectionId; toColumn = o.columnId;
+      const col = findColumn(toSection, toColumn);
+      toIndex = col ? col.webparts.findIndex((w) => w.id === o.webpartId) : 0;
+    } else {
+      return;
+    }
+    // Drop sur soi-même → no-op
+    if (a.sectionId === toSection && a.columnId === toColumn && o.kind === 'wp' && o.webpartId === a.webpartId) return;
+
+    moveWebpartById(
+      pid,
+      { sectionId: a.sectionId, columnId: a.columnId },
+      { sectionId: toSection, columnId: toColumn, index: toIndex },
+      a.webpartId,
+    );
   };
-  const removeWebpart = (sid: string, colId: string, wpId: string) =>
-    setSections((s) => s.map((sec) => sec.id !== sid ? sec : {
-      ...sec, columns: sec.columns.map((c) => c.id !== colId ? c
-        : { ...c, webparts: c.webparts.filter((w) => w.id !== wpId).map((w, i) => ({ ...w, order: i })) }),
-    }));
+
+  const addAt = (index: number, choice: SectionChoice) => insertSection(pid, index, makeSection(choice));
+  const addWebpart = (sid: string, colId: string, type: string, at?: number) => {
+    const def = getWebpart(type);
+    if (!def) return;
+    const wp: WebpartInstance = {
+      id: genId('wp'), type, order: 0,
+      config: { ...def.defaultConfig }, content: { ...def.defaultContent },
+    };
+    insertWebpartAt(pid, sid, colId, wp, at);
+  };
+
+  if (!pid) {
+    return <div className="p-lg text-caption text-gray-400">Aucune page active.</div>;
+  }
 
   return (
-    <div className="flex flex-col px-lg py-md min-h-[400px]">
-      {sections.length === 0 ? (
-        <EmptyAdd onAdd={(c) => addAt(0, c)} />
-      ) : (
-        <>
-          <AddSectionBar onAdd={(c) => addAt(0, c)} />
-          {sections.map((section, i) => (
-            <div key={section.id}>
-              <SectionEditFrame
-                section={section}
-                onRemove={() => remove(section.id)}
-                onChangeLayout={(c) => changeLayout(section.id, c)}
-                onAddWebpart={(colId, type, at) => addWebpart(section.id, colId, type, at)}
-                onRemoveWebpart={(colId, wpId) => removeWebpart(section.id, colId, wpId)}
-              />
-              <AddSectionBar onAdd={(c) => addAt(i + 1, c)} />
-            </div>
-          ))}
-        </>
-      )}
-    </div>
+    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
+      <div className="flex flex-col px-lg py-md min-h-[400px]">
+        {sections.length === 0 ? (
+          <EmptyAdd onAdd={(c) => addAt(0, c)} />
+        ) : (
+          <>
+            <AddSectionBar onAdd={(c) => addAt(0, c)} />
+            {sections.map((section, i) => (
+              <div key={section.id}>
+                <SectionEditFrame
+                  section={section}
+                  onRemove={() => removeSection(pid, section.id)}
+                  onChangeLayout={(c) => changeSectionLayout(pid, section.id, c)}
+                  onAddWebpart={(colId, type, at) => addWebpart(section.id, colId, type, at)}
+                  onRemoveWebpart={(colId, wpId) => removeWebpartById(pid, section.id, colId, wpId)}
+                />
+                <AddSectionBar onAdd={(c) => addAt(i + 1, c)} />
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    </DndContext>
   );
 }
+
+/** Données dnd-kit attachées aux éléments draggables/droppables. */
+type DndWp = { kind: 'wp'; sectionId: string; columnId: string; webpartId: string };
+type DndColumn = { kind: 'column'; sectionId: string; columnId: string };
 
 /** État vide : grand bouton « + Section » visible. */
 function EmptyAdd({ onAdd }: { onAdd: (c: SectionChoice) => void }) {
@@ -175,6 +205,7 @@ function SectionEditFrame({
           {section.columns.map((col) => (
             <EditColumn
               key={col.id}
+              sectionId={section.id}
               column={col}
               onAdd={(type, at) => onAddWebpart(col.id, type, at)}
               onRemoveWebpart={(wpId) => onRemoveWebpart(col.id, wpId)}
@@ -186,38 +217,82 @@ function SectionEditFrame({
   );
 }
 
-/** Une colonne en édition : webparts empilés, chacun avec barre de suppression,
- *  et une zone « + Ajouter un webpart » entre chaque + à la fin (empilement vertical). */
+/** Une colonne en édition : droppable + tri vertical (DnD), webparts empilés,
+ *  zones « + Ajouter un webpart » entre chaque (empilement) + grand placeholder si vide. */
 function EditColumn({
-  column, onAdd, onRemoveWebpart,
+  sectionId, column, onAdd, onRemoveWebpart,
 }: {
+  sectionId: string;
   column: Column;
   onAdd: (type: string, at?: number) => void;
   onRemoveWebpart: (wpId: string) => void;
 }) {
   const webparts = [...column.webparts].sort((a, b) => a.order - b.order);
+  // Colonne droppable (permet le drop dans une colonne vide / en fin de liste).
+  const colData: DndColumn = { kind: 'column', sectionId, columnId: column.id };
+  const { setNodeRef, isOver } = useDroppable({ id: `col:${sectionId}:${column.id}`, data: colData });
 
   if (webparts.length === 0) {
-    return <AddWebpartZone compact={false} onPick={(type) => onAdd(type, 0)} />;
+    return (
+      <div ref={setNodeRef} className={cn('rounded-md transition-colors', isOver && 'ring-2 ring-sp-primary/50')}>
+        <AddWebpartZone compact={false} onPick={(type) => onAdd(type, 0)} />
+      </div>
+    );
   }
 
   return (
-    <div className="group/col flex flex-col gap-md min-w-0">
-      {/* Zone d'ajout AU-DESSUS du premier webpart (insère à 0). */}
+    <div
+      ref={setNodeRef}
+      className={cn('group/col flex flex-col gap-md min-w-0 rounded-md transition-colors', isOver && 'ring-2 ring-sp-primary/40')}
+    >
       <AddWebpartZone compact onPick={(type) => onAdd(type, 0)} />
-      {webparts.map((wp, i) => (
-        <div key={wp.id}>
-          <div className="relative group/wp border border-transparent hover:border-sp-primary/40 rounded-sm">
-            <button
-              type="button" title="Supprimer le webpart" onClick={() => onRemoveWebpart(wp.id)}
-              className="absolute -top-2 -right-2 z-20 hidden group-hover/wp:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-red-600 hover:border-red-300 items-center justify-center text-caption shadow-sm"
-            >🗑</button>
-            <WebpartHost instance={wp} isEditMode />
+      <SortableContext items={webparts.map((w) => `wp:${w.id}`)} strategy={verticalListSortingStrategy}>
+        {webparts.map((wp, i) => (
+          <div key={wp.id}>
+            <SortableWebpart
+              instance={wp}
+              data={{ kind: 'wp', sectionId, columnId: column.id, webpartId: wp.id }}
+              onRemove={() => onRemoveWebpart(wp.id)}
+            />
+            {/* Zone d'ajout SOUS chaque webpart (insère à i+1). */}
+            <AddWebpartZone compact onPick={(type) => onAdd(type, i + 1)} />
           </div>
-          {/* Zone d'ajout SOUS chaque webpart (insère à i+1). */}
-          <AddWebpartZone compact onPick={(type) => onAdd(type, i + 1)} />
-        </div>
-      ))}
+        ))}
+      </SortableContext>
+    </div>
+  );
+}
+
+/** Webpart triable (DnD) avec poignée de déplacement + bouton supprimer (au survol). */
+function SortableWebpart({
+  instance, data, onRemove,
+}: {
+  instance: WebpartInstance;
+  data: DndWp;
+  onRemove: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: `wp:${instance.id}`,
+    data,
+  });
+  const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="relative group/wp border border-transparent hover:border-sp-primary/40 rounded-sm"
+    >
+      {/* Poignée de déplacement (au survol). */}
+      <button
+        type="button" title="Déplacer le webpart" {...attributes} {...listeners}
+        className="absolute -top-2 left-2 z-20 hidden group-hover/wp:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-sp-primary hover:border-sp-primary items-center justify-center text-caption shadow-sm cursor-grab active:cursor-grabbing"
+      >⠿</button>
+      <button
+        type="button" title="Supprimer le webpart" onClick={onRemove}
+        className="absolute -top-2 -right-2 z-20 hidden group-hover/wp:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-red-600 hover:border-red-300 items-center justify-center text-caption shadow-sm"
+      >🗑</button>
+      <WebpartHost instance={instance} isEditMode />
     </div>
   );
 }
