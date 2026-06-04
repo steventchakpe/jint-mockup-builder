@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, SHADOW, radiusForStack } from '../News.mozzaik';
-import { LikeIcon, FilledLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
+import { LikeIcon, FilledLikeIcon, ThumbLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
 import type { NewsItem, NewsProps } from '../News.types';
 
 const fmtDate = (iso: string) =>
@@ -116,7 +116,7 @@ export function NewsHeroCard({ article: a, index, config, onArticleClick, onShar
                 <span className="inline-flex items-center gap-xs" style={{ fontSize: FONT_SIZE.xSmall }}>{a.viewCount}<ViewIcon style={{ width: 14, height: 14 }} /></span>
               )}
               {cc.showLikeCount && a.likeCount >= 0 && (
-                <span className="inline-flex items-center gap-xs" style={{ fontSize: FONT_SIZE.xSmall }}>{a.likeCount}<LikeIcon style={{ width: 14, height: 13 }} /></span>
+                <span className="inline-flex items-center gap-xs" style={{ fontSize: FONT_SIZE.xSmall }}>{a.likeCount}<ThumbLikeIcon style={{ width: 14, height: 14 }} /></span>
               )}
             </span>
           )}
