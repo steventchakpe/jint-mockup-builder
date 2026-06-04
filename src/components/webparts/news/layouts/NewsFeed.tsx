@@ -80,7 +80,7 @@ export function NewsFeed({ articles, config, onArticleClick, onShareClick }: Fee
                         )}
                         {cc.showShareButton && (
                           <button type="button" aria-label="Partager" onClick={(e) => { e.preventDefault(); onShareClick?.(a.url); }}
-                            className="w-7 h-7 inline-flex items-center justify-center rounded-sm hover:bg-sp-lighter-alt" style={{ color: NEUTRAL.primary }}>
+                            className="w-7 h-7 inline-flex items-center justify-center rounded-sm text-sp-primary hover:bg-sp-lighter-alt">
                             <ShareIcon style={{ width: 15, height: 15 }} />
                           </button>
                         )}
