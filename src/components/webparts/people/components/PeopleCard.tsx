@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { ChatIcon } from '../People.icons';
 import {
   AVATAR_SHADOW,
@@ -16,11 +17,13 @@ import type { PeoplePerson, PeopleShadow } from '../People.types';
 
 interface PeopleCardProps {
   person: PeoplePerson;
+  index: number;
   horizontal: boolean;
   radius: number;
   shadow: PeopleShadow;
   cardColor?: string;
   locale?: string;
+  isEditMode?: boolean;
   onChatClick?: (email: string) => void;
 }
 
@@ -52,7 +55,7 @@ function useWelcomeDate(dateStr: string | undefined, horizontal: boolean, locale
   }, [dateStr, horizontal, locale]);
 }
 
-export function PeopleCard({ person, horizontal, radius, shadow, cardColor, locale = 'fr-FR', onChatClick }: PeopleCardProps) {
+export function PeopleCard({ person, index, horizontal, radius, shadow, cardColor, locale = 'fr-FR', isEditMode = false, onChatClick }: PeopleCardProps) {
   const welcomeDate = useWelcomeDate(person.date, horizontal, locale);
   const personaSize = horizontal ? PERSONA_SIZE_SMALL : PERSONA_SIZE_LARGE;
 
@@ -80,13 +83,23 @@ export function PeopleCard({ person, horizontal, radius, shadow, cardColor, loca
 
   const info = (
     <div className={cn('flex flex-col gap-[4px] min-w-0', horizontal ? 'items-start' : 'items-center text-center')}>
-      <span className="font-bold text-sp-primary truncate max-w-full" style={{ fontSize: FONT_SIZE.BodyText }}>
-        {person.displayName}
-      </span>
-      {person.jobTitle && (
-        <span className="font-bold text-[#605e5c] uppercase truncate max-w-full" style={{ fontSize: FONT_SIZE.MetadataLimited, lineHeight: '12px' }}>
-          {person.jobTitle}
-        </span>
+      <InlineText
+        as="span"
+        path={['people', index, 'displayName']}
+        value={person.displayName}
+        placeholder="Nom"
+        className="font-bold text-sp-primary truncate max-w-full"
+        style={{ fontSize: FONT_SIZE.BodyText }}
+      />
+      {(person.jobTitle || isEditMode) && (
+        <InlineText
+          as="span"
+          path={['people', index, 'jobTitle']}
+          value={person.jobTitle}
+          placeholder="Poste"
+          className="font-bold text-[#605e5c] uppercase truncate max-w-full"
+          style={{ fontSize: FONT_SIZE.MetadataLimited, lineHeight: '12px' }}
+        />
       )}
       {dateTag}
     </div>

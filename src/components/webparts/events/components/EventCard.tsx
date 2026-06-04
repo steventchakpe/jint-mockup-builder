@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { LocationRegular, ClockRegular, CalendarAddRegular } from '../Events.icons';
 import {
   CARD_CONTAINER_GAP,
@@ -19,6 +20,7 @@ import type { EventItem, EventsShadow } from '../Events.types';
 
 interface EventCardProps {
   event: EventItem;
+  index: number;
   radius: number;
   shadow?: EventsShadow;
   showAddToCalendar?: boolean;
@@ -35,6 +37,7 @@ interface EventCardProps {
  */
 export function EventCard({
   event,
+  index,
   radius,
   shadow = 'Strong',
   showAddToCalendar = true,
@@ -106,15 +109,21 @@ export function EventCard({
       {/* Centre — titre/lieu (haut) · date (bas) */}
       <div className="flex flex-1 flex-col justify-between min-w-0">
         <div className="flex flex-col" style={{ gap: TITLE_LOCATION_GAP }}>
-          <h3
+          <InlineText
+            as="h3"
+            path={['events', index, 'title']}
+            value={title}
+            placeholder="Titre de l'événement"
             className="line-clamp-2 [word-break:keep-all]"
             style={{ fontSize: FONT_SIZE.SubjectTitle, fontWeight: FONT_WEIGHT.Semibold, color: NEUTRAL.dark }}
-          >
-            {title}
-          </h3>
+          />
           <div className="flex items-center min-w-0">
             <LocationRegular style={{ width: 16, height: 16, flexShrink: 0, color: NEUTRAL.secondary }} />
-            <span
+            <InlineText
+              as="span"
+              path={['events', index, 'location']}
+              value={location ?? 'Aucun lieu'}
+              placeholder="Lieu"
               className="truncate"
               style={{
                 marginLeft: DATE_MARGIN_LEFT,
@@ -122,9 +131,7 @@ export function EventCard({
                 fontWeight: FONT_WEIGHT.Semibold,
                 color: NEUTRAL.tertiary,
               }}
-            >
-              {location ?? 'Aucun lieu'}
-            </span>
+            />
           </div>
         </div>
 

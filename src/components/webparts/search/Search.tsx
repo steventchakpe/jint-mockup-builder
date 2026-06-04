@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { SearchIcon } from './Search.icons';
 import {
   BANNER_PADDING_X,
@@ -22,7 +23,7 @@ import type { SearchProps } from './Search.types';
  * et barre de recherche. Deux thèmes : Glassmorphism (translucide + flou 8px) ou
  * Classic (fond blanc).
  */
-export function Search({ config, onSearch }: SearchProps) {
+export function Search({ config, onSearch, isEditMode = false }: SearchProps) {
   const { title, watermark, size, searchBoxTheme, radius, shadow, bkgColor, backgroundImage } = config;
   const [query, setQuery] = useState('');
 
@@ -50,10 +51,16 @@ export function Search({ config, onSearch }: SearchProps) {
   return (
     <div className="flex items-center justify-center w-full" style={bannerStyle}>
       <div className="flex flex-col w-full max-w-[760px]" style={{ gap: CONTENT_GAP }}>
-        {title && (
-          <span className="font-semibold text-white truncate" style={{ fontSize: TITLE_FONT_SIZE }}>
-            {title}
-          </span>
+        {(title || isEditMode) && (
+          <InlineText
+            as="span"
+            target="config"
+            path={['title']}
+            value={title}
+            placeholder="Titre"
+            className="font-semibold text-white truncate"
+            style={{ fontSize: TITLE_FONT_SIZE }}
+          />
         )}
         <div
           className="flex items-center gap-sm transition-shadow focus-within:ring-2 focus-within:ring-sp-lighter hover:ring-2 hover:ring-sp-lighter"

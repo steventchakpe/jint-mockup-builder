@@ -5,6 +5,7 @@ import { PersonaCard } from './components/PersonaCard';
 import { DirectorySearchBox } from './components/DirectorySearchBox';
 import { ProfileDetail } from './components/ProfileDetail';
 import { RESULTS_GAP } from './EmployeeDirectory.mozzaik';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 import type { DirectoryPerson, EmployeeDirectoryProps } from './EmployeeDirectory.types';
 
 /**
@@ -64,10 +65,28 @@ export function EmployeeDirectory({
   return (
     <div className="flex flex-col gap-2xl">
       <div className="flex flex-col gap-md">
-        {(title || description) && (
+        {(title || description || isEditMode) && (
           <div className="flex flex-col gap-sm">
-            {title && <h2 className="text-heading-sm font-semibold text-sp-darker">{title}</h2>}
-            {description && <p className="text-body text-gray-600">{description}</p>}
+            {(title || isEditMode) && (
+              <InlineText
+                as="h2"
+                target="config"
+                path={['title']}
+                value={title}
+                placeholder="Titre"
+                className="text-heading-sm font-semibold text-sp-darker"
+              />
+            )}
+            {(description || isEditMode) && (
+              <InlineText
+                as="p"
+                target="config"
+                path={['description']}
+                value={description}
+                placeholder="Description"
+                className="text-body text-gray-600"
+              />
+            )}
           </div>
         )}
         <DirectorySearchBox

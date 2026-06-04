@@ -2,6 +2,7 @@
 
 import { LinkCard } from './components/LinkCard';
 import { GRID_GAP, SIZE } from './MyApps.mozzaik';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 import type { MyAppsProps } from './MyApps.types';
 
 /**
@@ -12,14 +13,23 @@ import type { MyAppsProps } from './MyApps.types';
  * reproduits via `auto-fill minmax(minSize, 1fr)` : autant de colonnes que la
  * largeur le permet, cartes de taille mini constante.
  */
-export function MyApps({ config, content, onNavigate }: MyAppsProps) {
+export function MyApps({ config, content, onNavigate, isEditMode = false }: MyAppsProps) {
   const { title, cardSize, radius, shadow } = config;
   const links = content.links;
   const min = SIZE[cardSize].min;
 
   return (
     <section className="flex flex-col gap-xl p-md">
-      {title && <h2 className="text-heading font-semibold text-sp-darker">{title}</h2>}
+      {(title || isEditMode) && (
+        <InlineText
+          as="h2"
+          target="config"
+          path={['title']}
+          value={title}
+          placeholder="Titre de la section"
+          className="text-heading font-semibold text-sp-darker"
+        />
+      )}
 
       {links.length === 0 ? (
         <p className="text-body text-gray-500 py-xl text-center">Aucune application.</p>

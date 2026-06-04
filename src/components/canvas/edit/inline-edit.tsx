@@ -8,7 +8,9 @@ type Path = (string | number)[];
 interface InlineEditCtx {
   editing: boolean;
   content: unknown; // contenu complet du webpart (instance.content)
-  commit: (next: unknown) => void;
+  config: unknown; // config complète du webpart (instance.config)
+  commitContent: (next: unknown) => void;
+  commitConfig: (next: unknown) => void;
 }
 
 const Ctx = createContext<InlineEditCtx | null>(null);
@@ -16,14 +18,22 @@ const Ctx = createContext<InlineEditCtx | null>(null);
 /** Fournit le contexte d'édition inline à un webpart (mode Édition uniquement). */
 export function WebpartEditProvider({
   content,
-  commit,
+  config,
+  commitContent,
+  commitConfig,
   children,
 }: {
   content: unknown;
-  commit: (next: unknown) => void;
+  config: unknown;
+  commitContent: (next: unknown) => void;
+  commitConfig: (next: unknown) => void;
   children: ReactNode;
 }) {
-  return <Ctx.Provider value={{ editing: true, content, commit }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={{ editing: true, content, config, commitContent, commitConfig }}>
+      {children}
+    </Ctx.Provider>
+  );
 }
 
 export const useInlineEdit = () => useContext(Ctx);
@@ -42,8 +52,10 @@ function setPath(obj: unknown, path: Path, value: unknown): unknown {
 interface InlineTextProps {
   /** Valeur affichée (vient des props/state — source de vérité pour le rendu). */
   value?: string;
-  /** Chemin dans `content` à mettre à jour au commit (ex: ['card','title','value']). */
+  /** Chemin à mettre à jour au commit (ex: ['card','title','value']). */
   path: Path;
+  /** Cible du chemin : contenu (défaut) ou config (ex: titre de section). */
+  target?: 'content' | 'config';
   as?: 'span' | 'div' | 'h1' | 'h2' | 'h3' | 'p';
   className?: string;
   style?: CSSProperties;
@@ -55,7 +67,15 @@ interface InlineTextProps {
  * En mode Édition : `contentEditable`, commit au blur (et sur Entrée pour les éléments non-div).
  * Le texte reste exactement à sa position de rendu — aucun overlay à aligner.
  */
-export function InlineText({ value, path, as: Tag = 'span', className, style, placeholder }: InlineTextProps) {
+export function InlineText({
+  value,
+  path,
+  target = 'content',
+  as: Tag = 'span',
+  className,
+  style,
+  placeholder,
+}: InlineTextProps) {
   const ctx = useInlineEdit();
 
   if (!ctx?.editing) {
@@ -80,7 +100,9 @@ export function InlineText({ value, path, as: Tag = 'span', className, style, pl
       onPointerDown={(e) => e.stopPropagation()} // ne pas déclencher un drag du webpart
       onBlur={(e) => {
         const next = e.currentTarget.textContent ?? '';
-        if (next !== (value ?? '')) ctx.commit(setPath(ctx.content, path, next));
+        if (next === (value ?? '')) return;
+        if (target === 'config') ctx.commitConfig(setPath(ctx.config, path, next));
+        else ctx.commitContent(setPath(ctx.content, path, next));
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' && Tag !== 'div' && Tag !== 'p') {

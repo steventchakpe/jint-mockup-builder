@@ -45,8 +45,12 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
   return (
     <WebpartEditProvider
       content={instance.content}
-      commit={(next) =>
+      config={instance.config}
+      commitContent={(next) =>
         useProjectStore.getState().updateWebpartContent(instance.id, next as Record<string, unknown>)
+      }
+      commitConfig={(next) =>
+        useProjectStore.getState().updateWebpartConfig(instance.id, next as Record<string, unknown>)
       }
     >
       {element}

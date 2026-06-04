@@ -2,6 +2,7 @@
 
 import type { EventsProps } from './Events.types';
 import { EventCard } from './components/EventCard';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 
 /**
  * Webpart Events — port fidèle de `EventsTilesLayout` (@mozzaik365/components/events).
@@ -28,17 +29,27 @@ export function Events({
 
   return (
     <section className="flex flex-col gap-xl p-md">
-      {title && <h2 className="text-heading font-semibold text-sp-darker">{title}</h2>}
+      {(title || isEditMode) && (
+        <InlineText
+          as="h2"
+          target="config"
+          path={['title']}
+          value={title}
+          placeholder="Titre de la section"
+          className="text-heading font-semibold text-sp-darker"
+        />
+      )}
 
       {events.length === 0 ? (
         <p className="text-body text-gray-500 py-xl text-center">Aucun événement à venir.</p>
       ) : (
         <div className="@container">
           <div className="grid grid-cols-1 gap-md @[606px]:grid-cols-2 @[915px]:grid-cols-3 @[1224px]:grid-cols-4">
-            {events.map((event) => (
+            {events.map((event, i) => (
               <EventCard
                 key={event.id}
                 event={event}
+                index={i}
                 radius={radius}
                 shadow={shadow}
                 showAddToCalendar={showAddToCalendar}
