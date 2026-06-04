@@ -1,5 +1,33 @@
 import { lazy } from 'react';
-import type { WebpartDefinition } from '@/types/webparts';
+import type { ConfigurableProperty, WebpartDefinition } from '@/types/webparts';
+
+/** Prop brute déclarée dans un configMeta de webpart. */
+type RawProp = {
+  key: string;
+  label: string;
+  type: ConfigurableProperty['type'];
+  options?: Array<{ value: string; label: string }>;
+  defaultValue?: unknown;
+  target?: 'config' | 'content';
+  path?: Array<string | number>;
+  onValue?: unknown;
+  offValue?: unknown;
+};
+
+/** Construit les ConfigurableProperty du panneau : defaultValue explicite OU repris de defaultConfig. */
+function buildProps(props: RawProp[], defaultConfig: Record<string, unknown>): ConfigurableProperty[] {
+  return props.map((p) => ({
+    key: p.key,
+    label: p.label,
+    type: p.type,
+    options: p.options,
+    defaultValue: p.defaultValue !== undefined ? p.defaultValue : defaultConfig[p.key],
+    target: p.target,
+    path: p.path,
+    onValue: p.onValue,
+    offValue: p.offValue,
+  }));
+}
 import { newsDefaultConfig, newsConfigMeta } from '@/components/webparts/news';
 import { eventsDefaultConfig, eventsConfigMeta } from '@/components/webparts/events';
 import { focusDefaultConfig, focusConfigMeta } from '@/components/webparts/focus';
@@ -60,13 +88,10 @@ const registry: Record<string, WebpartDefinition> = {
     source: 'jint',
     component: lazy(() => import('@/components/webparts/focus').then((m) => ({ default: m.Focus as never }))),
     skeletonComponent: lazy(() => import('@/components/webparts/focus/Focus.skeleton').then((m) => ({ default: m.FocusSkeleton as never }))),
-    configurableProperties: focusConfigMeta.configurableProps.map((p) => ({
-      key: p.key,
-      label: p.label,
-      type: p.type,
-      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
-      defaultValue: focusDefaultConfig[p.key as keyof typeof focusDefaultConfig],
-    })),
+    configurableProperties: buildProps(
+      focusConfigMeta.configurableProps as RawProp[],
+      focusDefaultConfig as unknown as Record<string, unknown>,
+    ),
     defaultConfig: focusDefaultConfig as unknown as Record<string, unknown>,
     defaultContent: {
       card: {

@@ -6,6 +6,7 @@ interface ProjectStore {
   // State
   project: Project | null;
   activePageId: string | null; // page en cours d'édition
+  selectedWebpartId: string | null; // webpart sélectionné (panneau de config)
   isLoading: boolean;
   isDirty: boolean; // unsaved changes
   error: string | null;
@@ -15,6 +16,7 @@ interface ProjectStore {
   resetProject: () => void;
   setError: (error: string | null) => void;
   setActivePage: (pageId: string) => void;
+  selectWebpart: (webpartId: string | null) => void;
 
   // Édition de sections (par ID, sur une page) — utilisé par l'éditeur
   insertSection: (pageId: string, index: number, section: Section) => void;
@@ -105,15 +107,17 @@ function mapColumn(
 export const useProjectStore = create<ProjectStore>((set, get) => ({
   project: null,
   activePageId: null,
+  selectedWebpartId: null,
   isLoading: false,
   isDirty: false,
   error: null,
 
   loadProject: (project) =>
-    set({ project, activePageId: project.pages[0]?.id ?? null, isLoading: false, isDirty: false, error: null }),
-  resetProject: () => set({ project: null, activePageId: null, isLoading: false, isDirty: false, error: null }),
+    set({ project, activePageId: project.pages[0]?.id ?? null, selectedWebpartId: null, isLoading: false, isDirty: false, error: null }),
+  resetProject: () => set({ project: null, activePageId: null, selectedWebpartId: null, isLoading: false, isDirty: false, error: null }),
   setError: (error) => set({ error }),
   setActivePage: (activePageId) => set({ activePageId }),
+  selectWebpart: (selectedWebpartId) => set({ selectedWebpartId }),
 
   insertSection: (pageId, index, section) => {
     const { project } = get();
@@ -155,12 +159,13 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   },
 
   removeWebpartById: (pageId, sectionId, columnId, webpartId) => {
-    const { project } = get();
+    const { project, selectedWebpartId } = get();
     if (!project) return;
     set({
       project: mapPageSections(project, pageId, (secs) =>
         mapColumn(secs, sectionId, columnId, (wps) => wps.filter((w) => w.id !== webpartId)),
       ),
+      selectedWebpartId: selectedWebpartId === webpartId ? null : selectedWebpartId,
       isDirty: true,
     });
   },

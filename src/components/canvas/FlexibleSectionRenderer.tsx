@@ -39,6 +39,7 @@ export function FlexibleSectionRenderer({
   onRemoveWebpart,
 }: FlexibleSectionRendererProps) {
   const updateFlex = useProjectStore((s) => s.updateWebpartFlex);
+  const selectWebpart = useProjectStore((s) => s.selectWebpart);
   const editable = isEditMode && !!pageId && !!sectionId;
 
   const ordered = [...webparts].sort(
@@ -68,6 +69,11 @@ export function FlexibleSectionRenderer({
   }, [ordered.length]);
 
   const flexOf = (wp: WebpartInstance, i: number): FlexPosition => wp.flex ?? defaultFlex(i);
+  const zValues = ordered.map((wp, i) => flexOf(wp, i).z ?? 1);
+  const maxZ = zValues.length ? Math.max(...zValues) : 1;
+  const minZ = zValues.length ? Math.min(...zValues) : 1;
+  const bringForward = (wp: WebpartInstance, f: FlexPosition) => updateFlex(pageId!, sectionId!, wp.id, { ...f, z: maxZ + 1 });
+  const sendBackward = (wp: WebpartInstance, f: FlexPosition) => updateFlex(pageId!, sectionId!, wp.id, { ...f, z: minZ - 1 });
   const containerHeight = Math.max(
     MIN_H,
     ...ordered.map((wp, i) => flexOf(wp, i).y + (heights[wp.id] ?? 0)),
@@ -135,14 +141,15 @@ export function FlexibleSectionRenderer({
           return (
             <div
               key={wp.id}
-              data-flex-item
-              data-id={wp.id}
+              onClick={editable ? (e) => { e.stopPropagation(); selectWebpart(wp.id); } : undefined}
+              // Pas de z-index sur le conteneur : il ne crée PAS de stacking context, donc
+              // le contenu (z=f.z) et la barre d'outils (z élevé) participent au même
+              // contexte → l'ordre f.z reste visible et la barre reste toujours cliquable.
               className="absolute box-border group/flex"
               style={{
                 left: `${(f.x / COLS) * 100}%`,
                 width: `${(f.w / COLS) * 100}%`,
                 top: f.y,
-                zIndex: f.z ?? 1,
                 paddingInline: GUTTER / 2,
               }}
             >
@@ -153,10 +160,23 @@ export function FlexibleSectionRenderer({
                     type="button"
                     title="Déplacer"
                     onPointerDown={(e) => startMove(e, wp, f)}
-                    className="absolute -top-2 left-1/2 -translate-x-1/2 z-30 hidden group-hover/flex:flex w-7 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-sp-primary hover:border-sp-primary items-center justify-center text-caption shadow-sm cursor-grab active:cursor-grabbing"
+                    className="absolute -top-2 left-1/2 -translate-x-1/2 z-[9999] hidden group-hover/flex:flex w-7 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-sp-primary hover:border-sp-primary items-center justify-center text-caption shadow-sm cursor-grab active:cursor-grabbing"
                   >
                     ⠿
                   </button>
+                  {/* Avancer / Reculer (z-index) */}
+                  <button
+                    type="button" title="Mettre au premier plan"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={() => bringForward(wp, f)}
+                    className="absolute -top-2 right-[68px] z-[9999] hidden group-hover/flex:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-sp-primary hover:border-sp-primary items-center justify-center text-caption shadow-sm"
+                  >⬆</button>
+                  <button
+                    type="button" title="Mettre à l'arrière-plan"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={() => sendBackward(wp, f)}
+                    className="absolute -top-2 right-[40px] z-[9999] hidden group-hover/flex:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-sp-primary hover:border-sp-primary items-center justify-center text-caption shadow-sm"
+                  >⬇</button>
                   {/* Bouton supprimer */}
                   {onRemoveWebpart && (
                     <button
@@ -165,7 +185,7 @@ export function FlexibleSectionRenderer({
                       data-testid="wp-delete"
                       onPointerDown={(e) => e.stopPropagation()}
                       onClick={() => onRemoveWebpart(wp.id)}
-                      className="absolute -top-2 right-2 z-30 hidden group-hover/flex:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-red-600 hover:border-red-300 items-center justify-center text-caption shadow-sm"
+                      className="absolute -top-2 right-2 z-[9999] hidden group-hover/flex:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-red-600 hover:border-red-300 items-center justify-center text-caption shadow-sm"
                     >
                       🗑
                     </button>
@@ -174,13 +194,16 @@ export function FlexibleSectionRenderer({
                   <div
                     title="Redimensionner"
                     onPointerDown={(e) => startResize(e, wp, f)}
-                    className="absolute top-1/2 -translate-y-1/2 right-1 z-30 hidden group-hover/flex:block w-1.5 h-12 rounded-full bg-sp-primary/70 hover:bg-sp-primary cursor-ew-resize"
+                    className="absolute top-1/2 -translate-y-1/2 right-1 z-[9999] hidden group-hover/flex:block w-1.5 h-12 rounded-full bg-sp-primary/70 hover:bg-sp-primary cursor-ew-resize"
                   />
                   {/* Cadre de sélection */}
-                  <div className="absolute inset-x-[12px] inset-y-0 rounded-sm pointer-events-none ring-1 ring-transparent group-hover/flex:ring-sp-primary/40" />
+                  <div className="absolute inset-x-[12px] inset-y-0 z-[9998] rounded-sm pointer-events-none ring-1 ring-transparent group-hover/flex:ring-sp-primary/40" />
                 </>
               )}
-              <WebpartHost instance={wp} isEditMode={isEditMode} />
+              {/* Contenu : porte le z-index réel (ordre d'empilement entre webparts). */}
+              <div data-flex-item data-id={wp.id} className="relative" style={{ zIndex: f.z ?? 1 }}>
+                <WebpartHost instance={wp} isEditMode={isEditMode} />
+              </div>
             </div>
           );
         })}

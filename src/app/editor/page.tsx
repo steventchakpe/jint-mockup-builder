@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { PageShell } from '@/components/structural/PageShell';
 import { EditableCanvas } from '@/components/canvas/edit/EditableCanvas';
+import { WebpartConfigPanel } from '@/components/canvas/edit/WebpartConfigPanel';
 import { useProjectStore } from '@/lib/state/project-store';
 import { createBlankProject } from '@/lib/state/blank-project';
 
@@ -22,8 +23,13 @@ export default function EditorDemo() {
   if (!project) return null;
 
   return (
-    <PageShell>
-      <EditableCanvas />
-    </PageShell>
+    <div className="flex h-screen overflow-hidden">
+      <div className="flex-1 min-w-0 overflow-y-auto">
+        <PageShell>
+          <EditableCanvas />
+        </PageShell>
+      </div>
+      <WebpartConfigPanel />
+    </div>
   );
 }

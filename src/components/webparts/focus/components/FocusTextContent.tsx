@@ -56,7 +56,9 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
     [descSize.height],
   );
 
-  const displayTag = !!(cardContent.tag?.value || cardContent.tag?.html);
+  const displayTag = cardContent.tag?.visible !== false && !!(cardContent.tag?.value || cardContent.tag?.html);
+  const displayTitle = cardContent.title.visible !== false;
+  const displayDescription = cardContent.description.visible !== false;
 
   const handleButtonClick = () => {
     if (onRedirect && redirection?.linkUrl) onRedirect(redirection.linkUrl);
@@ -125,6 +127,7 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
             </div>
           )}
           {/* Titre : Text SubjectTitle (16px) / Bold (700), maxLine 2, word-break keep-all, couleur bodyText par défaut */}
+          {displayTitle && (
           <div className="w-full" style={{ textAlign: alignToTextAlign(cardContent.title.alignment) }}>
             {cardContent.title.html ? (
               <div
@@ -151,6 +154,7 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
               />
             )}
           </div>
+          )}
         </div>
 
         {/* description : lignes dynamiques selon la hauteur disponible */}
@@ -160,7 +164,7 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
           style={{ textAlign: alignToTextAlign(cardContent.description.alignment) }}
         >
           {/* Description : Text BodyText (14px) / Regular (400), nb de lignes dynamique, word-break keep-all */}
-          {descriptionMaxLines > 0 &&
+          {displayDescription && descriptionMaxLines > 0 &&
             (cardContent.description.html ? (
               <div
                 className="overflow-hidden [word-break:keep-all]"

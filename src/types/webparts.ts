@@ -17,6 +17,14 @@ export interface ConfigurableProperty {
   type: 'select' | 'boolean' | 'number' | 'string' | 'color';
   options?: Array<{ label: string; value: string }>; // for select type
   defaultValue: unknown;
+  // Cible de la propriété : 'config' (défaut) ou 'content'.
+  target?: 'config' | 'content';
+  // Chemin (imbriqué) dans la cible ; défaut = [key].
+  path?: Array<string | number>;
+  // Pour les booleans qui posent une VALEUR (et non true/false) : ex. activer un fond
+  // de carte (onValue = couleur) / le désactiver (offValue = undefined).
+  onValue?: unknown;
+  offValue?: unknown;
 }
 
 // Webpart definition in the registry

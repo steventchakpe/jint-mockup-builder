@@ -66,6 +66,7 @@ export function EditableCanvas({ pageId }: { pageId?: string }) {
   const insertWebpartAt = useProjectStore((s) => s.insertWebpartAt);
   const removeWebpartById = useProjectStore((s) => s.removeWebpartById);
   const moveWebpartById = useProjectStore((s) => s.moveWebpartById);
+  const selectWebpart = useProjectStore((s) => s.selectWebpart);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -127,7 +128,7 @@ export function EditableCanvas({ pageId }: { pageId?: string }) {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
-      <div className="flex flex-col px-lg py-md min-h-[400px]">
+      <div className="flex flex-col px-lg py-md min-h-[400px]" onClick={() => selectWebpart(null)}>
         {sections.length === 0 ? (
           <EmptyAdd onAdd={(c) => addAt(0, c)} />
         ) : (
@@ -290,12 +291,19 @@ function SortableWebpart({
     data,
   });
   const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
+  const selected = useProjectStore((s) => s.selectedWebpartId === instance.id);
+  const selectWebpart = useProjectStore((s) => s.selectWebpart);
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="relative group/wp border border-transparent hover:border-sp-primary/40 rounded-sm"
+      data-testid="wp"
+      onClick={(e) => { e.stopPropagation(); selectWebpart(instance.id); }}
+      className={cn(
+        'relative group/wp border rounded-sm cursor-pointer',
+        selected ? 'border-sp-primary ring-1 ring-sp-primary' : 'border-transparent hover:border-sp-primary/40',
+      )}
     >
       {/* Poignée de déplacement (au survol). */}
       <button

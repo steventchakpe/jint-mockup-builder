@@ -22,6 +22,8 @@ export interface FocusElement {
   alignment?: FocusAlignment;
   color?: string;
   header?: string;
+  /** Visibilité de l'élément (défaut: true). Réplique title/description/tag.visible du manifest jintan. */
+  visible?: boolean;
 }
 
 export interface FocusButtonElement {
