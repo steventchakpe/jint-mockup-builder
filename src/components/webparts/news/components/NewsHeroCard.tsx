@@ -71,7 +71,7 @@ export function NewsHeroCard({ article: a, index, config, onArticleClick, onShar
           <div className="flex flex-wrap gap-xs">
             {a.tags.map((tag) => (
               <span key={tag.id} className="inline-flex items-center bg-sp-primary text-white uppercase"
-                style={{ borderRadius: 5, padding: '3px 12px', letterSpacing: '0.08em', fontSize: FONT_SIZE.small, opacity: 0.85 }}>
+                style={{ borderRadius: 5, padding: '3px 12px', letterSpacing: '0.08em', fontSize: FONT_SIZE.size10, opacity: 0.85 }}>
                 {tag.name}
               </span>
             ))}
