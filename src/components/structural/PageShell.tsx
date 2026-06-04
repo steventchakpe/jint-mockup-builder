@@ -29,7 +29,7 @@ export function PageShell({ children, header }: PageShellProps) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <SuiteHeader />
-      <div className="flex flex-1">
+      <div className="flex flex-1 relative">
         <UexBar />
         {/* Page wrap : 16px haut, 12px côtés. flex-col pour le sticky-footer. */}
         <div className="flex-1 min-w-0 bg-white pt-4 px-3 flex flex-col">
