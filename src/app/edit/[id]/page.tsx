@@ -7,6 +7,7 @@ import { PageShell } from '@/components/structural/PageShell';
 import { EditableCanvas } from '@/components/canvas/edit/EditableCanvas';
 import { WebpartConfigPanel } from '@/components/canvas/edit/WebpartConfigPanel';
 import { EditorToolbar } from '@/components/editor/EditorToolbar';
+import { PageTabs } from '@/components/editor/PageTabs';
 import { useUnsavedWarning } from '@/components/editor/useUnsavedWarning';
 import { useProjectStore } from '@/lib/state/project-store';
 
@@ -50,6 +51,7 @@ export default function EditPage() {
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       <EditorToolbar />
+      <PageTabs />
       <div className="flex flex-1 min-h-0">
         <div className="flex-1 min-w-0 overflow-y-auto">
           <PageShell>
