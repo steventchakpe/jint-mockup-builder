@@ -67,7 +67,7 @@ export function NewsCarousel({ articles, config, onArticleClick, onShareClick }:
             <div className="absolute left-0 right-0 bottom-0 z-10 flex items-center justify-center gap-[80px] overflow-hidden h-0 group-hover/slide:h-[70px] transition-all duration-500">
               {cc.showShareButton && (
                 <button type="button" aria-label="Partager" onClick={(e) => { e.preventDefault(); onShareClick?.(a.url); }}
-                  className="w-10 h-10 inline-flex items-center justify-center rounded-full bg-white/90 text-sp-darker hover:bg-white">
+                  className="w-10 h-10 inline-flex items-center justify-center rounded-full bg-white/90 text-sp-primary hover:bg-white">
                   <ShareIcon style={{ width: 16, height: 16 }} />
                 </button>
               )}

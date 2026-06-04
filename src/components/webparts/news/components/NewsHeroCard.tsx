@@ -66,7 +66,7 @@ export function NewsHeroCard({ article: a, index, config, onArticleClick, onShar
         <div className="absolute top-3 right-3 z-10 flex items-center gap-sm opacity-0 group-hover/hero:opacity-100 transition-opacity">
           {cc.showShareButton && (
             <button type="button" aria-label="Partager" onClick={(e) => { e.preventDefault(); onShareClick?.(a.url); }}
-              className="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white/90 text-sp-darker hover:bg-white">
+              className="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white/90 text-sp-primary hover:bg-white">
               <ShareIcon style={{ width: 15, height: 15 }} />
             </button>
           )}
