@@ -21,10 +21,13 @@ export const ShareIcon = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-/** ViewIcon — Fluent 'View' (iconName='View'), viewBox 2048. */
+/** ViewIcon — Fluent "Eye Show" 24 (filled), fourni par Steven. fill=currentColor. */
 export const ViewIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg width="1em" height="1em" viewBox="0 0 2048 2048" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <path d="M1024 384q149 0 286 53t250 146t193 224t97 281q-9 150-71 285t-167 235t-241 156t-287 57q-149 0-286-53t-250-146T105 1598T8 1318q9-150 71-285t167-235t241-157t296-57zm0 1152q106 0 199-40t162-110t110-163t41-199q0-106-40-199t-110-162t-163-110t-199-41q-106 0-199 40t-162 110t-110 163t-41 199q0 106 40 199t110 162t163 110t199 41zm0-832q80 0 149 30t122 82t83 122t30 150q0 80-30 149t-82 122t-122 83t-150 30q-80 0-149-30t-122-82t-83-122t-30-150q0-80 30-149t82-122t122-83t150-30z" />
+  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path
+      d="M12 9.005a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM12 5.5c4.613 0 8.596 3.15 9.701 7.564a.75.75 0 1 1-1.455.365 8.503 8.503 0 0 0-16.493.004.75.75 0 0 1-1.455-.363A10.003 10.003 0 0 1 12 5.5Z"
+      fill="currentColor"
+    />
   </svg>
 );
 
