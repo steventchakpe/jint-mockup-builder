@@ -41,6 +41,14 @@ import {
 } from '@/components/webparts/people';
 import { searchDefaultConfig, searchConfigMeta } from '@/components/webparts/search';
 import { myAppsDefaultConfig, myAppsConfigMeta } from '@/components/webparts/my-apps';
+import {
+  newsSeed,
+  eventsSeed,
+  newcomersSeed,
+  anniversarySeed,
+  directorySeed,
+  myAppsSeed,
+} from './webpart-seeds';
 
 /**
  * Webpart Registry
@@ -73,7 +81,7 @@ const registry: Record<string, WebpartDefinition> = {
       newsDefaultConfig as unknown as Record<string, unknown>,
     ),
     defaultConfig: newsDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { news: [] },
+    defaultContent: newsSeed,
   },
   'focus': {
     typeId: focusConfigMeta.typeId,
@@ -122,7 +130,7 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: eventsDefaultConfig[p.key as keyof typeof eventsDefaultConfig],
     })),
     defaultConfig: eventsDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { events: [] },
+    defaultContent: eventsSeed,
   },
 
   'employee-directory': {
@@ -143,7 +151,7 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: employeeDirectoryDefaultConfig[p.key as keyof typeof employeeDirectoryDefaultConfig],
     })),
     defaultConfig: employeeDirectoryDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { people: [] },
+    defaultContent: directorySeed,
   },
   'search': {
     typeId: searchConfigMeta.typeId,
@@ -183,7 +191,7 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: newcomersDefaultConfig[p.key as keyof typeof newcomersDefaultConfig],
     })),
     defaultConfig: newcomersDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { people: [] },
+    defaultContent: newcomersSeed,
   },
 
   'anniversary': {
@@ -204,7 +212,7 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: anniversaryDefaultConfig[p.key as keyof typeof anniversaryDefaultConfig],
     })),
     defaultConfig: anniversaryDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { people: [] },
+    defaultContent: anniversarySeed,
   },
   'separator': {
     typeId: separatorConfigMeta.typeId,
@@ -249,7 +257,7 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: myAppsDefaultConfig[p.key as keyof typeof myAppsDefaultConfig],
     })),
     defaultConfig: myAppsDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { links: [] },
+    defaultContent: myAppsSeed,
   },
   // 'org-chart': { ... },
   // 'profile': { ... },
