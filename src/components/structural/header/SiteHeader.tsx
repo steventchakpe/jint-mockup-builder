@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { useProjectStore } from '@/lib/state/project-store';
 import {
   ChevronDownIcon,
   FollowIcon,
@@ -15,6 +16,8 @@ export type HeaderTheme = 'none' | 'neutral' | 'soft' | 'strong';
 export interface SiteHeaderNavItem {
   label: string;
   active?: boolean;
+  /** Id de page (si la nav locale est pilotée par les pages du projet). */
+  pageId?: string;
 }
 
 export interface SiteHeaderProps {
@@ -71,6 +74,15 @@ export function SiteHeader({
   const t = THEME[theme];
   const strong = theme === 'strong';
 
+  // Nav locale pilotée par les pages du projet (si chargé) — sinon libellés par défaut.
+  const pages = useProjectStore((s) => s.project?.pages);
+  const activePageId = useProjectStore((s) => s.activePageId);
+  const setActivePage = useProjectStore((s) => s.setActivePage);
+  const nav: SiteHeaderNavItem[] =
+    pages && pages.length > 0
+      ? [...pages].sort((a, b) => a.order - b.order).map((p) => ({ label: p.title, active: p.id === activePageId, pageId: p.id }))
+      : localNav;
+
   return (
     <div className={cn('@container w-full', t.bg, t.text)}>
       {/* Hub nav — ≥1024 uniquement */}
@@ -125,10 +137,11 @@ export function SiteHeader({
             </div>
             {/* Nav locale — ≥1024 uniquement (repliée dans le hamburger en dessous) */}
             <nav className="hidden @[1024px]:flex items-center gap-lg flex-wrap">
-              {localNav.map((item, i) => (
+              {nav.map((item, i) => (
                 <button
-                  key={i}
+                  key={item.pageId ?? i}
                   type="button"
+                  onClick={() => { if (item.pageId) setActivePage(item.pageId); }}
                   className={cn('relative text-body pb-[2px] whitespace-nowrap hover:opacity-80', item.active && 'font-semibold')}
                 >
                   {item.label}

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { SuiteHeader } from '@/components/structural/header/SuiteHeader';
 import { SiteHeader, type SiteHeaderProps } from '@/components/structural/header/SiteHeader';
 import { SiteFooter } from '@/components/structural/footer/SiteFooter';
-import { Uex } from '@/components/structural/uex/Uex';
+import { UexBar } from '@/components/structural/uex/UexBar';
 
 /** Ombre de la carte centrale (Figma : 0 8 10 / 0 20 25, noir 10%). */
 const CARD_SHADOW = '0 8px 10px rgba(0,0,0,0.10), 0 20px 25px rgba(0,0,0,0.10)';
@@ -30,7 +30,7 @@ export function PageShell({ children, header }: PageShellProps) {
     <div className="min-h-screen flex flex-col bg-white">
       <SuiteHeader />
       <div className="flex flex-1">
-        <Uex />
+        <UexBar />
         {/* Page wrap : 16px haut, 12px côtés. flex-col pour le sticky-footer. */}
         <div className="flex-1 min-w-0 bg-white pt-4 px-3 flex flex-col">
           {/* Carte centrale flottante — remplit la hauteur (footer collé en bas si vide). */}

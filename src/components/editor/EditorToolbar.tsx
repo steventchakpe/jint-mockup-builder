@@ -23,16 +23,20 @@ export function EditorToolbar() {
     : 'Enregistré';
 
   return (
-    <div className="relative z-[60] flex items-center justify-between gap-lg h-14 shrink-0 px-lg border-b border-gray-200 bg-white">
+    <div
+      className="relative z-[60] flex items-center justify-between gap-lg h-14 shrink-0 px-lg border-b border-[#E8E6DF] bg-[#F5F4F0] text-[#0A1F19]"
+      style={{ fontFamily: "'Geist Sans', sans-serif" }}
+    >
       <div className="flex items-center gap-lg min-w-0 flex-1">
-        <Link href="/" className="text-body text-sp-primary hover:underline shrink-0 whitespace-nowrap">← Mes maquettes</Link>
+        <Link href="/" className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] shrink-0 whitespace-nowrap transition-colors">← Mes maquettes</Link>
+        <span className="h-6 w-px bg-[#E8E6DF] shrink-0" />
         {/* Nom de la maquette — éditable */}
         <input
           value={project?.name ?? ''}
           onChange={(e) => setProjectName(e.target.value)}
           placeholder="Nom de la maquette"
           aria-label="Nom de la maquette"
-          className="text-body-lg font-semibold text-sp-darker bg-transparent rounded-sm px-sm py-xs min-w-0 w-full max-w-[420px] hover:bg-gray-50 focus:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-sp-primary"
+          className="text-base font-bold text-[#0A1F19] bg-transparent rounded-lg px-sm py-xs min-w-0 w-full max-w-[420px] hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#FFC82C] transition-colors"
         />
       </div>
 
@@ -41,11 +45,11 @@ export function EditorToolbar() {
           type="button"
           data-testid="params-btn"
           onClick={() => setSettingsOpen((o) => !o)}
-          className="text-body text-gray-600 hover:text-sp-primary whitespace-nowrap"
+          className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] whitespace-nowrap transition-colors"
         >
           ⚙ Paramètres
         </button>
-        <span className="text-body text-gray-400 whitespace-nowrap">
+        <span className="text-sm font-medium text-[#4A5D58] whitespace-nowrap">
           {isDirty ? 'Modifications non enregistrées'
             : saveStatus === 'error' ? 'Échec — réessayez' : 'À jour ✓'}
         </span>
@@ -53,7 +57,7 @@ export function EditorToolbar() {
           type="button"
           onClick={() => save()}
           disabled={saveStatus === 'saving' || (!isDirty && saveStatus !== 'error')}
-          className="px-lg py-xs rounded-sm text-body font-semibold text-white bg-sp-primary hover:bg-sp-dark-alt active:bg-sp-dark disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex items-center h-9 px-5 rounded-full text-sm font-bold text-[#0A1F19] bg-[#FFC82C] hover:bg-[#F2BD29] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         >
           {label}
         </button>
@@ -72,14 +76,17 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
   if (!project) return null;
   const p = project.prospect;
 
-  const field = 'w-full rounded-sm border border-gray-300 px-sm py-xs text-body text-sp-darker focus:outline-none focus:ring-2 focus:ring-sp-primary';
-  const lbl = 'text-caption font-semibold text-sp-darker';
+  const field = 'w-full rounded-lg border-2 border-[#E8E6DF] px-sm py-xs text-sm text-[#0A1F19] focus:outline-none focus:border-[#0A1F19] transition-colors';
+  const lbl = 'text-xs font-bold text-[#0A1F19]';
 
   return (
     <>
       <div className="fixed inset-0 z-30" onClick={onClose} />
-      <div className="absolute right-lg top-14 z-40 w-[320px] bg-white rounded-md shadow-xl border border-gray-200 p-lg flex flex-col gap-md">
-        <p className="text-body-lg font-semibold text-sp-darker">Paramètres de la maquette</p>
+      <div
+        className="absolute right-lg top-14 z-40 w-[340px] bg-white rounded-3xl shadow-xl border border-[#E8E6DF] p-lg flex flex-col gap-md text-[#0A1F19]"
+        style={{ fontFamily: "'Geist Sans', sans-serif" }}
+      >
+        <p className="text-lg font-bold text-[#0A1F19]">Paramètres de la maquette</p>
 
         <label className="flex flex-col gap-xs">
           <span className={lbl}>Nom de la maquette</span>

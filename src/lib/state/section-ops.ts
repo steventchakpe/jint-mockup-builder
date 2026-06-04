@@ -1,6 +1,6 @@
 // Helpers purs pour la manipulation de sections/colonnes (réutilisés par le store
 // et l'éditeur). Aucune dépendance React/Zustand.
-import type { Column, Section, SectionLayout } from '@/types/project';
+import type { Column, Page, Section, SectionLayout } from '@/types/project';
 import { getColumnCount } from '@/components/canvas/section-layout';
 
 /** Choix de layout dans le picker : les 7 layouts + la section verticale. */
@@ -59,3 +59,21 @@ export function relayoutSection(section: Section, choice: SectionChoice): Sectio
 /** Ré-ordonne les sections selon leur position dans le tableau. */
 export const reorderSections = (sections: Section[]): Section[] =>
   sections.map((s, i) => ({ ...s, order: i }));
+
+/** Slug à partir d'un titre (minuscules, sans accents, tirets). */
+export const slugify = (s: string): string =>
+  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'page';
+
+/** Crée une page neuve (1 section vide). */
+export function makePage(title: string): Page {
+  return {
+    id: genId('page'),
+    title,
+    slug: slugify(title),
+    icon: 'Page',
+    order: 0,
+    sections: [makeSection('one-column')],
+    verticalSection: null,
+  };
+}

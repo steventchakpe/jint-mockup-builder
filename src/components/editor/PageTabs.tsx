@@ -51,7 +51,7 @@ export function PageTabs() {
   };
 
   return (
-    <div className="flex items-center gap-xs h-10 shrink-0 px-lg border-b border-gray-200 bg-gray-50 overflow-x-auto">
+    <div className="flex items-center gap-xs h-10 shrink-0 px-lg border-b border-[#E8E6DF] bg-[#F5F4F0] overflow-x-auto" style={{ fontFamily: "'Geist Sans', sans-serif" }}>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={ordered.map((p) => p.id)} strategy={horizontalListSortingStrategy}>
           {ordered.map((page) => (
@@ -71,7 +71,7 @@ export function PageTabs() {
         type="button"
         onClick={add}
         title="Ajouter une page"
-        className="shrink-0 w-7 h-7 inline-flex items-center justify-center rounded-sm text-sp-primary hover:bg-sp-lighter-alt text-body"
+        className="shrink-0 w-7 h-7 inline-flex items-center justify-center rounded-full text-[#0A1F19] hover:bg-white text-base"
       >
         +
       </button>
@@ -105,9 +105,9 @@ function PageTab({
       onClick={onSelect}
       onDoubleClick={() => { setDraft(page.title); setEditing(true); }}
       className={cn(
-        'group/tab shrink-0 flex items-center gap-xs h-7 px-sm rounded-sm cursor-pointer text-caption select-none',
-        active ? 'bg-white border border-sp-primary text-sp-darker font-semibold shadow-sm'
-               : 'text-gray-600 hover:bg-white border border-transparent',
+        'group/tab shrink-0 flex items-center gap-xs h-7 px-sm rounded-full cursor-pointer text-xs select-none transition-colors',
+        active ? 'bg-white border border-[#0A1F19] text-[#0A1F19] font-bold shadow-sm'
+               : 'text-[#4A5D58] hover:bg-white border border-transparent',
       )}
     >
       {editing ? (
