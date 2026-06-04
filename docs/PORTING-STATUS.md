@@ -1,6 +1,10 @@
 # État d'avancement & roadmap — Jint Builder
 
-_Mis à jour : 2026-06-03. Voir la méthode dans [WEBPART-PORTING.md](./WEBPART-PORTING.md)._
+_Mis à jour : 2026-06-04. Voir la méthode dans [WEBPART-PORTING.md](./WEBPART-PORTING.md)._
+
+> **Wave 1 complète (8/8).** Recherche = `search` (barre seule), conforme au PRD.
+> Les webparts jintan `mzkSearchFilters` (Filtre de recherche) et `search-results`
+> (Résultats de recherche) existent mais ne sont **pas** dans les 31 du PRD → **reportés en Phase 2**.
 
 ## Légende disponibilité source jintan
 - 🟢 **package** : module compilé dispo (`@mozzaik365/components/dist/{x}`)
@@ -21,7 +25,7 @@ _Mis à jour : 2026-06-03. Voir la méthode dans [WEBPART-PORTING.md](./WEBPART-
 | 2 | Focus | ✅ | 🟢 `focus` (focusV2) |
 | 3 | Events | ✅ | 🟢 `events` |
 | 4 | Employee directory (Trombinoscope) | ✅ A+B | 🔵 `whoiswho/classic` (mzkWhoIsWho). Annuaire + recherche + fiche profil détaillée (organigramme statique, zoom/pan en option) |
-| 5 | Search | ⬜ | 🟢 `search-results` + 🔵 `searchBox` |
+| 5 | Search | ✅ | 🔵 `searchBox` (mzkSearchBox) — bannière glassmorphism/classic |
 | 6 | Newcomers | ✅ | 🟢 `people` mode `Newcomers` (composant partagé) |
 | 7 | Anniversary | ✅ | 🟢 `people` mode `Anniversaries` (anniversaires pro, même composant) |
 | 8 | Separator | ⬜ | 🟢 `separator` |

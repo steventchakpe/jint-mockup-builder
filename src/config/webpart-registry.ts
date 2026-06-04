@@ -11,6 +11,7 @@ import {
   newcomersConfigMeta,
   anniversaryConfigMeta,
 } from '@/components/webparts/people';
+import { searchDefaultConfig, searchConfigMeta } from '@/components/webparts/search';
 
 /**
  * Webpart Registry
@@ -110,7 +111,26 @@ const registry: Record<string, WebpartDefinition> = {
     defaultConfig: employeeDirectoryDefaultConfig as unknown as Record<string, unknown>,
     defaultContent: { people: [] },
   },
-  // 'search': { ... },
+  'search': {
+    typeId: searchConfigMeta.typeId,
+    name: 'Recherche',
+    nameEn: searchConfigMeta.displayName,
+    category: searchConfigMeta.category as WebpartDefinition['category'],
+    icon: searchConfigMeta.icon,
+    wave: searchConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/search').then((m) => ({ default: m.Search as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/search/Search.skeleton').then((m) => ({ default: m.SearchSkeleton as never }))),
+    configurableProperties: searchConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: searchDefaultConfig[p.key as keyof typeof searchDefaultConfig],
+    })),
+    defaultConfig: searchDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: {},
+  },
   'newcomers': {
     typeId: newcomersConfigMeta.typeId,
     name: 'Nouveaux arrivants',
