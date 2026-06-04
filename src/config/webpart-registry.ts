@@ -5,6 +5,12 @@ import { eventsDefaultConfig, eventsConfigMeta } from '@/components/webparts/eve
 import { focusDefaultConfig, focusConfigMeta } from '@/components/webparts/focus';
 import { separatorDefaultConfig, separatorConfigMeta } from '@/components/webparts/separator';
 import { employeeDirectoryDefaultConfig, employeeDirectoryConfigMeta } from '@/components/webparts/employee-directory';
+import {
+  newcomersDefaultConfig,
+  anniversaryDefaultConfig,
+  newcomersConfigMeta,
+  anniversaryConfigMeta,
+} from '@/components/webparts/people';
 
 /**
  * Webpart Registry
@@ -105,8 +111,47 @@ const registry: Record<string, WebpartDefinition> = {
     defaultContent: { people: [] },
   },
   // 'search': { ... },
-  // 'newcomers': { ... },
-  // 'anniversary': { ... },
+  'newcomers': {
+    typeId: newcomersConfigMeta.typeId,
+    name: 'Nouveaux arrivants',
+    nameEn: newcomersConfigMeta.displayName,
+    category: newcomersConfigMeta.category as WebpartDefinition['category'],
+    icon: newcomersConfigMeta.icon,
+    wave: newcomersConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/people').then((m) => ({ default: m.People as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/people/People.skeleton').then((m) => ({ default: m.PeopleSkeleton as never }))),
+    configurableProperties: newcomersConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: newcomersDefaultConfig[p.key as keyof typeof newcomersDefaultConfig],
+    })),
+    defaultConfig: newcomersDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: { people: [] },
+  },
+
+  'anniversary': {
+    typeId: anniversaryConfigMeta.typeId,
+    name: 'Anniversaires professionnels',
+    nameEn: anniversaryConfigMeta.displayName,
+    category: anniversaryConfigMeta.category as WebpartDefinition['category'],
+    icon: anniversaryConfigMeta.icon,
+    wave: anniversaryConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/people').then((m) => ({ default: m.People as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/people/People.skeleton').then((m) => ({ default: m.PeopleSkeleton as never }))),
+    configurableProperties: anniversaryConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: anniversaryDefaultConfig[p.key as keyof typeof anniversaryDefaultConfig],
+    })),
+    defaultConfig: anniversaryDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: { people: [] },
+  },
   'separator': {
     typeId: separatorConfigMeta.typeId,
     name: 'Séparateur',
