@@ -98,6 +98,11 @@ export function InlineText({
       )}
       style={style}
       onPointerDown={(e) => e.stopPropagation()} // ne pas déclencher un drag du webpart
+      onClick={(e) => {
+        // En édition : ne pas suivre un lien parent ni déclencher le clic de la carte.
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       onBlur={(e) => {
         const next = e.currentTarget.textContent ?? '';
         if (next === (value ?? '')) return;

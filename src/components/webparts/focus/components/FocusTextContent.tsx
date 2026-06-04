@@ -79,7 +79,16 @@ export function FocusTextContent({ cardContent, redirection, radius, onRedirect 
           ...(button?.color ? { background: button.color } : {}),
         }}
       >
-        {button?.html ? <span dangerouslySetInnerHTML={{ __html: button.html }} /> : button?.value}
+        {button?.html ? (
+          <span dangerouslySetInnerHTML={{ __html: button.html }} />
+        ) : (
+          <InlineText
+            as="span"
+            path={['redirection', 'buttonProps', 'value']}
+            value={button?.value}
+            placeholder="Bouton"
+          />
+        )}
       </span>
     );
   };

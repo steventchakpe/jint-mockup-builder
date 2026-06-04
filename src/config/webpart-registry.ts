@@ -68,7 +68,18 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: focusDefaultConfig[p.key as keyof typeof focusDefaultConfig],
     })),
     defaultConfig: focusDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { card: { title: { value: '' }, description: { value: '' } } },
+    defaultContent: {
+      card: {
+        position: 'fill',
+        tag: { value: 'À la une', alignment: 'left' },
+        title: { value: 'Titre du focus', alignment: 'left', color: '#ffffff' },
+        description: { value: 'Décrivez ici le contenu mis en avant.', alignment: 'left', color: '#ffffff' },
+      },
+      redirection: {
+        linkUrl: '#',
+        buttonProps: { value: 'En savoir plus', alignment: 'left', type: 'primary', position: 'below', visible: true },
+      },
+    },
   },
 
   'events': {
@@ -191,7 +202,7 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: separatorDefaultConfig[p.key as keyof typeof separatorDefaultConfig],
     })),
     defaultConfig: separatorDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { text: { html: '<h2>Séparateur</h2>' }, showText: true },
+    defaultContent: { text: { value: 'Séparateur' }, showText: true },
   },
 
   // ============================================
