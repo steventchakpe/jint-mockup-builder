@@ -155,8 +155,9 @@ export interface WebpartInstance {
 
 /**
  * Position d'un webpart dans une section flexible (SharePoint).
- * Grille 12 colonnes : `x` = colonne de départ (0-11), `w` = largeur en colonnes
- * (1-12), `y` = ligne de départ (1+), `z` = z-index pour le chevauchement.
+ * Grille 12 colonnes horizontale + placement vertical libre :
+ * `x` = colonne de départ (0-11), `w` = largeur en colonnes (1-12),
+ * `y` = décalage vertical en pixels (0+), `z` = z-index pour le chevauchement.
  */
 export interface FlexPosition {
   x: number;

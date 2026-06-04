@@ -108,10 +108,16 @@ export function EditableCanvas({ pageId }: { pageId?: string }) {
   const addWebpart = (sid: string, colId: string, type: string, at?: number) => {
     const def = getWebpart(type);
     if (!def) return;
+    const section = sections.find((s) => s.id === sid);
     const wp: WebpartInstance = {
       id: genId('wp'), type, order: 0,
       config: { ...def.defaultConfig }, content: { ...def.defaultContent },
     };
+    // En section flexible : placement par défaut tuilé (2 colonnes, snap vertical).
+    if (section?.layout === 'flexible') {
+      const n = section.columns.flatMap((c) => c.webparts).length;
+      wp.flex = { x: (n % 2) * 6, w: 6, y: Math.floor(n / 2) * 300, z: 1 };
+    }
     insertWebpartAt(pid, sid, colId, wp, at);
   };
 
@@ -131,6 +137,7 @@ export function EditableCanvas({ pageId }: { pageId?: string }) {
               <div key={section.id}>
                 <SectionEditFrame
                   section={section}
+                  pageId={pid}
                   onRemove={() => removeSection(pid, section.id)}
                   onChangeLayout={(c) => changeSectionLayout(pid, section.id, c)}
                   onAddWebpart={(colId, type, at) => addWebpart(section.id, colId, type, at)}
@@ -167,9 +174,10 @@ function EmptyAdd({ onAdd }: { onAdd: (c: SectionChoice) => void }) {
 
 /** Cadre d'édition d'une section : onglet, modifier le layout, supprimer. */
 function SectionEditFrame({
-  section, onRemove, onChangeLayout, onAddWebpart, onRemoveWebpart,
+  section, pageId, onRemove, onChangeLayout, onAddWebpart, onRemoveWebpart,
 }: {
   section: Section;
+  pageId: string;
   onRemove: () => void;
   onChangeLayout: (c: SectionChoice) => void;
   onAddWebpart: (colId: string, type: string, at?: number) => void;
@@ -195,7 +203,12 @@ function SectionEditFrame({
       {isFlexible ? (
         // La section flexible se gère librement ; on garde une zone d'ajout sur sa colonne unique.
         <div className="p-md">
-          <FlexibleSectionRenderer webparts={section.columns.flatMap((c) => c.webparts)} isEditMode />
+          <FlexibleSectionRenderer
+            webparts={section.columns.flatMap((c) => c.webparts)}
+            isEditMode
+            pageId={pageId}
+            sectionId={section.id}
+          />
           <div className="mt-md">
             <AddWebpartZone compact={false} onPick={(type) => onAddWebpart(section.columns[0].id, type)} />
           </div>

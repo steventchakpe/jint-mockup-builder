@@ -29,6 +29,8 @@ interface ProjectStore {
     to: { sectionId: string; columnId: string; index: number },
     webpartId: string,
   ) => void;
+  // Position/taille d'un webpart dans une section flexible (grille 12 col).
+  updateWebpartFlex: (pageId: string, sectionId: string, webpartId: string, flex: import('@/types/project').FlexPosition) => void;
 
   // Theme
   updateTheme: (theme: Partial<Project['theme']>) => void;
@@ -395,6 +397,27 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   moveWebpart: (fromPage, fromSection, fromColumn, toPage, toSection, toColumn, webpartId, newOrder) => {
     // TODO: Implement drag & drop reordering
     // This will be implemented in Phase 2
+  },
+
+  updateWebpartFlex: (pageId, sectionId, webpartId, flex) => {
+    const { project } = get();
+    if (!project) return;
+    set({
+      project: mapPageSections(project, pageId, (secs) =>
+        secs.map((s) =>
+          s.id !== sectionId
+            ? s
+            : {
+                ...s,
+                columns: s.columns.map((c) => ({
+                  ...c,
+                  webparts: c.webparts.map((w) => (w.id === webpartId ? { ...w, flex } : w)),
+                })),
+              },
+        ),
+      ),
+      isDirty: true,
+    });
   },
 
   switchProfile: (profileId) => {
