@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { PersonaCard } from './components/PersonaCard';
 import { DirectorySearchBox } from './components/DirectorySearchBox';
+import { ProfileDetail } from './components/ProfileDetail';
 import { RESULTS_GAP } from './EmployeeDirectory.mozzaik';
 import type { DirectoryPerson, EmployeeDirectoryProps } from './EmployeeDirectory.types';
 
@@ -23,6 +24,7 @@ export function EmployeeDirectory({
   const { title, description, pageSize, rounded, shadow } = config;
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const filtered = useMemo<DirectoryPerson[]>(() => {
     const q = query.trim().toLowerCase();
@@ -39,8 +41,25 @@ export function EmployeeDirectory({
 
   const handleSelect = (id: string) => {
     if (isEditMode) return;
+    setSelectedId(id);
     onSelectPerson?.(id);
   };
+
+  const selectedPerson = selectedId ? content.people.find((p) => p.id === selectedId) : undefined;
+
+  // Fiche profil détaillée (clic sur une carte)
+  if (selectedPerson) {
+    return (
+      <ProfileDetail
+        person={selectedPerson}
+        people={content.people}
+        rounded={rounded}
+        shadow={shadow}
+        onBack={() => setSelectedId(null)}
+        onSelectPerson={(id) => setSelectedId(id)}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-2xl">

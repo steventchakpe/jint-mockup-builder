@@ -20,7 +20,7 @@ _Mis à jour : 2026-06-03. Voir la méthode dans [WEBPART-PORTING.md](./WEBPART-
 | 1 | News | ✅ | 🔵 local `news` |
 | 2 | Focus | ✅ | 🟢 `focus` (focusV2) |
 | 3 | Events | ✅ | 🟢 `events` |
-| 4 | Employee directory (Trombinoscope) | ✅ Phase A | 🔵 `whoiswho/classic` (mzkWhoIsWho). Reste Phase B = fiche profil détaillée |
+| 4 | Employee directory (Trombinoscope) | ✅ A+B | 🔵 `whoiswho/classic` (mzkWhoIsWho). Annuaire + recherche + fiche profil détaillée (organigramme statique, zoom/pan en option) |
 | 5 | Search | ⬜ | 🟢 `search-results` + 🔵 `searchBox` |
 | 6 | Newcomers | ⬜ | 🔵 `people` (webpart « Nouveaux arrivants ») — **existe dans jintan** |
 | 7 | Anniversary | ⬜ | ❓ à vérifier dans jintan |

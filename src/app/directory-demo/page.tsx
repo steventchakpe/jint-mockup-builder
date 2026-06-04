@@ -9,12 +9,12 @@ const av = (s: string) => `https://images.unsplash.com/${s}?w=160&h=160&fit=crop
 
 const content: EmployeeDirectoryContent = {
   people: [
-    { id: 'p1', displayName: 'Claire Fontaine', title: 'Directrice Risques', department: 'Risques', location: 'Paris', imageUrl: av('photo-1494790108377-be9c29b29330') },
-    { id: 'p2', displayName: 'Marc Lefebvre', title: 'Directeur Financier', department: 'Finance', location: 'Lyon', imageUrl: av('photo-1500648767791-00dcc994a43e') },
-    { id: 'p3', displayName: 'Sophie Aubert', title: 'RSSI', department: 'IT & Sécurité', location: 'Nantes', imageUrl: av('photo-1438761681033-6461ffad8d80') },
-    { id: 'p4', displayName: 'Thomas Bernard', title: 'Responsable Communication', department: 'Communication', location: 'Paris', imageUrl: av('photo-1507003211169-0a1dd7228f2d') },
-    { id: 'p5', displayName: 'Inès Moreau', title: 'Analyste Conformité', department: 'Conformité', location: 'Lille', imageUrl: av('photo-1534528741775-53994a69daeb') },
-    { id: 'p6', displayName: 'Hugo Rousseau', title: 'Chef de projet', department: 'Opérations', location: 'Bordeaux', imageUrl: av('photo-1599566150163-29194dcaad36') },
+    { id: 'p1', displayName: 'Claire Fontaine', title: 'Directrice Risques', department: 'Risques', location: 'Paris', imageUrl: av('photo-1494790108377-be9c29b29330'), email: 'claire.fontaine@contoso.com', phone: '+33 1 23 45 67 89', bio: 'Pilote la stratégie de gestion des risques et la conformité ESG du groupe depuis 2019.', skills: ['Gestion des risques', 'ESG', 'Audit', 'Réglementaire'] },
+    { id: 'p2', displayName: 'Marc Lefebvre', title: 'Directeur Financier', department: 'Finance', location: 'Lyon', imageUrl: av('photo-1500648767791-00dcc994a43e'), email: 'marc.lefebvre@contoso.com', phone: '+33 4 11 22 33 44', managerId: 'p1', bio: 'Responsable de la planification financière et du reporting groupe.', skills: ['Finance', 'Contrôle de gestion'] },
+    { id: 'p3', displayName: 'Sophie Aubert', title: 'RSSI', department: 'IT & Sécurité', location: 'Nantes', imageUrl: av('photo-1438761681033-6461ffad8d80'), email: 'sophie.aubert@contoso.com', managerId: 'p1', skills: ['Cybersécurité', 'ISO 27001'] },
+    { id: 'p4', displayName: 'Thomas Bernard', title: 'Responsable Communication', department: 'Communication', location: 'Paris', imageUrl: av('photo-1507003211169-0a1dd7228f2d'), email: 'thomas.bernard@contoso.com', managerId: 'p1' },
+    { id: 'p5', displayName: 'Inès Moreau', title: 'Analyste Conformité', department: 'Conformité', location: 'Lille', imageUrl: av('photo-1534528741775-53994a69daeb'), email: 'ines.moreau@contoso.com' },
+    { id: 'p6', displayName: 'Hugo Rousseau', title: 'Chef de projet', department: 'Opérations', location: 'Bordeaux', imageUrl: av('photo-1599566150163-29194dcaad36'), email: 'hugo.rousseau@contoso.com' },
   ],
 };
 

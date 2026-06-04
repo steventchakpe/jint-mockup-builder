@@ -14,6 +14,13 @@ export interface DirectoryPerson {
   department?: string;
   location?: string;
   imageUrl?: string;
+  // Champs de la fiche profil détaillée (Phase B)
+  email?: string;
+  phone?: string;
+  bio?: string;
+  skills?: string[];
+  /** ID du manager (autre personne de `content.people`) — pour l'organigramme. */
+  managerId?: string;
 }
 
 export interface EmployeeDirectoryConfig {
