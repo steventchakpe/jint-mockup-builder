@@ -96,7 +96,7 @@ export function NewsCarousel({ articles, config, onArticleClick, onShareClick }:
               )}
               <span className="w-fit max-w-full" style={{ background: 'rgba(255,255,255,0.4)', borderRadius: radius, padding: 10 }}>
                 <InlineText as="div" path={['news', idx, 'title']} value={a.title} placeholder="Titre de l'article"
-                  className="line-clamp-2 [word-break:break-word]" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--sp-theme-darker)' }} />
+                  className="line-clamp-2 [word-break:break-word]" style={{ fontSize: '28px', lineHeight: 1.3, fontWeight: 700, color: 'var(--sp-theme-darker)' }} />
               </span>
               <div className="flex items-center justify-between">
                 {cc.showAuthor && (
