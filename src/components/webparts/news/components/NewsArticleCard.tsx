@@ -4,7 +4,7 @@ import type { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, NEUTRAL, radiusForStack } from '../News.mozzaik';
-import { LikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
+import { LikeIcon, FilledLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
 import type { NewsCustomContent, NewsItem, NewsRounded } from '../News.types';
 
 interface NewsArticleCardProps {
@@ -112,7 +112,7 @@ export function NewsArticleCard({
                     onClick={(e) => e.preventDefault()}
                     className="w-7 h-7 inline-flex items-center justify-center rounded-sm text-sp-primary hover:bg-sp-lighter-alt"
                   >
-                    <LikeIcon style={{ width: 16, height: 16 }} />
+                    {article.isLikedByUser ? <FilledLikeIcon style={{ width: 16, height: 16 }} /> : <LikeIcon style={{ width: 16, height: 16 }} />}
                   </button>
                 )}
                 {cc.showShareButton && (

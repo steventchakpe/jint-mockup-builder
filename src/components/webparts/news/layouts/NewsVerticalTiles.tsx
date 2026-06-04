@@ -3,7 +3,7 @@
 import type { CSSProperties } from 'react';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, NEUTRAL, SHADOW, radiusForStack } from '../News.mozzaik';
-import { LikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
+import { LikeIcon, FilledLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
 import type { NewsItem, NewsProps } from '../News.types';
 
 const fmtDate = (iso: string) =>
@@ -82,7 +82,7 @@ export function NewsVerticalTiles({ articles, config, onArticleClick, onShareCli
                     {cc.showLikeButton && (
                       <button type="button" aria-label="J'aime" onClick={(e) => e.preventDefault()}
                         className="w-7 h-7 inline-flex items-center justify-center rounded-sm text-sp-primary hover:bg-sp-lighter-alt">
-                        <LikeIcon style={{ width: 16, height: 16 }} />
+                        {a.isLikedByUser ? <FilledLikeIcon style={{ width: 16, height: 16 }} /> : <LikeIcon style={{ width: 16, height: 16 }} />}
                       </button>
                     )}
                     {cc.showShareButton && (

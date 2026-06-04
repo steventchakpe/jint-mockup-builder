@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, SHADOW, radiusForStack } from '../News.mozzaik';
-import { LikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
+import { LikeIcon, FilledLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
 import type { NewsItem, NewsProps } from '../News.types';
 
 const fmtDate = (iso: string) =>
@@ -73,7 +73,7 @@ export function NewsHeroCard({ article: a, index, config, onArticleClick, onShar
           {cc.showLikeButton && (
             <button type="button" aria-label="J'aime" onClick={(e) => e.preventDefault()}
               className="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white/90 text-sp-primary hover:bg-white">
-              <LikeIcon style={{ width: 16, height: 15 }} />
+              {a.isLikedByUser ? <FilledLikeIcon style={{ width: 16, height: 15 }} /> : <LikeIcon style={{ width: 16, height: 15 }} />}
             </button>
           )}
         </div>

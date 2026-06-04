@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, SHADOW, radiusForStack } from '../News.mozzaik';
-import { LikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
+import { LikeIcon, FilledLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
 import type { NewsItem, NewsProps } from '../News.types';
 
 const fmtDate = (iso: string) =>
@@ -74,7 +74,7 @@ export function NewsCarousel({ articles, config, onArticleClick, onShareClick }:
               {cc.showLikeButton && (
                 <button type="button" aria-label="J'aime" onClick={(e) => e.preventDefault()}
                   className="w-10 h-10 inline-flex items-center justify-center rounded-full bg-white/90 text-sp-primary hover:bg-white">
-                  <LikeIcon style={{ width: 18, height: 17 }} />
+                  {a.isLikedByUser ? <FilledLikeIcon style={{ width: 18, height: 17 }} /> : <LikeIcon style={{ width: 18, height: 17 }} />}
                 </button>
               )}
             </div>

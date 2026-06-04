@@ -11,6 +11,16 @@ export const LikeIcon = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+/** FilledLikeIcon (jintan) — cœur plein (état « aimé » du bouton j'aime). viewBox ajouté. */
+export const FilledLikeIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg width={12} height={14} viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
+    <path
+      fill="currentColor"
+      d="M6.035.923c.21-.52.795-1.08 1.546-.871.59.164.973.52 1.193.996.204.443.254.965.264 1.462.01.535-.102 1.176-.233 1.738-.062.261-.13.513-.195.74h1.385a2 2 0 0 1 1.919 2.563l-1.364 4.646a2.5 2.5 0 0 1-3.148 1.681l-5.356-1.682A2 2 0 0 1 .773 10.99l-.52-1.384a2 2 0 0 1 .856-2.426l1.872-1.104a4.063 4.063 0 0 0 .523-.495c.344-.389.817-1.036 1.292-2.045.205-.436.377-.779.533-1.09.253-.503.465-.924.706-1.524zM2.976 6.08l-.001.001h.001z"
+    />
+  </svg>
+);
+
 /** ShareIcon (jintan MzkShareIcon). */
 export const ShareIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg width={15} height={15} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
