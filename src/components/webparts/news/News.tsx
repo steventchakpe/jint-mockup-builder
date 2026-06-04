@@ -1,32 +1,49 @@
 'use client';
 
-import type { NewsProps } from './News.types';
+import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { NewsTopStory } from './layouts/NewsTopStory';
-import { NewsHero } from './layouts/NewsHero';
-import { NewsTiles } from './layouts/NewsTiles';
-import { NewsCarousel } from './layouts/NewsCarousel';
+import type { NewsProps } from './News.types';
 
-export function News({ config, content, isEditMode = false, onArticleClick }: NewsProps) {
-  const { layout, format, radius, title, maxItems = 4 } = config;
-  const articles = content.articles.slice(0, maxItems);
+/**
+ * Webpart News (News Gallery) — réplique jintan. Dispatcher de layouts.
+ * Le contenu (articles) arrive en props, pas de fetch. `newsAmount` borne l'affichage.
+ * Layouts portés progressivement : TopStory (✓), Hero/Carousel/VerticalTiles/Feed (à venir).
+ */
+export function News({ config, content, isEditMode = false, onArticleClick, onShareClick }: NewsProps) {
+  const { layout, newsAmount, title } = config;
+  const articles = content.news.slice(0, newsAmount);
 
-  const handleClick = (articleId: string) => {
+  const handleClick = (id: string) => {
     if (isEditMode) return;
-    onArticleClick?.(articleId);
+    onArticleClick?.(id);
   };
 
-  const layoutProps = { articles, format, radius, onArticleClick: handleClick };
-
   return (
-    <section className="flex flex-col gap-2xl p-md">
-      {title && (
-        <h2 className="text-heading font-semibold text-sp-darker">{title}</h2>
+    <section className="flex flex-col gap-xl p-md w-full">
+      {(title || isEditMode) && (
+        <InlineText
+          as="h2"
+          target="config"
+          path={['title']}
+          value={title}
+          placeholder="Titre de la section"
+          className="text-heading-sm font-semibold text-sp-darker"
+        />
       )}
 
-      {layout === 'top-story' && <NewsTopStory {...layoutProps} />}
-      {layout === 'hero' && <NewsHero {...layoutProps} />}
-      {layout === 'tiles-verticales' && <NewsTiles {...layoutProps} />}
-      {layout === 'carousel' && <NewsCarousel {...layoutProps} />}
+      {articles.length === 0 ? (
+        <p className="text-body text-gray-500 py-xl text-center">Aucune actualité à afficher.</p>
+      ) : (
+        <>
+          {layout === 'topStory' && (
+            <NewsTopStory articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />
+          )}
+          {layout !== 'topStory' && (
+            // Layout non encore porté depuis jintan → repli TopStory (transparent).
+            <NewsTopStory articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />
+          )}
+        </>
+      )}
     </section>
   );
 }

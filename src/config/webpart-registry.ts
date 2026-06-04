@@ -68,15 +68,12 @@ const registry: Record<string, WebpartDefinition> = {
     source: 'jint',
     component: lazy(() => import('@/components/webparts/news').then((m) => ({ default: m.News as never }))),
     skeletonComponent: lazy(() => import('@/components/webparts/news/News.skeleton').then((m) => ({ default: m.NewsSkeleton as never }))),
-    configurableProperties: newsConfigMeta.configurableProps.map((p) => ({
-      key: p.key,
-      label: p.label,
-      type: p.type,
-      options: 'options' in p ? p.options : undefined,
-      defaultValue: newsDefaultConfig[p.key as keyof typeof newsDefaultConfig],
-    })),
+    configurableProperties: buildProps(
+      newsConfigMeta.configurableProps as RawProp[],
+      newsDefaultConfig as unknown as Record<string, unknown>,
+    ),
     defaultConfig: newsDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { articles: [] },
+    defaultContent: { news: [] },
   },
   'focus': {
     typeId: focusConfigMeta.typeId,
