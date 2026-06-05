@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { useProjectStore } from '@/lib/state/project-store';
 import { AddIcon, AppsIcon, CompassIcon, SearchUexIcon } from './Uex.icons';
 
 /** Sections UEX (icônes du pill). */
@@ -26,11 +27,18 @@ interface UexProps {
  * Sticky sous le suite header, pleine hauteur.
  */
 export function Uex({ active, onSelect }: UexProps) {
+  // US-31 : « Contribuer » (+) réservé au profil contributeur.
+  // Sans profils chargés (pages démo) : visible (comportement historique).
+  const profiles = useProjectStore((s) => s.project?.profiles);
+  const activeProfile = profiles?.editable.find((p) => p.id === profiles.activeProfileId);
+  const isContributor = !activeProfile || activeProfile.role === 'contributor';
+  const items = isContributor ? ITEMS : ITEMS.filter((i) => i.key !== 'add');
+
   return (
     <aside className="w-12 shrink-0 bg-white flex flex-col items-center pt-md sticky top-12 self-start h-[calc(100vh-48px)]">
       {/* Pill UEX — se re-theme avec la marque (slot sombre du thème) */}
       <div className="flex flex-col items-center gap-[4px] rounded-md p-[4px] bg-sp-darker">
-        {ITEMS.map(({ key, label, Icon }) => (
+        {items.map(({ key, label, Icon }) => (
           <button
             key={key}
             type="button"

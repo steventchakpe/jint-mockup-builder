@@ -70,6 +70,8 @@ interface ProjectStore {
   // Profiles
   switchProfile: (profileId: string) => void;
   updateProfile: (profileId: string, updates: Partial<Profile>) => void;
+  /** Switch du profil « connecté » (US-28) — contexte visuel, pas de dirty. */
+  setActiveProfile: (profileId: string) => void;
 
   // UEX
   updateUEX: (uex: Partial<Project['uex']>) => void;
@@ -481,6 +483,12 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       project: { ...project, uex: { ...project.uex, ...uex } },
       isDirty: true,
     });
+  },
+
+  setActiveProfile: (profileId) => {
+    const { project } = get();
+    if (!project) return;
+    set({ project: { ...project, profiles: { ...project.profiles, activeProfileId: profileId } } });
   },
 
   markSaved: () => set({ isDirty: false }),

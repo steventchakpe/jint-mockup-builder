@@ -1,3 +1,7 @@
+'use client';
+
+import { AccountSwitcher } from './AccountSwitcher';
+
 /**
  * Suite header (barre M365) — reconstruit responsive depuis Figma (axe « Size »).
  * Breakpoints :
@@ -99,12 +103,10 @@ export function SuiteHeader({
         <button className={`${ICON_BTN} hidden lg:flex`} aria-label="Aide"><Help /></button>
         {/* More — <1024 */}
         <button className={`${ICON_BTN} flex lg:hidden`} aria-label="Plus"><MoreHorizontal /></button>
-        {/* Avatar — always */}
-        <button className="w-12 h-12 flex items-center justify-center shrink-0">
-          <div className="w-8 h-8 rounded-full bg-[#ca5010] flex items-center justify-center">
-            <span className="text-white text-caption font-semibold">{avatarInitials}</span>
-          </div>
-        </button>
+        {/* Avatar — always (profil actif + switch de compte, US-28) */}
+        <div className="relative">
+          <AccountSwitcher />
+        </div>
       </div>
     </header>
   );

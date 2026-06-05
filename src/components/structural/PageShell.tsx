@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { SuiteHeader } from '@/components/structural/header/SuiteHeader';
 import { SiteHeader, type SiteHeaderProps } from '@/components/structural/header/SiteHeader';
 import { SiteFooter } from '@/components/structural/footer/SiteFooter';
+import { ContributorToolbar } from '@/components/structural/header/ContributorToolbar';
 import { UexBar } from '@/components/structural/uex/UexBar';
 
 /** Ombre de la carte centrale (Figma : 0 8 10 / 0 20 25, noir 10%). */
@@ -36,6 +37,8 @@ export function PageShell({ children, header }: PageShellProps) {
           {/* Carte centrale flottante — remplit la hauteur (footer collé en bas si vide). */}
           <div className="flex flex-col flex-1 rounded-t-[12px] overflow-hidden" style={{ boxShadow: CARD_SHADOW }}>
             <SiteHeader {...header} />
+            {/* Toolbar contributeur (US-31) — rendue seulement si profil contributeur */}
+            <ContributorToolbar />
             {/* main grandit → pousse le footer en bas ; le contenu scrolle s'il dépasse */}
             <main className="flex-1 bg-white">
               <div className="max-w-[1204px] mx-auto w-full">{children}</div>

@@ -16,8 +16,40 @@ interface WebpartHostProps {
  * (lazy), affiche le skeleton pendant le chargement, et lui passe
  * `config` + `content` + `isEditMode`. Aucun fetch — données via props (state).
  */
+/** Mapping type de webpart → clé de personalContent → clé de content (US-30). */
+const PERSONAL_CONTENT_MAP: Record<string, { from: 'tasks' | 'emails' | 'meetings'; to: string }> = {
+  'my-tasks': { from: 'tasks', to: 'lists' },
+  'my-emails': { from: 'emails', to: 'emails' },
+  'my-meetings': { from: 'meetings', to: 'meetings' },
+};
+
 export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) {
   const def = getWebpart(instance.type);
+  // US-30 : les webparts personnalisés affichent le contenu du profil actif
+  const profiles = useProjectStore((s) => s.project?.profiles);
+  const mapping = PERSONAL_CONTENT_MAP[instance.type];
+  let content = instance.content;
+  const active = profiles?.editable.find((p) => p.id === profiles.activeProfileId);
+  if (mapping && active) {
+    const personal = active.personalContent?.[mapping.from];
+    if (personal) content = { ...instance.content, [mapping.to]: personal };
+  }
+  // Mon résumé : prénom du profil actif + compteurs dérivés de son personalContent
+  if (instance.type === 'my-resume' && active) {
+    const pc = active.personalContent;
+    content = { ...content, userName: active.firstName };
+    if (pc && (pc.meetings || pc.emails || pc.tasks)) {
+      const tasks = (pc.tasks ?? []) as Array<{ tasks?: Array<{ completed?: boolean }> }>;
+      content = {
+        ...content,
+        cards: [
+          { cardType: 'meetings', itemsLeft: (pc.meetings ?? []).length },
+          { cardType: 'mails', itemsLeft: ((pc.emails ?? []) as Array<{ isRead?: boolean }>).filter((e) => !e.isRead).length },
+          { cardType: 'tasks', itemsLeft: tasks.flatMap((l) => l.tasks ?? []).filter((t) => !t.completed).length },
+        ],
+      };
+    }
+  }
 
   if (!def) {
     return (
@@ -35,7 +67,7 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
       <Component
         id={instance.id}
         config={instance.config}
-        content={instance.content}
+        content={content}
         isEditMode={isEditMode}
       />
     </Suspense>
@@ -44,7 +76,7 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
   if (!isEditMode) return element;
   return (
     <WebpartEditProvider
-      content={instance.content}
+      content={content}
       config={instance.config}
       commitContent={(next) =>
         useProjectStore.getState().updateWebpartContent(instance.id, next as Record<string, unknown>)

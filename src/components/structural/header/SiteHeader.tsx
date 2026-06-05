@@ -78,6 +78,10 @@ export function SiteHeader({
   const pages = useProjectStore((s) => s.project?.pages);
   const activePageId = useProjectStore((s) => s.activePageId);
   const setActivePage = useProjectStore((s) => s.setActivePage);
+  // US-31 : « Edit » de la nav locale réservé au contributeur (visible aussi sans profils — pages démo)
+  const profiles = useProjectStore((s) => s.project?.profiles);
+  const activeProfile = profiles?.editable.find((p) => p.id === profiles.activeProfileId);
+  const canEdit = !activeProfile || activeProfile.role === 'contributor';
   const nav: SiteHeaderNavItem[] =
     pages && pages.length > 0
       ? [...pages].sort((a, b) => a.order - b.order).map((p) => ({ label: p.title, active: p.id === activePageId, pageId: p.id }))
@@ -151,7 +155,9 @@ export function SiteHeader({
                 </button>
               ))}
               <button type="button" className="text-current hover:opacity-80"><MoreIcon className="w-4 h-4" /></button>
-              <button type="button" className={cn('text-body hover:underline', strong ? 'text-white' : 'text-sp-primary')}>Edit</button>
+              {canEdit && (
+                <button type="button" className={cn('text-body hover:underline', strong ? 'text-white' : 'text-sp-primary')}>Edit</button>
+              )}
             </nav>
           </div>
 
