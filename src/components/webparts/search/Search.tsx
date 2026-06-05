@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
+import { useSearchConnection } from '@/lib/state/search-connection';
 import { SearchIcon } from './Search.icons';
 import {
   BANNER_PADDING_X,
@@ -25,7 +26,10 @@ import type { SearchProps } from './Search.types';
  */
 export function Search({ config, onSearch, isEditMode = false }: SearchProps) {
   const { title, watermark, size, searchBoxTheme, radius, shadow, bkgColor, backgroundImage } = config;
-  const [query, setQuery] = useState('');
+  const [query, setQueryLocal] = useState('');
+  // Connexion aux webparts Search results / filters (autoConnect jintan)
+  const setConnectedQuery = useSearchConnection((s) => s.setQuery);
+  const setQuery = (q: string) => { setQueryLocal(q); setConnectedQuery(q); };
 
   const bannerStyle: CSSProperties = {
     height: SIZE_HEIGHT[size],

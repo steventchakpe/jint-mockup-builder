@@ -214,3 +214,70 @@ export const actionButtonSeed = {
   text: 'Faire une demande',
   url: '#',
 };
+
+export const searchResultsSeed = {
+  verticals: ['Tous', 'Documents', 'Sites', 'Actualités'],
+  items: [
+    { id: 'sr1', name: 'Plan stratégique 2026', contentType: 'document' as const, extension: '.pptx', thumbnailUrl: img('photo-1454165804606-c3d57bc86b40'), url: '#', properties: [
+      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Claire Fontaine' },
+      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-06-02' },
+      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Stratégie', 'Direction'] },
+    ] },
+    { id: 'sr2', name: 'Charte télétravail', contentType: 'document' as const, extension: '.pdf', url: '#', properties: [
+      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Julien Moreau' },
+      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-05-28' },
+      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['RH'] },
+    ] },
+    { id: 'sr3', name: 'Budget prévisionnel T3', contentType: 'document' as const, extension: '.xlsx', url: '#', properties: [
+      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Marc Lefebvre' },
+      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-06-04' },
+      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Finance'] },
+    ] },
+    { id: 'sr4', name: 'Espace Communication', contentType: 'site' as const, thumbnailUrl: img('photo-1522071820081-009f0129c71c'), url: '#', properties: [
+      { name: 'author', displayName: 'Propriétaire', type: 'user' as const, value: 'Claire Fontaine' },
+      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-06-01' },
+      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Communication'] },
+    ] },
+    { id: 'sr5', name: 'Compte-rendu comité de direction', contentType: 'document' as const, extension: '.docx', url: '#', properties: [
+      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Isabelle Marchand' },
+      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-05-30' },
+      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Direction'] },
+    ] },
+    { id: 'sr6', name: 'Lancement de la nouvelle plateforme intranet', contentType: 'news' as const, thumbnailUrl: img('photo-1486406146926-c627a92ad1ab'), url: '#', properties: [
+      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Claire Fontaine' },
+      { name: 'modified', displayName: 'Publié le', type: 'date' as const, value: '2026-05-28' },
+      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Communication'] },
+    ] },
+    { id: 'sr7', name: 'Guide d’accueil des nouveaux arrivants', contentType: 'document' as const, extension: '.docx', url: '#', properties: [
+      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Julien Moreau' },
+      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-05-26' },
+      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['RH', 'Onboarding'] },
+    ] },
+    { id: 'sr8', name: 'Reporting consolidé T2', contentType: 'document' as const, extension: '.xlsx', url: '#', properties: [
+      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Paul Renaud' },
+      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-06-03' },
+      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Finance'] },
+    ] },
+  ],
+};
+
+export const searchFiltersSeed = {
+  facets: [
+    { name: 'fileType', displayName: 'Type de fichier', buckets: [
+      { key: '.docx', label: 'Word', count: 3 },
+      { key: '.xlsx', label: 'Excel', count: 2 },
+      { key: '.pptx', label: 'PowerPoint', count: 1 },
+      { key: '.pdf', label: 'PDF', count: 1 },
+    ] },
+    { name: 'contentType', displayName: 'Type de contenu', buckets: [
+      { key: 'document', label: 'Documents', count: 6 },
+      { key: 'site', label: 'Sites', count: 1 },
+      { key: 'news', label: 'Actualités', count: 1 },
+    ] },
+    { name: 'author', displayName: 'Auteur', buckets: [
+      { key: 'Claire Fontaine', label: 'Claire Fontaine' },
+      { key: 'Julien Moreau', label: 'Julien Moreau' },
+      { key: 'Marc Lefebvre', label: 'Marc Lefebvre' },
+    ] },
+  ],
+};

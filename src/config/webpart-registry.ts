@@ -51,6 +51,8 @@ import { orgChartDefaultConfig, orgChartConfigMeta } from '@/components/webparts
 import { imageInteractiveDefaultConfig, imageInteractiveConfigMeta } from '@/components/webparts/image-interactive';
 import { myResumeDefaultConfig, myResumeConfigMeta } from '@/components/webparts/my-resume';
 import { actionButtonDefaultConfig, actionButtonConfigMeta } from '@/components/webparts/action-button';
+import { searchResultsDefaultConfig, searchResultsConfigMeta } from '@/components/webparts/search-results';
+import { searchFiltersDefaultConfig, searchFiltersConfigMeta } from '@/components/webparts/search-filters';
 import {
   newsSeed,
   eventsSeed,
@@ -68,6 +70,8 @@ import {
   imageInteractiveSeed,
   myResumeSeed,
   actionButtonSeed,
+  searchResultsSeed,
+  searchFiltersSeed,
 } from './webpart-seeds';
 
 /**
@@ -485,7 +489,35 @@ const registry: Record<string, WebpartDefinition> = {
     defaultConfig: actionButtonDefaultConfig as unknown as Record<string, unknown>,
     defaultContent: actionButtonSeed,
   },
-  // 'search-bar': { ... },
+  'search-results': {
+    typeId: searchResultsConfigMeta.typeId,
+    name: 'Résultats de recherche',
+    nameEn: searchResultsConfigMeta.displayName,
+    category: searchResultsConfigMeta.category as WebpartDefinition['category'],
+    icon: searchResultsConfigMeta.icon,
+    wave: searchResultsConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/search-results').then((m) => ({ default: m.SearchResults as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/search-results/SearchResults.skeleton').then((m) => ({ default: m.SearchResultsSkeleton as never }))),
+    configurableProperties: buildProps(searchResultsConfigMeta.configurableProps as RawProp[], searchResultsDefaultConfig as unknown as Record<string, unknown>),
+    defaultConfig: searchResultsDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: searchResultsSeed,
+  },
+  'search-filters': {
+    typeId: searchFiltersConfigMeta.typeId,
+    name: 'Filtres de recherche',
+    nameEn: searchFiltersConfigMeta.displayName,
+    category: searchFiltersConfigMeta.category as WebpartDefinition['category'],
+    icon: searchFiltersConfigMeta.icon,
+    wave: searchFiltersConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/search-filters').then((m) => ({ default: m.SearchFilters as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/search-filters/SearchFilters.skeleton').then((m) => ({ default: m.SearchFiltersSkeleton as never }))),
+    configurableProperties: buildProps(searchFiltersConfigMeta.configurableProps as RawProp[], searchFiltersDefaultConfig as unknown as Record<string, unknown>),
+    defaultConfig: searchFiltersDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: searchFiltersSeed,
+  },
+  // 'search-bar': couvert par le webpart 'search' (mzkSearchBox) porté en Wave 1.
   // 'poll': { ... },
   // 'idea-box': { ... },
   // 'video': { ... },
