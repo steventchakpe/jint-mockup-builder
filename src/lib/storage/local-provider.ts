@@ -32,7 +32,15 @@ export class LocalStorageProvider implements StorageProvider {
     const dir = projectDir(id);
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(path.join(dir, 'project.json'), JSON.stringify(data, null, 2), 'utf-8');
-    await fs.writeFile(path.join(dir, 'metadata.json'), JSON.stringify(toMeta(data), null, 2), 'utf-8');
+    // Préserver le shareToken existant (metadata réécrit à chaque sauvegarde)
+    const meta = toMeta(data);
+    try {
+      const prev = JSON.parse(await fs.readFile(path.join(dir, 'metadata.json'), 'utf-8')) as ProjectMeta;
+      if (prev.shareToken) meta.shareToken = prev.shareToken;
+    } catch {
+      /* première sauvegarde */
+    }
+    await fs.writeFile(path.join(dir, 'metadata.json'), JSON.stringify(meta, null, 2), 'utf-8');
   }
 
   async loadProject(id: string): Promise<Project> {
@@ -85,10 +93,29 @@ export class LocalStorageProvider implements StorageProvider {
   async deleteImage(): Promise<void> {
     throw new Error('Not implemented — Phase 2');
   }
-  async getShareUrl(): Promise<string> {
-    throw new Error('Not implemented — Phase 2');
+  /** Génère (ou renvoie) le share-token du projet — stocké dans metadata.json. */
+  async getShareUrl(projectId: string): Promise<string> {
+    const metaPath = path.join(projectDir(projectId), 'metadata.json');
+    const meta = JSON.parse(await fs.readFile(metaPath, 'utf-8')) as ProjectMeta;
+    if (!meta.shareToken) {
+      meta.shareToken = crypto.randomUUID().replace(/-/g, '');
+      await fs.writeFile(metaPath, JSON.stringify(meta, null, 2), 'utf-8');
+    }
+    return meta.shareToken;
   }
-  async loadSharedProject(): Promise<Project> {
-    throw new Error('Not implemented — Phase 2');
+
+  /** Charge un projet via son share-token (lecture seule stricte). */
+  async loadSharedProject(shareToken: string): Promise<Project> {
+    const ids = await fs.readdir(projectsDir());
+    for (const id of ids) {
+      try {
+        const raw = await fs.readFile(path.join(projectDir(id), 'metadata.json'), 'utf-8');
+        const meta = JSON.parse(raw) as ProjectMeta;
+        if (meta.shareToken && meta.shareToken === shareToken) return this.loadProject(id);
+      } catch {
+        /* dossier sans metadata → ignoré */
+      }
+    }
+    throw new Error('Share token inconnu');
   }
 }

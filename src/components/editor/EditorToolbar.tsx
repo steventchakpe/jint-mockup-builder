@@ -48,6 +48,12 @@ export function EditorToolbar() {
       </div>
 
       <div className="flex items-center gap-lg shrink-0">
+        <Link
+          href={project ? `/preview/${project.id}` : '#'}
+          className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] whitespace-nowrap transition-colors"
+        >
+          ▶ Présentation
+        </Link>
         <button
           type="button"
           data-testid="params-btn"

@@ -55,6 +55,14 @@ export function Dashboard() {
     if (res.ok) loadProjects();
   };
 
+  const handleCopyShareLink = async (project: DashProject) => {
+    const res = await fetch(`/api/projects/${project.id}/share`, { method: 'POST', headers: JSON_HEADERS, body: '{}' });
+    if (!res.ok) { window.alert('Sauvegardez la maquette avant de la partager.'); return; }
+    const { url } = await res.json();
+    await navigator.clipboard.writeText(`${window.location.origin}${url}`);
+    window.alert('Lien de partage copié dans le presse-papiers.');
+  };
+
   const confirmDelete = async () => {
     if (!projectToDelete) return;
     setIsDeleting(true);
@@ -175,7 +183,7 @@ export function Dashboard() {
           ) : (
             <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'space-y-4'}>
               {filteredProjects.map((p) => (
-                <ProjectCard key={p.id} project={p} view={viewMode} onOpen={openProject} onDuplicate={handleDuplicate} onDelete={setProjectToDelete} />
+                <ProjectCard key={p.id} project={p} view={viewMode} onOpen={openProject} onDuplicate={handleDuplicate} onDelete={setProjectToDelete} onCopyShareLink={handleCopyShareLink} />
               ))}
             </div>
           )}

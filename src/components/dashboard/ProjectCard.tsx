@@ -10,6 +10,7 @@ interface ProjectCardProps {
   onOpen: (id: string) => void;
   onDuplicate: (project: DashProject) => void;
   onDelete: (project: DashProject) => void;
+  onCopyShareLink: (project: DashProject) => void;
 }
 
 const STATUS_VARIANT: Record<string, 'default' | 'success' | 'warning'> = {
@@ -18,7 +19,7 @@ const STATUS_VARIANT: Record<string, 'default' | 'success' | 'warning'> = {
   Vue: 'success',
 };
 
-export function ProjectCard({ project, view, onOpen, onDuplicate, onDelete }: ProjectCardProps) {
+export function ProjectCard({ project, view, onOpen, onDuplicate, onDelete, onCopyShareLink }: ProjectCardProps) {
   const status = project.status ?? 'Brouillon';
   const statusVariant = STATUS_VARIANT[status] ?? 'default';
 
@@ -26,13 +27,11 @@ export function ProjectCard({ project, view, onOpen, onDuplicate, onDelete }: Pr
     <DropdownMenu trigger={<Button variant="ghost" size="icon" data-testid="card-menu" className="h-9 w-9 text-[#4A5D58] hover:text-[#0A1F19]"><MoreHorizontal className="h-5 w-5" /></Button>}>
       <DropdownItem onClick={() => onOpen(project.id)}><ExternalLink className="mr-2 h-4 w-4" /> Ouvrir l’éditeur</DropdownItem>
       <DropdownItem onClick={() => onDuplicate(project)}><Copy className="mr-2 h-4 w-4" /> Dupliquer</DropdownItem>
-      <DropdownItem disabled className="flex justify-between items-center">
-        <span className="flex items-center"><Eye className="mr-2 h-4 w-4" /> Voir (Présentation)</span>
-        <span className="text-[10px] uppercase tracking-wider font-bold bg-[#E8E6DF] px-2 py-0.5 rounded-full text-[#4A5D58]">Bientôt</span>
+      <DropdownItem onClick={() => window.open(`/preview/${project.id}`, '_blank')}>
+        <Eye className="mr-2 h-4 w-4" /> Voir (Présentation)
       </DropdownItem>
-      <DropdownItem disabled className="flex justify-between items-center">
-        <span className="flex items-center"><Link2 className="mr-2 h-4 w-4" /> Lien de partage</span>
-        <span className="text-[10px] uppercase tracking-wider font-bold bg-[#E8E6DF] px-2 py-0.5 rounded-full text-[#4A5D58]">Bientôt</span>
+      <DropdownItem onClick={() => onCopyShareLink(project)}>
+        <Link2 className="mr-2 h-4 w-4" /> Copier le lien de partage
       </DropdownItem>
       <div className="h-px bg-[#E8E6DF] my-1 mx-2" />
       <DropdownItem danger onClick={() => onDelete(project)}><Trash2 className="mr-2 h-4 w-4" /> Supprimer</DropdownItem>

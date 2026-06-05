@@ -21,6 +21,8 @@ export interface ProjectMeta {
   prospectCompany: string;
   updatedAt: string;
   thumbnail: string | null;
+  /** Token de partage opaque (≠ project-id, sécurité) — généré au premier partage. */
+  shareToken?: string;
 }
 
 // ============================================
