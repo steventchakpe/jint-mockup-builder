@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { OrgChart } from './OrgChart';
+export { OrgChartSkeleton } from './OrgChart.skeleton';
+export { orgChartDefaultConfig, orgChartConfigMeta } from './OrgChart.config';
+export type { OrgChartConfig, OrgChartContent, OrgChartProps, OrgChartEmployee } from './OrgChart.types';

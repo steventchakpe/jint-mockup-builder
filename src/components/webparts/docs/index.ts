@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { Docs } from './Docs';
+export { DocsSkeleton } from './Docs.skeleton';
+export { docsDefaultConfig, docsConfigMeta } from './Docs.config';
+export type { DocsConfig, DocsContent, DocsProps, DocFile } from './Docs.types';

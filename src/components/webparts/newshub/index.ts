@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { Newshub } from './Newshub';
+export { NewshubSkeleton } from './Newshub.skeleton';
+export { newshubDefaultConfig, newshubConfigMeta } from './Newshub.config';
+export type { NewshubConfig, NewshubContent, NewshubProps, NewshubPost } from './Newshub.types';

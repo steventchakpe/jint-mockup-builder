@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { MyTasks } from './MyTasks';
+export { MyTasksSkeleton } from './MyTasks.skeleton';
+export { myTasksDefaultConfig, myTasksConfigMeta } from './MyTasks.config';
+export type { MyTasksConfig, MyTasksContent, MyTasksProps, TaskItem, TaskList } from './MyTasks.types';

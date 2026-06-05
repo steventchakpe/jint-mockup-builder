@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { Profile } from './Profile';
+export { ProfileSkeleton } from './Profile.skeleton';
+export { profileDefaultConfig, profileConfigMeta } from './Profile.config';
+export type { ProfileConfig, ProfileContent, ProfileProps } from './Profile.types';

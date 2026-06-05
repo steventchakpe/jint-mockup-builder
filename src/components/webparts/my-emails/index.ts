@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { MyEmails } from './MyEmails';
+export { MyEmailsSkeleton } from './MyEmails.skeleton';
+export { myEmailsDefaultConfig, myEmailsConfigMeta } from './MyEmails.config';
+export type { MyEmailsConfig, MyEmailsContent, MyEmailsProps, MailItem } from './MyEmails.types';
