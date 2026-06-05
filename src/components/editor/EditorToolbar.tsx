@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useProjectStore } from '@/lib/state/project-store';
+import { DEPARTMENTS, type Department } from '@/types/project';
 
 /**
  * Barre d'édition (chrome, hors shell) : retour dashboard, nom de la maquette éditable,
@@ -86,6 +87,7 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
   const project = useProjectStore((s) => s.project);
   const updateProspect = useProjectStore((s) => s.updateProspect);
   const setProjectName = useProjectStore((s) => s.setProjectName);
+  const setDepartment = useProjectStore((s) => s.setDepartment);
   if (!project) return null;
   const p = project.prospect;
 
@@ -106,8 +108,14 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
           <input className={field} value={project.name} onChange={(e) => setProjectName(e.target.value)} placeholder="Ex : Démo BanquePro" />
         </label>
         <label className="flex flex-col gap-xs">
-          <span className={lbl}>Société (prospect)</span>
+          <span className={lbl}>Entreprise (prospect / client)</span>
           <input className={field} value={p.company} onChange={(e) => updateProspect({ company: e.target.value })} placeholder="Ex : BanquePro" />
+        </label>
+        <label className="flex flex-col gap-xs">
+          <span className={lbl}>Département (équipe créatrice)</span>
+          <select className={field} value={project.metadata.department} onChange={(e) => setDepartment(e.target.value as Department)}>
+            {DEPARTMENTS.map((d) => <option key={d} value={d}>{d}</option>)}
+          </select>
         </label>
         <label className="flex flex-col gap-xs">
           <span className={lbl}>Secteur</span>

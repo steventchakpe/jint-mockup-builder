@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowUpRight, ArrowDownRight, type LucideIcon } from 'lucide-react';
 
 /* Primitives UI du dashboard (charte Jint) — recréées sans dépendance externe. */
@@ -46,20 +47,22 @@ export function Badge({ children, variant = 'default', className = '' }: { child
 
 export const Skeleton = ({ className = '' }: { className?: string }) => <div className={`animate-pulse rounded-2xl bg-[#E8E6DF] ${className}`} />;
 
-function useClickOutside(handler: () => void) {
-  const domNode = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const maybe = (e: MouseEvent) => { if (!domNode.current?.contains(e.target as Node)) handler(); };
-    document.addEventListener('mousedown', maybe);
-    return () => document.removeEventListener('mousedown', maybe);
-  }, [handler]);
-  return domNode;
-}
-
 export function DropdownMenu({ trigger, children }: { trigger: ReactNode; children: ReactNode }) {
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
-  const ref = useClickOutside(() => setPos(null));
+  const ref = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const MENU_W = 220;
+
+  // Ferme au clic hors du trigger ET hors du menu (le menu est porté dans <body>).
+  useEffect(() => {
+    if (!pos) return;
+    const maybe = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (!ref.current?.contains(t) && !menuRef.current?.contains(t)) setPos(null);
+    };
+    document.addEventListener('mousedown', maybe);
+    return () => document.removeEventListener('mousedown', maybe);
+  }, [pos]);
 
   const toggle = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -81,15 +84,18 @@ export function DropdownMenu({ trigger, children }: { trigger: ReactNode; childr
   return (
     <div className="relative" ref={ref}>
       <div onClick={toggle}>{trigger}</div>
-      {pos && (
-        // position: fixed → échappe à l'overflow des cartes et aux stacking contexts (transform hover).
+      {pos && typeof document !== 'undefined' && createPortal(
+        // Portal sur <body> : échappe à tout ancêtre `transform`/`perspective`
+        // (la carte 3D flip) qui ferait dériver un `position: fixed`.
         <div
-          className="fixed z-[100] rounded-xl border border-[#E8E6DF] bg-white p-1.5 shadow-lg"
+          ref={menuRef}
+          className="fixed z-[200] rounded-xl border border-[#E8E6DF] bg-white p-1.5 shadow-lg"
           style={{ top: pos.top, left: pos.left, width: MENU_W }}
           onClick={() => setPos(null)}
         >
           {children}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

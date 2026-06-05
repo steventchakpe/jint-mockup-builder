@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Project, Page, Section, WebpartInstance, Profile } from '@/types/project';
+import type { Project, Page, Section, WebpartInstance, Profile, Department } from '@/types/project';
 import { relayoutSection, reorderSections, type SectionChoice } from './section-ops';
 
 interface ProjectStore {
@@ -38,6 +38,7 @@ interface ProjectStore {
   // Maquette (nom) + prospect
   setProjectName: (name: string) => void;
   updateProspect: (updates: Partial<Project['prospect']>) => void;
+  setDepartment: (department: Department) => void;
 
   // Theme
   updateTheme: (theme: Partial<Project['theme']>) => void;
@@ -221,6 +222,12 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     const { project } = get();
     if (!project) return;
     set({ project: { ...project, prospect: { ...project.prospect, ...updates } }, isDirty: true });
+  },
+
+  setDepartment: (department) => {
+    const { project } = get();
+    if (!project) return;
+    set({ project: { ...project, metadata: { ...project.metadata, department } }, isDirty: true });
   },
 
   updateTheme: (theme) => {

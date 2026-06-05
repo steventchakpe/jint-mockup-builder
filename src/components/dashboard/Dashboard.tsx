@@ -10,7 +10,8 @@ import { createBlankProject } from '@/lib/state/blank-project';
 import { useProjectStore } from '@/lib/state/project-store';
 import { Button, Input, Skeleton, Modal, MetricCard, SidebarItem, JintLogo } from './dashboard-ui';
 import { ProjectCard } from './ProjectCard';
-import { currentUser, mockMetrics, type DashProject } from './dashboard-utils';
+import { currentUser, getRelativeTime, type DashProject } from './dashboard-utils';
+import type { ShareAnalytics } from '@/types/providers';
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
@@ -31,14 +32,38 @@ export function Dashboard() {
   const [projectToDelete, setProjectToDelete] = useState<DashProject | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [analytics, setAnalytics] = useState<Record<string, ShareAnalytics>>({});
+
+  /** Métriques de partage (self-hosted) — pour la liste de projets fournie. */
+  const loadAnalytics = async (list: DashProject[]) => {
+    const entries = await Promise.all(
+      list.map(async (p) => {
+        const r = await fetch(`/api/projects/${p.id}/analytics`, { cache: 'no-store' });
+        return [p.id, r.ok ? ((await r.json()) as ShareAnalytics) : null] as const;
+      }),
+    );
+    setAnalytics(Object.fromEntries(entries.filter((e): e is [string, ShareAnalytics] => !!e[1])));
+  };
 
   const loadProjects = async () => {
     setIsLoading(true);
     const res = await fetch('/api/projects');
-    setProjects(res.ok ? await res.json() : []);
+    const list: DashProject[] = res.ok ? await res.json() : [];
+    setProjects(list);
     setIsLoading(false);
+    loadAnalytics(list);
   };
   useEffect(() => { loadProjects(); }, []);
+
+  // Analytics live (client uniquement) : rafraîchit toutes les 12 s + au focus de l'onglet.
+  useEffect(() => {
+    if (projects.length === 0) return;
+    const tick = () => { if (document.visibilityState === 'visible') loadAnalytics(projects); };
+    const interval = setInterval(tick, 12_000);
+    window.addEventListener('focus', tick);
+    return () => { clearInterval(interval); window.removeEventListener('focus', tick); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projects]);
 
   const openProject = (id: string) => router.push(`/edit/${id}`);
 
@@ -71,6 +96,23 @@ export function Dashboard() {
     setProjectToDelete(null);
     loadProjects();
   };
+
+  // Agrégats de partage (self-hosted) — total des vues + dernière consultation tous projets.
+  const shareMetrics = useMemo(() => {
+    const all = Object.entries(analytics);
+    const totalViews = all.reduce((sum, [, a]) => sum + a.views, 0);
+    let last: { at: string; id: string } | null = null;
+    for (const [id, a] of all) {
+      if (a.lastViewedAt && (!last || a.lastViewedAt > last.at)) last = { at: a.lastViewedAt, id };
+    }
+    // Auteur de la dernière consultation = prospect/client du projet partagé.
+    const lastProspect = last ? projects.find((p) => p.id === last!.id)?.prospectCompany || 'Prospect non défini' : undefined;
+    return {
+      totalViews: totalViews.toLocaleString('fr-FR'),
+      lastView: last ? getRelativeTime(last.at) : '—',
+      lastProspect,
+    };
+  }, [analytics, projects]);
 
   const filteredProjects = useMemo(() => {
     let result = projects;
@@ -141,8 +183,8 @@ export function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
             <MetricCard title="Total maquettes" value={isLoading ? '—' : projects.length} icon={LayoutGrid} />
             <MetricCard title="Modifiées récemment" value={isLoading ? '—' : recentCount} icon={Clock} />
-            <MetricCard title="Vues des partages" value={mockMetrics.totalViews.value} trend={mockMetrics.totalViews.trend} isPositive={mockMetrics.totalViews.isPositive} icon={Users} />
-            <MetricCard title="Dernière consultation" value={mockMetrics.lastProspectView.value} trend={mockMetrics.lastProspectView.trend} isPositive={mockMetrics.lastProspectView.isPositive} icon={MonitorPlay} />
+            <MetricCard title="Vues des partages" value={isLoading ? '—' : shareMetrics.totalViews} icon={Users} />
+            <MetricCard title="Dernière consultation" value={isLoading ? '—' : shareMetrics.lastView} trend={shareMetrics.lastProspect} isPositive={null} icon={MonitorPlay} />
           </div>
 
           {/* TOOLBAR */}
@@ -183,7 +225,7 @@ export function Dashboard() {
           ) : (
             <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'space-y-4'}>
               {filteredProjects.map((p) => (
-                <ProjectCard key={p.id} project={p} view={viewMode} onOpen={openProject} onDuplicate={handleDuplicate} onDelete={setProjectToDelete} onCopyShareLink={handleCopyShareLink} />
+                <ProjectCard key={p.id} project={p} view={viewMode} analytics={analytics[p.id]} onOpen={openProject} onDuplicate={handleDuplicate} onDelete={setProjectToDelete} onCopyShareLink={handleCopyShareLink} />
               ))}
             </div>
           )}

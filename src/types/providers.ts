@@ -13,6 +13,34 @@ export interface StorageProvider {
   deleteImage(url: string): Promise<void>;
   getShareUrl(projectId: string): Promise<string>;
   loadSharedProject(shareToken: string): Promise<Project>;
+  // ---- Tracking des liens partagés (self-hosted, sans PostHog) ----
+  /** Enregistre un événement de visite sur un lien partagé (mode Présentation). */
+  recordVisit(shareToken: string, visitorKey: string, event: VisitEvent): Promise<void>;
+  /** Métriques agrégées du lien partagé d'un projet (dashboard). */
+  getAnalytics(projectId: string): Promise<ShareAnalytics>;
+}
+
+/** Événement de tracking émis depuis le lien partagé `/view/{token}`. */
+export interface VisitEvent {
+  type: 'view' | 'pageview' | 'heartbeat' | 'end';
+  pageId?: string;
+  pageTitle?: string;
+  /** Horodatage ISO (calculé serveur si absent). */
+  at?: string;
+}
+
+/** Métriques agrégées d'un lien partagé. */
+export interface ShareAnalytics {
+  /** Date de création du lien (premier partage), ISO — null si jamais partagé. */
+  shareCreatedAt: string | null;
+  /** Nombre de visiteurs uniques (sessions par IP/user-agent). */
+  views: number;
+  /** Dernière consultation, ISO — null si aucune. */
+  lastViewedAt: string | null;
+  /** Durée moyenne de session en secondes. */
+  avgSessionSeconds: number;
+  /** Pages visitées : titre → nombre de vues, trié décroissant. */
+  pagesVisited: { pageId: string; title: string; views: number }[];
 }
 
 export interface ProjectMeta {
@@ -23,6 +51,10 @@ export interface ProjectMeta {
   thumbnail: string | null;
   /** Token de partage opaque (≠ project-id, sécurité) — généré au premier partage. */
   shareToken?: string;
+  /** Département auteur de la maquette (affiché sur la carte du dashboard). */
+  department?: string;
+  /** Prénom du créateur (affiché dans les statistiques). */
+  createdBy?: string;
 }
 
 // ============================================

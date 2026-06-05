@@ -236,9 +236,15 @@ export interface SharingFlow {
   steps: unknown[];
 }
 
+/** Département auteur de la maquette (équipe interne Jint). */
+export type Department = 'Design' | 'Customer Success' | 'Sales' | 'Autre';
+export const DEPARTMENTS: Department[] = ['Design', 'Customer Success', 'Sales', 'Autre'];
+
 export interface ProjectMetadata {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
   shareUrl: string;
+  /** Département qui a réalisé la maquette. */
+  department: Department;
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { PresentationView } from '@/components/presentation/PresentationView';
+import { useShareTracking } from '@/components/presentation/useShareTracking';
 import { useProjectStore } from '@/lib/state/project-store';
 
 /**
@@ -13,6 +14,9 @@ export default function SharedViewPage() {
   const { token } = useParams<{ token: string }>();
   const loadProject = useProjectStore((s) => s.loadProject);
   const [status, setStatus] = useState<'loading' | 'ready' | 'notfound'>('loading');
+
+  // Tracking du lien partagé (self-hosted) — actif uniquement sur cette route.
+  useShareTracking(token);
 
   useEffect(() => {
     let cancelled = false;

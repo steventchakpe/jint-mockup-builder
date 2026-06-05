@@ -150,6 +150,6 @@ export function createBlankProject(name = 'Nouvelle démo'): Project {
       article: { enabled: false, steps: [] },
       sharing: { enabled: false, channels: ['teams', 'engage'], steps: [] },
     },
-    metadata: { createdBy: '', createdAt: now, updatedAt: now, shareUrl: '' },
+    metadata: { createdBy: 'Steven', createdAt: now, updatedAt: now, shareUrl: '', department: 'Autre' },
   };
 }
