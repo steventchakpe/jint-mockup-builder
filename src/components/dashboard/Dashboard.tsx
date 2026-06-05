@@ -11,6 +11,7 @@ import { useProjectStore } from '@/lib/state/project-store';
 import { Button, Input, Skeleton, Modal, MetricCard, SidebarItem, JintLogo } from './dashboard-ui';
 import { ProjectCard } from './ProjectCard';
 import { currentUser, getRelativeTime, type DashProject } from './dashboard-utils';
+import { DEPARTMENTS } from '@/types/project';
 import type { ShareAnalytics } from '@/types/providers';
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' };
@@ -29,6 +30,8 @@ export function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
+  const [authorFilter, setAuthorFilter] = useState<string>('all');
+  const [deptFilter, setDeptFilter] = useState<string>('all');
   const [projectToDelete, setProjectToDelete] = useState<DashProject | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -117,13 +120,22 @@ export function Dashboard() {
   const filteredProjects = useMemo(() => {
     let result = projects;
     if (searchQuery) {
+      // Recherche libre : nom de maquette + entreprise (prospect/client).
       const q = searchQuery.toLowerCase();
       result = result.filter((p) => p.name.toLowerCase().includes(q) || (p.prospectCompany ?? '').toLowerCase().includes(q));
     }
+    if (authorFilter !== 'all') result = result.filter((p) => (p.createdBy ?? '') === authorFilter);
+    if (deptFilter !== 'all') result = result.filter((p) => (p.department ?? 'Autre') === deptFilter);
     return [...result].sort((a, b) =>
       sortBy === 'date' ? new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime() : a.name.localeCompare(b.name),
     );
-  }, [projects, searchQuery, sortBy]);
+  }, [projects, searchQuery, sortBy, authorFilter, deptFilter]);
+
+  /** Auteurs distincts présents dans les maquettes (pour le filtre). */
+  const authors = useMemo(
+    () => [...new Set(projects.map((p) => p.createdBy).filter((a): a is string => !!a))].sort(),
+    [projects],
+  );
 
   const recentCount = projects.filter((p) => (Date.now() - new Date(p.updatedAt).getTime()) / 86400000 <= 7).length;
 
@@ -189,11 +201,21 @@ export function Dashboard() {
 
           {/* TOOLBAR */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 bg-white p-2.5 border border-[#E8E6DF] rounded-2xl shadow-sm">
-            <div className="w-full sm:w-96">
-              <Input icon={Search} placeholder="Rechercher une maquette, un prospect…" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="border-none bg-transparent" />
+            <div className="w-full sm:w-80">
+              <Input icon={Search} placeholder="Rechercher une maquette, une entreprise…" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="border-none bg-transparent" />
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto px-2 sm:px-0">
+            <div className="flex items-center gap-3 w-full sm:w-auto px-2 sm:px-0 flex-wrap">
               <div className="h-8 w-px bg-[#E8E6DF] mx-2 hidden sm:block" />
+              {/* Filtre auteur */}
+              <select className="text-sm font-bold bg-transparent border-none text-[#4A5D58] cursor-pointer outline-none" value={authorFilter} onChange={(e) => setAuthorFilter(e.target.value)}>
+                <option value="all">Auteur : Tous</option>
+                {authors.map((a) => <option key={a} value={a}>Auteur : {a}</option>)}
+              </select>
+              {/* Filtre département */}
+              <select className="text-sm font-bold bg-transparent border-none text-[#4A5D58] cursor-pointer outline-none" value={deptFilter} onChange={(e) => setDeptFilter(e.target.value)}>
+                <option value="all">Département : Tous</option>
+                {DEPARTMENTS.map((d) => <option key={d} value={d}>Département : {d}</option>)}
+              </select>
               <select className="text-sm font-bold bg-transparent border-none text-[#4A5D58] cursor-pointer outline-none" value={sortBy} onChange={(e) => setSortBy(e.target.value as 'date' | 'name')}>
                 <option value="date">Trier par : Récent</option>
                 <option value="name">Trier par : Nom (A-Z)</option>
