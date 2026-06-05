@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { ImageInteractive } from './ImageInteractive';
+export { ImageInteractiveSkeleton } from './ImageInteractive.skeleton';
+export { imageInteractiveDefaultConfig, imageInteractiveConfigMeta } from './ImageInteractive.config';
+export type { ImageInteractiveConfig, ImageInteractiveContent, ImageInteractiveProps, ImageMapShape } from './ImageInteractive.types';

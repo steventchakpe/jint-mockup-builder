@@ -181,3 +181,36 @@ export const orgChartSeed = {
     { id: 'oc8', displayName: 'Nadia Cherif', jobTitle: 'Cheffe de projet', department: 'Opérations', email: 'nadia.cherif@exemple.com', managerId: 'oc4' },
   ],
 };
+
+export const imageInteractiveSeed = {
+  imageUrl: img('photo-1497366754035-f200968a6e72'),
+  altText: 'Plan des locaux',
+  shapes: [
+    { id: 's1', type: 'pinpoint' as const, x: 28, y: 38, showTooltip: true, url: '#', tooltipItems: [
+      { type: 'title' as const, value: 'Espace collaboratif', size: 'H3' as const },
+      { type: 'paragraph' as const, value: 'Open space et salles de réunion réservables.' },
+    ] },
+    { id: 's2', type: 'pinpoint' as const, x: 62, y: 55, showTooltip: true, url: '#', tooltipItems: [
+      { type: 'title' as const, value: 'Cafétéria', size: 'H3' as const },
+      { type: 'paragraph' as const, value: 'Ouverte de 8h à 16h.' },
+    ] },
+    { id: 's3', type: 'rectangle' as const, x: 80, y: 30, width: 18, height: 22, showTooltip: true, url: '#', tooltipItems: [
+      { type: 'title' as const, value: 'Accueil visiteurs', size: 'H3' as const },
+    ] },
+  ],
+};
+
+export const myResumeSeed = {
+  userName: 'Claire',
+  dashboardName: 'l’intranet',
+  cards: [
+    { cardType: 'meetings' as const, itemsLeft: 3 },
+    { cardType: 'mails' as const, itemsLeft: 12 },
+    { cardType: 'tasks' as const, itemsLeft: 5 },
+  ],
+};
+
+export const actionButtonSeed = {
+  text: 'Faire une demande',
+  url: '#',
+};

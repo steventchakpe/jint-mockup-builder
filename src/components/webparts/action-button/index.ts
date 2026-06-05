@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { ActionButton } from './ActionButton';
+export { ActionButtonSkeleton } from './ActionButton.skeleton';
+export { actionButtonDefaultConfig, actionButtonConfigMeta } from './ActionButton.config';
+export type { ActionButtonConfig, ActionButtonContent, ActionButtonProps } from './ActionButton.types';

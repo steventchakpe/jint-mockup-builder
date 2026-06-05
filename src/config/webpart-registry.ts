@@ -48,6 +48,9 @@ import { myMeetingsDefaultConfig, myMeetingsConfigMeta } from '@/components/webp
 import { newshubDefaultConfig, newshubConfigMeta } from '@/components/webparts/newshub';
 import { myTasksDefaultConfig, myTasksConfigMeta } from '@/components/webparts/my-tasks';
 import { orgChartDefaultConfig, orgChartConfigMeta } from '@/components/webparts/org-chart';
+import { imageInteractiveDefaultConfig, imageInteractiveConfigMeta } from '@/components/webparts/image-interactive';
+import { myResumeDefaultConfig, myResumeConfigMeta } from '@/components/webparts/my-resume';
+import { actionButtonDefaultConfig, actionButtonConfigMeta } from '@/components/webparts/action-button';
 import {
   newsSeed,
   eventsSeed,
@@ -62,6 +65,9 @@ import {
   newshubSeed,
   myTasksSeed,
   orgChartSeed,
+  imageInteractiveSeed,
+  myResumeSeed,
+  actionButtonSeed,
 } from './webpart-seeds';
 
 /**
@@ -422,9 +428,63 @@ const registry: Record<string, WebpartDefinition> = {
 
   // 'news-v2': { ... },
   // 'focus-v3': { ... },
-  // 'image-interactive': { ... },
-  // 'my-resume': { ... },
-  // 'action-button': { ... },
+  'image-interactive': {
+    typeId: imageInteractiveConfigMeta.typeId,
+    name: 'Image interactive',
+    nameEn: imageInteractiveConfigMeta.displayName,
+    category: imageInteractiveConfigMeta.category as WebpartDefinition['category'],
+    icon: imageInteractiveConfigMeta.icon,
+    wave: imageInteractiveConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/image-interactive').then((m) => ({ default: m.ImageInteractive as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/image-interactive/ImageInteractive.skeleton').then((m) => ({ default: m.ImageInteractiveSkeleton as never }))),
+    configurableProperties: buildProps(
+      imageInteractiveConfigMeta.configurableProps as RawProp[],
+      imageInteractiveDefaultConfig as unknown as Record<string, unknown>,
+    ),
+    defaultConfig: imageInteractiveDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: imageInteractiveSeed,
+  },
+  'my-resume': {
+    typeId: myResumeConfigMeta.typeId,
+    name: 'Mon résumé',
+    nameEn: myResumeConfigMeta.displayName,
+    category: myResumeConfigMeta.category as WebpartDefinition['category'],
+    icon: myResumeConfigMeta.icon,
+    wave: myResumeConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/my-resume').then((m) => ({ default: m.MyResume as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/my-resume/MyResume.skeleton').then((m) => ({ default: m.MyResumeSkeleton as never }))),
+    configurableProperties: myResumeConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: myResumeDefaultConfig[p.key as keyof typeof myResumeDefaultConfig],
+    })),
+    defaultConfig: myResumeDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: myResumeSeed,
+  },
+  'action-button': {
+    typeId: actionButtonConfigMeta.typeId,
+    name: 'Bouton d’action',
+    nameEn: actionButtonConfigMeta.displayName,
+    category: actionButtonConfigMeta.category as WebpartDefinition['category'],
+    icon: actionButtonConfigMeta.icon,
+    wave: actionButtonConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/action-button').then((m) => ({ default: m.ActionButton as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/action-button/ActionButton.skeleton').then((m) => ({ default: m.ActionButtonSkeleton as never }))),
+    configurableProperties: actionButtonConfigMeta.configurableProps.map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: p.type,
+      options: ('options' in p ? p.options : undefined) as { label: string; value: string }[] | undefined,
+      defaultValue: actionButtonDefaultConfig[p.key as keyof typeof actionButtonDefaultConfig],
+    })),
+    defaultConfig: actionButtonDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: actionButtonSeed,
+  },
   // 'search-bar': { ... },
   // 'poll': { ... },
   // 'idea-box': { ... },
