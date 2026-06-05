@@ -28,7 +28,14 @@ export function EditorToolbar() {
       style={{ fontFamily: "'Geist Sans', sans-serif" }}
     >
       <div className="flex items-center gap-lg min-w-0 flex-1">
-        <Link href="/" className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] shrink-0 whitespace-nowrap transition-colors">← Mes maquettes</Link>
+        <Link
+          href="/"
+          onClick={(e) => {
+            // Navigation client Next : beforeunload ne couvre pas ce cas → garde explicite (PRD §6.8)
+            if (isDirty && !window.confirm('Des modifications ne sont pas sauvegardées. Quitter sans sauvegarder ?')) e.preventDefault();
+          }}
+          className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] shrink-0 whitespace-nowrap transition-colors"
+        >← Mes maquettes</Link>
         <span className="h-6 w-px bg-[#E8E6DF] shrink-0" />
         {/* Nom de la maquette — éditable */}
         <input

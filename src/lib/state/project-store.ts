@@ -13,7 +13,7 @@ interface ProjectStore {
   error: string | null;
 
   // Project lifecycle
-  loadProject: (project: Project) => void;
+  loadProject: (project: Project, opts?: { dirty?: boolean }) => void;
   resetProject: () => void;
   setError: (error: string | null) => void;
   setActivePage: (pageId: string) => void;
@@ -119,8 +119,9 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   saveStatus: 'idle',
   error: null,
 
-  loadProject: (project) =>
-    set({ project, activePageId: project.pages[0]?.id ?? null, selectedWebpartId: null, isLoading: false, isDirty: false, error: null }),
+  loadProject: (project, opts) =>
+    // opts.dirty = true pour une maquette neuve jamais persistée (sauvegarde manuelle obligatoire, PRD §6.8)
+    set({ project, activePageId: project.pages[0]?.id ?? null, selectedWebpartId: null, isLoading: false, isDirty: opts?.dirty ?? false, error: null }),
   resetProject: () => set({ project: null, activePageId: null, selectedWebpartId: null, isLoading: false, isDirty: false, error: null }),
   setError: (error) => set({ error }),
   setActivePage: (activePageId) => set({ activePageId }),

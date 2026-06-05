@@ -42,11 +42,11 @@ export function Dashboard() {
 
   const openProject = (id: string) => router.push(`/edit/${id}`);
 
-  const handleCreateProject = async () => {
+  const handleCreateProject = () => {
     setIsCreating(true);
+    // Pas de POST ici : la maquette n'est persistée qu'au premier clic sur « Sauvegarder » (PRD §6.8).
     const project = createBlankProject();
-    await fetch('/api/projects', { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify(project) });
-    loadProjectIntoStore(project); // pré-charge pour éviter un refetch
+    loadProjectIntoStore(project, { dirty: true });
     router.push(`/edit/${project.id}`);
   };
 
