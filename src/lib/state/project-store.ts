@@ -109,6 +109,17 @@ function normalizeProject(project: Project): Project {
   return next;
 }
 
+/**
+ * Vrai si l'annuaire est encore un jeu de profils par défaut intact
+ * (n'importe quelle locale) — donc remplaçable sans perdre d'édition manuelle.
+ */
+function areDefaultProfiles(profiles: Project['profiles'], emailDomain: string): boolean {
+  const current = JSON.stringify(profiles.editable);
+  return (['fr-FR', 'fr-CA', 'en'] as const).some(
+    (l) => current === JSON.stringify(createDefaultProfiles(emailDomain, l).editable),
+  );
+}
+
 /** Applique une transformation aux sections d'une page, marque le projet dirty. */
 function mapPageSections(
   project: Project,
@@ -248,7 +259,19 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   updateProspect: (updates) => {
     const { project } = get();
     if (!project) return;
-    set({ project: { ...project, prospect: { ...project.prospect, ...updates } }, isDirty: true });
+    const prospect = { ...project.prospect, ...updates };
+    let profiles = project.profiles;
+    // Changement de langue : les profils (personnages de la démo) suivent,
+    // mais UNIQUEMENT s'ils sont encore le jeu par défaut intact — les
+    // éditions manuelles de l'annuaire ne sont jamais écrasées.
+    if (updates.contentLanguage && updates.contentLanguage !== project.prospect.contentLanguage
+      && areDefaultProfiles(project.profiles, project.prospect.emailDomain)) {
+      profiles = {
+        ...createDefaultProfiles(prospect.emailDomain, updates.contentLanguage),
+        activeProfileId: project.profiles.activeProfileId,
+      };
+    }
+    set({ project: { ...project, prospect, profiles }, isDirty: true });
   },
 
   setDepartment: (department) => {

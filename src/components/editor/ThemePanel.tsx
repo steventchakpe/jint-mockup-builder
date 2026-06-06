@@ -129,7 +129,7 @@ export function ThemePanel({ onClose }: { onClose: () => void }) {
             ))}
           </div>
           <p className="text-[11px] text-[#4A5D58] leading-tight">
-            S’applique à l’interface de la maquette et aux nouveaux webparts. Le contenu déjà posé n’est pas retraduit.
+            S’applique à l’interface, aux nouveaux webparts et à l’annuaire (sauf s’il a été modifié à la main). Le contenu déjà posé n’est pas retraduit.
           </p>
         </section>
 
