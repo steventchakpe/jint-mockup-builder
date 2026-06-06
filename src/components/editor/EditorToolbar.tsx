@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useProjectStore } from '@/lib/state/project-store';
 import { DEPARTMENTS, type Department } from '@/types/project';
+import { ThemePanel } from './ThemePanel';
 
 /**
  * Barre d'édition (chrome, hors shell) : retour dashboard, nom de la maquette éditable,
@@ -16,6 +17,7 @@ export function EditorToolbar() {
   const save = useProjectStore((s) => s.saveProject);
   const setProjectName = useProjectStore((s) => s.setProjectName);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(false);
 
   const label =
     saveStatus === 'saving' ? 'Enregistrement…'
@@ -57,6 +59,14 @@ export function EditorToolbar() {
         </Link>
         <button
           type="button"
+          data-testid="theme-btn"
+          onClick={() => setThemeOpen((o) => !o)}
+          className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] whitespace-nowrap transition-colors"
+        >
+          🎨 Thème
+        </button>
+        <button
+          type="button"
           data-testid="params-btn"
           onClick={() => setSettingsOpen((o) => !o)}
           className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] whitespace-nowrap transition-colors"
@@ -77,6 +87,7 @@ export function EditorToolbar() {
         </button>
       </div>
 
+      {themeOpen && <ThemePanel onClose={() => setThemeOpen(false)} />}
       {settingsOpen && <SettingsPanel onClose={() => setSettingsOpen(false)} />}
     </div>
   );

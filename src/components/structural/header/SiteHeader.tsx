@@ -11,7 +11,7 @@ import {
   ShareIcon,
 } from './SiteHeader.icons';
 
-export type HeaderTheme = 'none' | 'neutral' | 'soft' | 'strong';
+export type HeaderTheme = 'none' | 'neutral' | 'soft' | 'strong' | 'mixed';
 
 export interface SiteHeaderNavItem {
   label: string;
@@ -42,6 +42,8 @@ const THEME: Record<HeaderTheme, { bg: string; text: string; muted: string }> = 
   neutral: { bg: 'bg-white', text: 'text-[#3b3a39]', muted: 'text-[#605e5c]' },
   soft: { bg: 'bg-sp-lighter-alt', text: 'text-[#3b3a39]', muted: 'text-[#605e5c]' },
   strong: { bg: 'bg-sp-primary', text: 'text-white', muted: 'text-white/85' },
+  // mixed : corps blanc, hub bar en couleur primaire (géré localement)
+  mixed: { bg: 'bg-white', text: 'text-[#3b3a39]', muted: 'text-[#605e5c]' },
 };
 
 /**
@@ -53,8 +55,8 @@ const THEME: Record<HeaderTheme, { bg: string; text: string; muted: string }> = 
  * Fond : none / neutral / soft / strong.
  */
 export function SiteHeader({
-  theme = 'neutral',
-  showHubNav = true,
+  theme: themeProp,
+  showHubNav: showHubNavProp,
   hubTitle = 'Hub site title',
   hubLinks = ['Primary link', 'Primary link', 'Primary link', 'Primary group'],
   logoInitials = 'CS',
@@ -71,6 +73,14 @@ export function SiteHeader({
   showShare = true,
   membersCount = 27,
 }: SiteHeaderProps) {
+  // Variante header pilotée par le projet (source de vérité) — props prioritaires (pages démo).
+  const headerCfg = useProjectStore((s) => s.project?.header);
+  const layout = headerCfg?.layout ?? 'extended';
+  const theme = themeProp ?? headerCfg?.theme ?? 'neutral';
+  // Hub nav : visible seulement en disposition « étendue ».
+  const showHubNav = showHubNavProp ?? (layout === 'extended');
+  const compact = layout === 'compact';
+
   const t = THEME[theme];
   const strong = theme === 'strong';
 
@@ -89,11 +99,11 @@ export function SiteHeader({
 
   return (
     <div className={cn('@container w-full', t.bg, t.text)}>
-      {/* Hub nav — ≥1024 uniquement */}
+      {/* Hub nav — ≥1024 uniquement. En « mixed » : barre en couleur primaire. */}
       {showHubNav && (
-        <div className="hidden @[1024px]:flex items-center gap-5 h-10 px-8">
+        <div className={cn('hidden @[1024px]:flex items-center gap-5 h-10 px-8', theme === 'mixed' && 'bg-sp-primary text-white')}>
           <div className="flex items-center gap-sm shrink-0">
-            <span className={cn('w-6 h-6 rounded-sm shrink-0', strong ? 'bg-white/30' : 'bg-sp-primary')} aria-hidden />
+            <span className={cn('w-6 h-6 rounded-sm shrink-0', strong || theme === 'mixed' ? 'bg-white/30' : 'bg-sp-primary')} aria-hidden />
             <span className="text-body">{hubTitle}</span>
           </div>
           <nav className="flex items-center gap-lg overflow-hidden">
@@ -109,8 +119,8 @@ export function SiteHeader({
 
       {/* Comm header */}
       <div className="flex items-center gap-5 px-8 py-md">
-        {/* Hamburger — <1024 uniquement */}
-        <button type="button" aria-label="Menu" className="@[1024px]:hidden shrink-0 text-current">
+        {/* Hamburger — <1024, ou toujours en disposition « compact » */}
+        <button type="button" aria-label="Menu" className={cn('shrink-0 text-current', !compact && '@[1024px]:hidden')}>
           <NavigationIcon className="w-6 h-6" />
         </button>
 
@@ -139,8 +149,8 @@ export function SiteHeader({
                 ))}
               </div>
             </div>
-            {/* Nav locale — ≥1024 uniquement (repliée dans le hamburger en dessous) */}
-            <nav className="hidden @[1024px]:flex items-center gap-lg flex-wrap">
+            {/* Nav locale — ≥1024 uniquement, masquée en disposition « compact » (hamburger seul) */}
+            <nav className={cn('items-center gap-lg flex-wrap', compact ? 'hidden' : 'hidden @[1024px]:flex')}>
               {nav.map((item, i) => (
                 <button
                   key={item.pageId ?? i}
