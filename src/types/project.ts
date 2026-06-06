@@ -36,6 +36,8 @@ export interface Prospect {
   company: string;
   sector: string;
   sourceUrl: string | null;
+  /** Domaine email du prospect (ex: "contoso.com") — base des emails de tous les profils. */
+  emailDomain: string;
   logo: ProspectLogo | null;
   employeeCount: number;
   contentLanguage: Locale;

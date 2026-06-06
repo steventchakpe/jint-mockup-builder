@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useProjectStore } from '@/lib/state/project-store';
 import { DEPARTMENTS, type Department } from '@/types/project';
 import { ThemePanel } from './ThemePanel';
@@ -18,6 +19,7 @@ export function EditorToolbar() {
   const setProjectName = useProjectStore((s) => s.setProjectName);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
+  const onProfilesPage = usePathname()?.endsWith('/profils') ?? false;
 
   const label =
     saveStatus === 'saving' ? 'Enregistrement…'
@@ -56,6 +58,13 @@ export function EditorToolbar() {
           className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] whitespace-nowrap transition-colors"
         >
           ▶ Présentation
+        </Link>
+        <Link
+          href={project ? (onProfilesPage ? `/edit/${project.id}` : `/edit/${project.id}/profils`) : '#'}
+          data-testid="profiles-link"
+          className="text-sm font-bold text-[#4A5D58] hover:text-[#0A1F19] whitespace-nowrap transition-colors"
+        >
+          {onProfilesPage ? '← Éditeur' : '👥 Profils'}
         </Link>
         <button
           type="button"

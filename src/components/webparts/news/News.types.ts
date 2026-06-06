@@ -23,6 +23,8 @@ export interface NewsItem {
   id: string;
   title: string;
   chapo: string; // excerpt / résumé
+  /** ID d'un profil éditable du projet — l'auteur est résolu depuis l'annuaire au rendu. */
+  authorId?: string;
   author: string;
   authorEmail?: string;
   authorAvatar?: string;

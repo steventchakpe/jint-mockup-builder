@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Project, Page, Section, WebpartInstance, Profile, Department } from '@/types/project';
 import { relayoutSection, reorderSections, type SectionChoice } from './section-ops';
+import { buildEmail, createDefaultProfiles, DEFAULT_EMAIL_DOMAIN } from '@/lib/profiles/default-profiles';
 
 interface ProjectStore {
   // State
@@ -71,6 +72,16 @@ interface ProjectStore {
   // Profiles
   switchProfile: (profileId: string) => void;
   updateProfile: (profileId: string, updates: Partial<Profile>) => void;
+  /** Ajoute un profil éditable (max 20 — no-op au-delà). */
+  addProfile: (profile: Profile) => void;
+  /** Supprime un profil éditable (refusé s'il est switchable). */
+  removeProfile: (profileId: string) => void;
+  /** Ajoute/retire un profil de la liste switchable (login simulé, max 3). */
+  toggleSwitchable: (profileId: string) => void;
+  /** Domaine email du prospect — recalcule l'email de tous les profils. */
+  setEmailDomain: (domain: string) => void;
+  /** Remplace tout l'annuaire (seam IA Phase 3 — génération automatique des profils). */
+  replaceProfiles: (profiles: Project['profiles']) => void;
   /** Switch du profil « connecté » (US-28) — contexte visuel, pas de dirty. */
   setActiveProfile: (profileId: string) => void;
 
@@ -80,6 +91,22 @@ interface ProjectStore {
   // Metadata
   markSaved: () => void;
   saveProject: () => Promise<void>;
+}
+
+/**
+ * Migration douce au chargement : les maquettes antérieures à l'annuaire
+ * reçoivent les 20 profils par défaut + le domaine email — chaque maquette
+ * a son annuaire (PRD §6.9).
+ */
+function normalizeProject(project: Project): Project {
+  const next = { ...project };
+  if (!next.prospect.emailDomain) {
+    next.prospect = { ...next.prospect, emailDomain: DEFAULT_EMAIL_DOMAIN };
+  }
+  if (!next.profiles?.editable?.length) {
+    next.profiles = createDefaultProfiles(next.prospect.emailDomain);
+  }
+  return next;
 }
 
 /** Applique une transformation aux sections d'une page, marque le projet dirty. */
@@ -124,7 +151,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 
   loadProject: (project, opts) =>
     // opts.dirty = true pour une maquette neuve jamais persistée (sauvegarde manuelle obligatoire, PRD §6.8)
-    set({ project, activePageId: project.pages[0]?.id ?? null, selectedWebpartId: null, isLoading: false, isDirty: opts?.dirty ?? false, error: null }),
+    set({ project: normalizeProject(project), activePageId: project.pages[0]?.id ?? null, selectedWebpartId: null, isLoading: false, isDirty: opts?.dirty ?? false, error: null }),
   resetProject: () => set({ project: null, activePageId: null, selectedWebpartId: null, isLoading: false, isDirty: false, error: null }),
   setError: (error) => set({ error }),
   setActivePage: (activePageId) => set({ activePageId }),
@@ -474,11 +501,92 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
         ...project,
         profiles: {
           ...project.profiles,
-          editable: project.profiles.editable.map((p) =>
-            p.id === profileId ? { ...p, ...updates } : p
-          ),
+          editable: project.profiles.editable.map((p) => {
+            if (p.id !== profileId) return p;
+            const next = { ...p, ...updates };
+            // Email dérivé : prenom.nom@{domaine prospect} — recalculé au renommage
+            if (updates.firstName !== undefined || updates.lastName !== undefined) {
+              next.email = buildEmail(next.firstName, next.lastName, project.prospect.emailDomain);
+            }
+            return next;
+          }),
         },
       },
+      isDirty: true,
+    });
+  },
+
+  addProfile: (profile) => {
+    const { project } = get();
+    if (!project || project.profiles.editable.length >= 20) return;
+    const withEmail = { ...profile, email: buildEmail(profile.firstName, profile.lastName, project.prospect.emailDomain) };
+    set({
+      project: {
+        ...project,
+        profiles: { ...project.profiles, editable: [...project.profiles.editable, withEmail] },
+      },
+      isDirty: true,
+    });
+  },
+
+  setEmailDomain: (domain) => {
+    const { project } = get();
+    if (!project) return;
+    const emailDomain = domain.trim().toLowerCase();
+    set({
+      project: {
+        ...project,
+        prospect: { ...project.prospect, emailDomain },
+        profiles: {
+          ...project.profiles,
+          editable: project.profiles.editable.map((p) => ({
+            ...p,
+            email: buildEmail(p.firstName, p.lastName, emailDomain),
+          })),
+        },
+      },
+      isDirty: true,
+    });
+  },
+
+  replaceProfiles: (profiles) => {
+    const { project } = get();
+    if (!project) return;
+    set({ project: { ...project, profiles }, isDirty: true });
+  },
+
+  removeProfile: (profileId) => {
+    const { project } = get();
+    if (!project) return;
+    // Un profil switchable (présent dans le login simulé) ne peut pas être supprimé.
+    if (project.profiles.switchable.includes(profileId)) return;
+    set({
+      project: {
+        ...project,
+        profiles: {
+          ...project.profiles,
+          editable: project.profiles.editable.filter((p) => p.id !== profileId),
+        },
+      },
+      isDirty: true,
+    });
+  },
+
+  toggleSwitchable: (profileId) => {
+    const { project } = get();
+    if (!project) return;
+    const { switchable, activeProfileId } = project.profiles;
+    let next: string[];
+    if (switchable.includes(profileId)) {
+      // Le profil « connecté » doit rester switchable, et il en faut au moins un.
+      if (profileId === activeProfileId || switchable.length <= 1) return;
+      next = switchable.filter((id) => id !== profileId);
+    } else {
+      if (switchable.length >= 3) return; // max 3 (1 contributeur + 2 utilisateurs)
+      next = [...switchable, profileId];
+    }
+    set({
+      project: { ...project, profiles: { ...project.profiles, switchable: next } },
       isDirty: true,
     });
   },

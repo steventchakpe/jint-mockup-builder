@@ -4,6 +4,8 @@ import { Suspense } from 'react';
 import { getWebpart } from '@/config/webpart-registry';
 import { useProjectStore } from '@/lib/state/project-store';
 import { WebpartEditProvider } from './edit/inline-edit';
+import { hydrateWebpartContent } from '@/lib/profiles/hydrate';
+import { syncEditToProfiles } from '@/lib/profiles/sync-back';
 import type { WebpartInstance } from '@/types/project';
 
 interface WebpartHostProps {
@@ -28,11 +30,12 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
   // US-30 : les webparts personnalisés affichent le contenu du profil actif
   const profiles = useProjectStore((s) => s.project?.profiles);
   const mapping = PERSONAL_CONTENT_MAP[instance.type];
-  let content = instance.content;
+  // Annuaire : résolution des références aux profils (id/profileId/authorId)
+  let content = hydrateWebpartContent(instance.type, instance.content, profiles?.editable ?? []);
   const active = profiles?.editable.find((p) => p.id === profiles.activeProfileId);
   if (mapping && active) {
     const personal = active.personalContent?.[mapping.from];
-    if (personal) content = { ...instance.content, [mapping.to]: personal };
+    if (personal) content = { ...content, [mapping.to]: personal };
   }
   // Mon résumé : prénom du profil actif + compteurs dérivés de son personalContent
   if (instance.type === 'my-resume' && active) {
@@ -78,9 +81,19 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
     <WebpartEditProvider
       content={content}
       config={instance.config}
-      commitContent={(next) =>
-        useProjectStore.getState().updateWebpartContent(instance.id, next as Record<string, unknown>)
-      }
+      commitContent={(next) => {
+        const store = useProjectStore.getState();
+        // Édition inline d'un champ lié à un profil → reportée dans l'annuaire
+        // (source de vérité), qui re-propage à tous les webparts concernés.
+        const syncs = syncEditToProfiles(
+          instance.type,
+          content,
+          next as Record<string, unknown>,
+          store.project?.profiles.editable ?? [],
+        );
+        syncs.forEach(({ profileId, updates }) => store.updateProfile(profileId, updates));
+        store.updateWebpartContent(instance.id, next as Record<string, unknown>);
+      }}
       commitConfig={(next) =>
         useProjectStore.getState().updateWebpartConfig(instance.id, next as Record<string, unknown>)
       }

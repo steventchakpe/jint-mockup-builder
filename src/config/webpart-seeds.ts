@@ -4,6 +4,8 @@
  * Règles : pas de lorem ipsum, dates récentes, noms cohérents, images via Unsplash.
  */
 
+import { createDefaultProfiles } from '@/lib/profiles/default-profiles';
+
 const img = (q: string) => `https://images.unsplash.com/${q}?w=1200&auto=format`;
 
 export const newsSeed = {
@@ -11,28 +13,28 @@ export const newsSeed = {
     {
       id: 'n1', title: 'Lancement de notre nouvelle plateforme intranet',
       chapo: "La direction de la communication présente le nouvel espace collaboratif déployé pour tous les collaborateurs.",
-      imageUrl: img('photo-1486406146926-c627a92ad1ab'), author: 'Claire Fontaine',
+      imageUrl: img('photo-1486406146926-c627a92ad1ab'), authorId: 'profile-001', author: 'Claire Fontaine',
       date: '2026-05-28T09:00:00Z', url: '#', viewCount: 634, likeCount: 87,
       tags: [{ id: 't1', name: 'Communication' }], pinned: true,
     },
     {
       id: 'n2', title: 'Résultats du trimestre : une croissance soutenue',
       chapo: 'Les performances confirment la dynamique du groupe sur l’ensemble de ses activités.',
-      imageUrl: img('photo-1611974789855-9c2a0a7236a3'), author: 'Marc Lefebvre',
+      imageUrl: img('photo-1611974789855-9c2a0a7236a3'), authorId: 'profile-002', author: 'Marc Lefebvre',
       date: '2026-05-25T14:00:00Z', url: '#', viewCount: 1208, likeCount: 142,
       tags: [{ id: 't2', name: 'Finance' }],
     },
     {
       id: 'n3', title: 'Formation cybersécurité : session de juin',
       chapo: 'Une nouvelle session de sensibilisation est ouverte à tous les collaborateurs ce mois-ci.',
-      imageUrl: img('photo-1550751827-4bd374c3f58b'), author: 'Sophie Aubert',
+      imageUrl: img('photo-1550751827-4bd374c3f58b'), authorId: 'profile-004', author: 'Sophie Aubert',
       date: '2026-05-22T10:00:00Z', url: '#', viewCount: 489, likeCount: 56,
       tags: [{ id: 't3', name: 'IT & Sécurité' }],
     },
     {
       id: 'n4', title: 'Retour en images sur notre séminaire annuel',
       chapo: 'Deux jours d’échanges et d’ateliers qui ont réuni les équipes autour de nos priorités.',
-      imageUrl: img('photo-1497366216548-37526070297c'), author: 'Thomas Bernard',
+      imageUrl: img('photo-1497366216548-37526070297c'), authorId: 'profile-006', author: 'Thomas Bernard',
       date: '2026-05-19T16:00:00Z', url: '#', viewCount: 1874, likeCount: 203,
       tags: [{ id: 't4', name: "Vie d'entreprise" }],
     },
@@ -48,30 +50,25 @@ export const eventsSeed = {
 };
 
 export const newcomersSeed = {
+  // Référence les profils de l'annuaire par ID — nom/poste/photo/date hydratés au rendu.
   people: [
-    { id: 'nc1', displayName: 'Léa Girard', jobTitle: 'Chargée de communication', date: '2026-05-26' },
-    { id: 'nc2', displayName: 'Karim Benali', jobTitle: 'Développeur', date: '2026-06-01' },
-    { id: 'nc3', displayName: 'Emma Petit', jobTitle: 'Analyste data', date: '2026-06-03' },
+    { id: 'profile-011', displayName: 'Léa Girard' },
+    { id: 'profile-012', displayName: 'Karim Benali' },
+    { id: 'profile-013', displayName: 'Emma Petit' },
   ],
 };
 
 export const anniversarySeed = {
   people: [
-    { id: 'an1', displayName: 'Julien Moreau', jobTitle: 'Responsable RH', date: '2019-06-09' },
-    { id: 'an2', displayName: 'Nadia Cherif', jobTitle: 'Cheffe de projet', date: '2021-06-12' },
-    { id: 'an3', displayName: 'Paul Renaud', jobTitle: 'Comptable', date: '2017-06-15' },
+    { id: 'profile-005', displayName: 'Julien Moreau' },
+    { id: 'profile-003', displayName: 'Nadia Cherif' },
+    { id: 'profile-007', displayName: 'Paul Renaud' },
   ],
 };
 
 export const directorySeed = {
-  people: [
-    { id: 'd1', displayName: 'Claire Fontaine', title: 'Directrice communication', department: 'Communication', location: 'Paris' },
-    { id: 'd2', displayName: 'Marc Lefebvre', title: 'Directeur financier', department: 'Finance', location: 'Paris' },
-    { id: 'd3', displayName: 'Sophie Aubert', title: 'RSSI', department: 'IT', location: 'Lyon' },
-    { id: 'd4', displayName: 'Julien Moreau', title: 'Responsable RH', department: 'RH', location: 'Paris' },
-    { id: 'd5', displayName: 'Nadia Cherif', title: 'Cheffe de projet', department: 'Opérations', location: 'Lyon' },
-    { id: 'd6', displayName: 'Thomas Bernard', title: 'Chargé de communication', department: 'Communication', location: 'Paris' },
-  ],
+  // Tout l'annuaire (20 profils) — champs hydratés au rendu depuis les profils.
+  people: createDefaultProfiles().editable.map((p) => ({ id: p.id, displayName: `${p.firstName} ${p.lastName}` })),
 };
 
 export const myAppsSeed = {
@@ -86,14 +83,7 @@ export const myAppsSeed = {
 };
 
 export const profileSeed = {
-  profile: {
-    name: 'Claire Fontaine',
-    jobTitle: 'Directrice communication',
-    department: 'Communication',
-    location: 'Paris',
-    email: 'claire.fontaine@exemple.com',
-    avatar: `https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop`,
-  },
+  profile: { profileId: 'profile-001', name: 'Claire Fontaine' },
 };
 
 export const docsSeed = {
@@ -170,15 +160,17 @@ export const myTasksSeed = {
 };
 
 export const orgChartSeed = {
+  // ids = profils de l'annuaire ; managerId résolu depuis profile.manager au rendu.
   employees: [
-    { id: 'oc1', displayName: 'Isabelle Marchand', jobTitle: 'Directrice générale', department: 'Direction', email: 'isabelle.marchand@exemple.com', managerId: null },
-    { id: 'oc2', displayName: 'Claire Fontaine', jobTitle: 'Directrice communication', department: 'Communication', email: 'claire.fontaine@exemple.com', managerId: 'oc1' },
-    { id: 'oc3', displayName: 'Marc Lefebvre', jobTitle: 'Directeur financier', department: 'Finance', email: 'marc.lefebvre@exemple.com', managerId: 'oc1' },
-    { id: 'oc4', displayName: 'Julien Moreau', jobTitle: 'Responsable RH', department: 'RH', email: 'julien.moreau@exemple.com', managerId: 'oc1' },
-    { id: 'oc5', displayName: 'Thomas Bernard', jobTitle: 'Chargé de communication', department: 'Communication', email: 'thomas.bernard@exemple.com', managerId: 'oc2' },
-    { id: 'oc6', displayName: 'Léa Girard', jobTitle: 'Chargée de communication', department: 'Communication', email: 'lea.girard@exemple.com', managerId: 'oc2' },
-    { id: 'oc7', displayName: 'Paul Renaud', jobTitle: 'Comptable', department: 'Finance', email: 'paul.renaud@exemple.com', managerId: 'oc3' },
-    { id: 'oc8', displayName: 'Nadia Cherif', jobTitle: 'Cheffe de projet', department: 'Opérations', email: 'nadia.cherif@exemple.com', managerId: 'oc4' },
+    { id: 'profile-008', displayName: 'Isabelle Marchand', managerId: null },
+    { id: 'profile-001', displayName: 'Claire Fontaine', managerId: 'profile-008' },
+    { id: 'profile-002', displayName: 'Marc Lefebvre', managerId: 'profile-008' },
+    { id: 'profile-005', displayName: 'Julien Moreau', managerId: 'profile-008' },
+    { id: 'profile-006', displayName: 'Thomas Bernard', managerId: 'profile-001' },
+    { id: 'profile-011', displayName: 'Léa Girard', managerId: 'profile-001' },
+    { id: 'profile-007', displayName: 'Paul Renaud', managerId: 'profile-002' },
+    { id: 'profile-003', displayName: 'Nadia Cherif', managerId: 'profile-009' },
+    { id: 'profile-009', displayName: 'Antoine Roussel', managerId: 'profile-008' },
   ],
 };
 
