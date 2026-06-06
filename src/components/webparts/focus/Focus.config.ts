@@ -103,7 +103,7 @@ export const focusConfigMeta = {
       ],
     },
     // Image de contenu (URL + position + portrait) — vit dans le contenu.
-    { key: 'imageUrl', label: 'Image (URL)', type: 'string' as const, target: 'content' as const, path: ['card', 'image', 'url'], defaultValue: '' },
+    { key: 'imageUrl', label: 'Image', type: 'image' as const, target: 'content' as const, path: ['card', 'image', 'url'], defaultValue: '' },
     {
       key: 'imagePosition',
       label: "Position de l'image",

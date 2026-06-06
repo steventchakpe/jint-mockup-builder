@@ -41,7 +41,8 @@ export function PageShell({ children, header }: PageShellProps) {
             <ContributorToolbar />
             {/* main grandit → pousse le footer en bas ; le contenu scrolle s'il dépasse */}
             <main className="flex-1 bg-white">
-              <div className="max-w-[1204px] mx-auto w-full">{children}</div>
+              {/* prospect-font : la font prospect s'applique au contenu (US-18) */}
+              <div className="max-w-[1204px] mx-auto w-full prospect-font">{children}</div>
             </main>
             <SiteFooter />
           </div>

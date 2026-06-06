@@ -271,7 +271,8 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 
   addPage: (page) => {
     const { project } = get();
-    if (!project) return;
+    // Max 10 pages par maquette (PRD §6.3 — layout generation, navigation)
+    if (!project || project.pages.length >= 10) return;
     set({ project: { ...project, pages: [...project.pages, page] }, isDirty: true });
   },
 

@@ -114,12 +114,22 @@ export class LocalStorageProvider implements StorageProvider {
     return newId;
   }
 
-  // ---- Phase 2 ----
-  async uploadImage(): Promise<string> {
-    throw new Error('Not implemented — Phase 2');
+  // ---- Images (US-49) ----
+  /** Écrit l'image dans data/projects/{id}/images/ et retourne son URL servie par l'API. */
+  async uploadImage(projectId: string, file: File): Promise<string> {
+    const ext = (file.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+    const name = `${crypto.randomUUID()}.${ext}`;
+    const dir = path.join(projectDir(projectId), 'images');
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()));
+    return `/api/projects/${projectId}/images/${name}`;
   }
-  async deleteImage(): Promise<void> {
-    throw new Error('Not implemented — Phase 2');
+
+  /** Supprime une image à partir de son URL servie (/api/projects/{id}/images/{file}). */
+  async deleteImage(url: string): Promise<void> {
+    const m = url.match(/^\/api\/projects\/([^/]+)\/images\/([^/?#]+)$/);
+    if (!m) return; // URL externe (Unsplash, data:) → rien à supprimer
+    await fs.rm(path.join(projectDir(m[1]), 'images', m[2]), { force: true });
   }
   /** Génère (ou renvoie) le share-token du projet — stocké dans metadata.json. */
   async getShareUrl(projectId: string): Promise<string> {

@@ -2,6 +2,7 @@
 
 import { useProjectStore } from '@/lib/state/project-store';
 import { useThemePalette } from '@/theme/useThemePalette';
+import { useProspectFont } from '@/theme/useProspectFont';
 
 /** Couleur SharePoint par défaut (pages démo sans projet chargé). */
 const DEFAULT_PRIMARY = '#0078d4';
@@ -13,6 +14,10 @@ const DEFAULT_PRIMARY = '#0078d4';
  */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const primaryColor = useProjectStore((s) => s.project?.theme.primaryColor) ?? DEFAULT_PRIMARY;
+  const prospectFontFamily = useProjectStore((s) => s.project?.theme.prospectFontFamily) ?? null;
+  const prospectFontUrl = useProjectStore((s) => s.project?.theme.prospectFontUrl) ?? null;
   useThemePalette(primaryColor, { injectCSSVars: true, cssVarPrefix: 'sp' });
+  // Font prospect (US-18) — exposée via --prospect-font, appliquée par .prospect-font
+  useProspectFont(prospectFontFamily, prospectFontUrl);
   return <>{children}</>;
 }

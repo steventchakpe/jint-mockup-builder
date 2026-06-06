@@ -2,6 +2,7 @@
 
 import { useProjectStore } from '@/lib/state/project-store';
 import { getWebpart } from '@/config/webpart-registry';
+import { ImagePicker } from '@/components/editor/ImagePicker';
 import type { ConfigurableProperty } from '@/types/webparts';
 import type { WebpartInstance } from '@/types/project';
 
@@ -153,6 +154,9 @@ function PropField({
           value={String(value ?? '')}
           onChange={(e) => onChange(e.target.value)}
         />
+      )}
+      {prop.type === 'image' && (
+        <ImagePicker value={String(value ?? '')} onChange={onChange} />
       )}
       {prop.type === 'color' && (
         <input

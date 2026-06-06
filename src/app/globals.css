@@ -34,6 +34,16 @@
   --color-sp-darker:      var(--sp-theme-darker,      #004377);
 }
 
+/* ── Font prospect (US-18) ─────────────────────────────────────────
+   --prospect-font est posée sur :root par useProspectFont().
+   Sans font chargée, la var est absente → fallback `inherit` (Segoe UI).
+   Appliquée sur : contenu des webparts, footer, nav locale du header.
+   JAMAIS sur : hub nav, titre du site, labels, Follow/Share (PRD §6.4). */
+.prospect-font,
+.prospect-font * {
+  font-family: var(--prospect-font, inherit);
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    Base styles
    ═══════════════════════════════════════════════════════════════════ */

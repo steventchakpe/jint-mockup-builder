@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { useProjectStore } from '@/lib/state/project-store';
+import { svgToCurrentColor } from '@/lib/svg';
 import {
   ChevronDownIcon,
   FollowIcon,
@@ -84,6 +85,9 @@ export function SiteHeader({
   const t = THEME[theme];
   const strong = theme === 'strong';
 
+  // Logo du prospect (US-17) — prioritaire sur logoImageUrl/initiales.
+  const prospectLogo = useProjectStore((s) => s.project?.prospect.logo);
+
   // Nav locale pilotée par les pages du projet (si chargé) — sinon libellés par défaut.
   const pages = useProjectStore((s) => s.project?.pages);
   const activePageId = useProjectStore((s) => s.activePageId);
@@ -124,10 +128,24 @@ export function SiteHeader({
           <NavigationIcon className="w-6 h-6" />
         </button>
 
-        {/* Logo 64 */}
-        <div className="w-16 h-16 shrink-0 flex items-center justify-center bg-sp-primary overflow-hidden" aria-hidden>
-          {logoImageUrl ? (
-            <img src={logoImageUrl} alt="" className="w-full h-full object-cover" />
+        {/* Logo 64 — un SVG prospect est recoloré selon l'habillage (US-17) :
+            blanc sur fond sombre (strong), couleurs d'origine sur fond clair. */}
+        <div
+          className={cn(
+            'w-16 h-16 shrink-0 flex items-center justify-center overflow-hidden',
+            prospectLogo ? 'bg-transparent' : 'bg-sp-primary',
+          )}
+          aria-hidden
+        >
+          {prospectLogo?.svgContent ? (
+            <span
+              className={cn('w-full h-full flex items-center justify-center p-xs [&_svg]:max-w-full [&_svg]:max-h-full', strong && 'text-white')}
+              dangerouslySetInnerHTML={{
+                __html: strong ? svgToCurrentColor(prospectLogo.svgContent) : prospectLogo.svgContent,
+              }}
+            />
+          ) : prospectLogo?.url || logoImageUrl ? (
+            <img src={prospectLogo?.url ?? logoImageUrl} alt="" className="w-full h-full object-contain" />
           ) : (
             <span className="text-white" style={{ fontSize: 28 }}>{logoInitials}</span>
           )}
@@ -150,7 +168,9 @@ export function SiteHeader({
               </div>
             </div>
             {/* Nav locale — ≥1024 uniquement, masquée en disposition « compact » (hamburger seul) */}
-            <nav className={cn('items-center gap-lg flex-wrap', compact ? 'hidden' : 'hidden @[1024px]:flex')}>
+            {/* prospect-font : seule la nav locale reçoit la font prospect (US-18) —
+                hub nav, titre, labels et actions restent en Segoe UI */}
+            <nav className={cn('items-center gap-lg flex-wrap prospect-font', compact ? 'hidden' : 'hidden @[1024px]:flex')}>
               {nav.map((item, i) => (
                 <button
                   key={item.pageId ?? i}

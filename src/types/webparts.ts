@@ -14,7 +14,7 @@ export interface WebpartProps<TConfig = Record<string, unknown>, TContent = Reco
 export interface ConfigurableProperty {
   key: string;
   label: string;
-  type: 'select' | 'boolean' | 'number' | 'string' | 'color';
+  type: 'select' | 'boolean' | 'number' | 'string' | 'color' | 'image';
   options?: Array<{ label: string; value: string }>; // for select type
   defaultValue: unknown;
   // Cible de la propriété : 'config' (défaut) ou 'content'.

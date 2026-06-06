@@ -19,7 +19,7 @@ export const imageInteractiveConfigMeta = {
   description: 'Image cliquable avec zones interactives et infobulles.',
   configurableProps: [
     { key: 'title', label: 'Titre', type: 'string' as const },
-    { key: 'imageUrl', label: 'URL de l’image', type: 'string' as const, target: 'content' as const, path: ['imageUrl'], defaultValue: '' },
+    { key: 'imageUrl', label: 'Image', type: 'image' as const, target: 'content' as const, path: ['imageUrl'], defaultValue: '' },
     { key: 'altText', label: 'Texte alternatif', type: 'string' as const, target: 'content' as const, path: ['altText'], defaultValue: '' },
     {
       key: 'height',

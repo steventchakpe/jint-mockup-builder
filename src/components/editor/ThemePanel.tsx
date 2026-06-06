@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useProjectStore } from '@/lib/state/project-store';
+import { ProspectFontSection } from './ProspectFontSection';
+import { ProspectLogoSection } from './ProspectLogoSection';
 import type { HeaderLayout, HeaderTheme } from '@/types/project';
 
 /** Couleurs de marque courantes (SharePoint + variantes vives). */
@@ -102,6 +104,12 @@ export function ThemePanel({ onClose }: { onClose: () => void }) {
             ))}
           </div>
         </section>
+
+        {/* FONT PROSPECT (US-18) */}
+        <ProspectFontSection />
+
+        {/* LOGO DU PROSPECT (US-07/17) */}
+        <ProspectLogoSection />
 
         <section className="flex flex-col gap-sm">
           <span className="text-xs font-bold uppercase tracking-wide text-[#4A5D58]">Habillage du header</span>

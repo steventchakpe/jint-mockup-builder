@@ -67,11 +67,13 @@ export function PageTabs() {
           ))}
         </SortableContext>
       </DndContext>
+      {/* Max 10 pages par maquette (PRD) — bouton désactivé à la limite */}
       <button
         type="button"
         onClick={add}
-        title="Ajouter une page"
-        className="shrink-0 w-7 h-7 inline-flex items-center justify-center rounded-full text-[#0A1F19] hover:bg-white text-base"
+        disabled={ordered.length >= 10}
+        title={ordered.length >= 10 ? 'Limite atteinte : 10 pages maximum par maquette' : 'Ajouter une page'}
+        className="shrink-0 w-7 h-7 inline-flex items-center justify-center rounded-full text-[#0A1F19] hover:bg-white text-base disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
       >
         +
       </button>

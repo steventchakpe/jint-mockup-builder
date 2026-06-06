@@ -32,7 +32,7 @@ export function SiteFooter({
   linkGroups = DEFAULT_GROUPS,
 }: SiteFooterProps) {
   return (
-    <footer className="w-full bg-sp-primary text-white shrink-0">
+    <footer className="w-full bg-sp-primary text-white shrink-0 prospect-font">
       <div className="flex justify-between gap-2xl px-[100px] py-2xl">
         {/* Colonne gauche */}
         <div className="flex flex-col gap-lg min-w-0">
