@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useProjectStore } from '@/lib/state/project-store';
 import { ProspectFontSection } from './ProspectFontSection';
 import { ProspectLogoSection } from './ProspectLogoSection';
-import type { HeaderLayout, HeaderTheme } from '@/types/project';
+import type { HeaderLayout, HeaderTheme, Locale } from '@/types/project';
 
 /** Couleurs de marque courantes (SharePoint + variantes vives). */
 const PRESETS = ['#0078d4', '#038387', '#498205', '#8764b8', '#ca5010', '#e3008c', '#d13438', '#005b70', '#5c2e91', '#986f0b'];
@@ -15,6 +15,11 @@ const SLOTS = ['lighter-alt', 'lighter', 'light', 'tertiary', 'secondary', 'prim
 const LAYOUTS: { value: HeaderLayout; label: string }[] = [
   { value: 'extended', label: 'Étendu' },
   { value: 'compact', label: 'Compact' },
+];
+const LOCALES: { value: Locale; label: string; hint: string }[] = [
+  { value: 'fr-FR', label: 'FR', hint: 'Français (France)' },
+  { value: 'fr-CA', label: 'FR-CA', hint: 'Français (Canada)' },
+  { value: 'en', label: 'EN', hint: 'English' },
 ];
 const THEMES: { value: HeaderTheme; label: string; hint: string }[] = [
   { value: 'neutral', label: 'Neutre', hint: 'Fond blanc, texte sombre' },
@@ -32,6 +37,7 @@ export function ThemePanel({ onClose }: { onClose: () => void }) {
   const project = useProjectStore((s) => s.project);
   const updateTheme = useProjectStore((s) => s.updateTheme);
   const updateHeader = useProjectStore((s) => s.updateHeader);
+  const updateProspect = useProjectStore((s) => s.updateProspect);
   // Saisie hex locale : on n'applique au store qu'un hex complet (#RRGGBB),
   // sinon la palette serait régénérée sur une valeur invalide pendant la frappe.
   const [hexDraft, setHexDraft] = useState<string | null>(null);
@@ -103,6 +109,28 @@ export function ThemePanel({ onClose }: { onClose: () => void }) {
               </button>
             ))}
           </div>
+        </section>
+
+        {/* LANGUE DU CONTENU */}
+        <section className="flex flex-col gap-sm">
+          <span className="text-xs font-bold uppercase tracking-wide text-[#4A5D58]">Langue du contenu</span>
+          <div className="grid grid-cols-3 gap-2">
+            {LOCALES.map((l) => (
+              <button
+                key={l.value}
+                type="button"
+                title={l.hint}
+                onClick={() => updateProspect({ contentLanguage: l.value })}
+                className={`flex flex-col items-start rounded-xl border-2 px-sm py-2 text-left transition-colors ${project.prospect.contentLanguage === l.value ? 'border-[#0A1F19] bg-[#F5F4F0]' : 'border-[#E8E6DF] hover:border-[#0A1F19]/40'}`}
+              >
+                <span className="text-sm font-bold">{l.label}</span>
+                <span className="text-[11px] text-[#4A5D58] leading-tight">{l.hint}</span>
+              </button>
+            ))}
+          </div>
+          <p className="text-[11px] text-[#4A5D58] leading-tight">
+            S’applique à l’interface de la maquette et aux nouveaux webparts. Le contenu déjà posé n’est pas retraduit.
+          </p>
         </section>
 
         {/* FONT PROSPECT (US-18) */}

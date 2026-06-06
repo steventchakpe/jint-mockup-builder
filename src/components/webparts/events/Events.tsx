@@ -3,6 +3,7 @@
 import type { EventsProps } from './Events.types';
 import { EventCard } from './components/EventCard';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
+import { useDemoStrings } from '@/lib/i18n';
 
 /**
  * Webpart Events — port fidèle de `EventsTilesLayout` (@mozzaik365/components/events).
@@ -20,6 +21,7 @@ export function Events({
   onAddToCalendar,
 }: EventsProps) {
   const { title, radius, shadow, showAddToCalendar, maxItems = 4 } = config;
+  const tw = useDemoStrings().webparts;
   const events = content.events.slice(0, maxItems);
 
   const handleClick = (eventId: string) => {
@@ -41,7 +43,7 @@ export function Events({
       )}
 
       {events.length === 0 ? (
-        <p className="text-body text-gray-500 py-xl text-center">Aucun événement à venir.</p>
+        <p className="text-body text-gray-500 py-xl text-center">{tw.noEvent}</p>
       ) : (
         <div className="@container">
           <div className="grid grid-cols-1 gap-md @[606px]:grid-cols-2 @[915px]:grid-cols-3 @[1224px]:grid-cols-4">

@@ -1,3 +1,7 @@
+'use client';
+
+import { useDemoStrings } from '@/lib/i18n';
+
 /**
  * Footer — reconstruit depuis Figma (Template / Footer).
  * Fond themePrimary (re-thémable), texte blanc. Gauche : footer-logo + nom +
@@ -18,19 +22,17 @@ export interface SiteFooterProps {
   linkGroups?: FooterLinkGroup[];
 }
 
-const DEFAULT_GROUPS: FooterLinkGroup[] = [
-  { header: 'Branches', links: ['Branch 1', 'Branch 2', 'Branch 3', 'Branch 4'] },
-  { header: 'Branches', links: ['Branch 1', 'Branch 2', 'Branch 3', 'Branch 4'] },
-  { header: 'Branches', links: ['Branch 1', 'Branch 2', 'Branch 3', 'Branch 4'] },
-];
-
 export function SiteFooter({
   footerLogoText = 'FOOTER LOGO',
   displayName = 'Footer display name',
   brandLogo,
   description,
-  linkGroups = DEFAULT_GROUPS,
+  linkGroups,
 }: SiteFooterProps) {
+  // Groupes par défaut localisés (langue du projet)
+  const t = useDemoStrings().footer;
+  const defaultGroup: FooterLinkGroup = { header: t.groupHeader, links: [1, 2, 3, 4].map(t.link) };
+  linkGroups ??= [defaultGroup, defaultGroup, defaultGroup];
   return (
     <footer className="w-full bg-sp-primary text-white shrink-0 prospect-font">
       <div className="flex justify-between gap-2xl px-[100px] py-2xl">

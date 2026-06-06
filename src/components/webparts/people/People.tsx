@@ -3,6 +3,7 @@
 import { PeopleCard } from './components/PeopleCard';
 import { CARD_SIZE_M_BREAKPOINT } from './People.mozzaik';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
+import { useDemoStrings } from '@/lib/i18n';
 import type { PeopleProps } from './People.types';
 
 /**
@@ -15,10 +16,11 @@ import type { PeopleProps } from './People.types';
  */
 export function People({ config, content, locale, onChatClick, isEditMode = false }: PeopleProps) {
   const { mode, title, height, radius, shadow, cardColor } = config;
+  const tw = useDemoStrings().webparts;
   const horizontal = height < CARD_SIZE_M_BREAKPOINT;
   const people = content.people;
 
-  const emptyText = mode === 'Newcomers' ? 'Aucun nouvel arrivant' : 'Aucun anniversaire à venir';
+  const emptyText = mode === 'Newcomers' ? tw.noNewcomer : tw.noAnniversary;
 
   return (
     <section className="flex flex-col gap-xl p-md">

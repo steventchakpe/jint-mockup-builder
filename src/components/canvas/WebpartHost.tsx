@@ -3,6 +3,7 @@
 import { Suspense } from 'react';
 import { getWebpart } from '@/config/webpart-registry';
 import { useProjectStore } from '@/lib/state/project-store';
+import { useDemoDateLocale } from '@/lib/i18n';
 import { WebpartEditProvider } from './edit/inline-edit';
 import { hydrateWebpartContent } from '@/lib/profiles/hydrate';
 import { syncEditToProfiles } from '@/lib/profiles/sync-back';
@@ -29,6 +30,8 @@ const PERSONAL_CONTENT_MAP: Record<string, { from: 'tasks' | 'emails' | 'meeting
 
 export function WebpartHost({ instance, isEditMode = false, fullWidth = false }: WebpartHostProps) {
   const def = getWebpart(instance.type);
+  // Locale des dates de la maquette (langue du projet)
+  const dateLocale = useDemoDateLocale();
   // Pleine largeur : radius 0 + padding BaseLayout désactivé (le webpart colle
   // les bords du canvas, sans ombre — comportement jintan/SharePoint)
   const config = fullWidth ? { ...instance.config, radius: 0, padding: false } : instance.config;
@@ -77,6 +80,7 @@ export function WebpartHost({ instance, isEditMode = false, fullWidth = false }:
         config={config}
         content={content}
         isEditMode={isEditMode}
+        locale={dateLocale}
       />
     </Suspense>
   );

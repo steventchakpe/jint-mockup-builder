@@ -11,6 +11,7 @@ import {
   NAVIGATION_HEIGHT,
   rowsForHeight,
 } from './MyMeetings.mozzaik';
+import { useDemoStrings } from '@/lib/i18n';
 import type { MyMeetingsProps } from './MyMeetings.types';
 
 /**
@@ -23,6 +24,7 @@ import type { MyMeetingsProps } from './MyMeetings.types';
  */
 export function MyMeetings({ config, content, isEditMode = false, locale = 'fr-FR' }: MyMeetingsProps) {
   const { title, height } = config;
+  const tw = useDemoStrings().webparts;
   const meetings = content.meetings;
   const [slide, setSlide] = useState(0);
   const [selectedBySlide, setSelectedBySlide] = useState<Record<number, string>>({});
@@ -55,7 +57,7 @@ export function MyMeetings({ config, content, isEditMode = false, locale = 'fr-F
 
       <div style={{ height: height - CARD_HEADER }}>
         {meetings.length === 0 ? (
-          <p className="text-body text-gray-500 py-xl text-center">Aucune réunion à venir</p>
+          <p className="text-body text-gray-500 py-xl text-center">{tw.noMeeting}</p>
         ) : (
           <div className="flex flex-col h-full">
             <div className="flex flex-col grow min-h-0" style={{ gap: MEETINGS_SLIDE_GAP }}>

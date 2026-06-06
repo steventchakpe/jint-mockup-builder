@@ -56,6 +56,8 @@ import { searchFiltersDefaultConfig, searchFiltersConfigMeta } from '@/component
 import {
   newsSeed,
   eventsSeed,
+  focusSeed,
+  separatorSeed,
   newcomersSeed,
   anniversarySeed,
   directorySeed,
@@ -122,18 +124,7 @@ const registry: Record<string, WebpartDefinition> = {
       focusDefaultConfig as unknown as Record<string, unknown>,
     ),
     defaultConfig: focusDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: {
-      card: {
-        position: 'fill',
-        tag: { value: 'À la une', alignment: 'left' },
-        title: { value: 'Titre du focus', alignment: 'left', color: '#ffffff' },
-        description: { value: 'Décrivez ici le contenu mis en avant.', alignment: 'left', color: '#ffffff' },
-      },
-      redirection: {
-        linkUrl: '#',
-        buttonProps: { value: 'En savoir plus', alignment: 'left', type: 'primary', position: 'below', visible: true },
-      },
-    },
+    defaultContent: focusSeed,
   },
 
   'events': {
@@ -195,7 +186,7 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: searchDefaultConfig[p.key as keyof typeof searchDefaultConfig],
     })),
     defaultConfig: searchDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: {},
+    defaultContent: () => ({}),
   },
   'newcomers': {
     typeId: newcomersConfigMeta.typeId,
@@ -256,7 +247,7 @@ const registry: Record<string, WebpartDefinition> = {
       defaultValue: separatorDefaultConfig[p.key as keyof typeof separatorDefaultConfig],
     })),
     defaultConfig: separatorDefaultConfig as unknown as Record<string, unknown>,
-    defaultContent: { text: { value: 'Séparateur' }, showText: true },
+    defaultContent: separatorSeed,
   },
 
   // ============================================

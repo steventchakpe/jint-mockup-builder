@@ -1,275 +1,227 @@
 /**
  * Données d'exemple par webpart — affichées à la pose (mode manuel), éditables inline.
- * Contenu réaliste sectoriellement neutre (corporate). Remplacé par l'IA en Phase 3.
- * Règles : pas de lorem ipsum, dates récentes, noms cohérents, images via Unsplash.
+ * Chaque seed est une factory `(locale) => content` : la structure (ids, dates,
+ * images, statuts) vit ici, les textes dans seed-strings.{locale}.ts et les noms
+ * dans profile-text.ts. Seeds figées à l'insertion (pas de re-seed au changement
+ * de langue). Contenu réaliste sectoriellement neutre — remplacé par l'IA en Phase 3.
  */
 
-import { createDefaultProfiles } from '@/lib/profiles/default-profiles';
+import type { Locale } from '@/types/project';
+import { createDefaultProfiles, DEFAULT_EMAIL_DOMAIN } from '@/lib/profiles/default-profiles';
+import { profileFullName } from '@/lib/profiles/profile-text';
+import { getProfileText } from '@/lib/profiles/profile-text';
+import { getSeedStrings } from './seed-strings';
 
 const img = (q: string) => `https://images.unsplash.com/${q}?w=1200&auto=format`;
 
-export const newsSeed = {
-  news: [
-    {
-      id: 'n1', title: 'Lancement de notre nouvelle plateforme intranet',
-      chapo: "La direction de la communication présente le nouvel espace collaboratif déployé pour tous les collaborateurs.",
-      imageUrl: img('photo-1486406146926-c627a92ad1ab'), authorId: 'profile-001', author: 'Claire Fontaine',
-      date: '2026-05-28T09:00:00Z', url: '#', viewCount: 634, likeCount: 87,
-      tags: [{ id: 't1', name: 'Communication' }], pinned: true,
+export const newsSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).news;
+  const n = (x: string) => profileFullName(x, locale);
+  return {
+    news: [
+      { id: 'n1', title: s[0].title, chapo: s[0].chapo, imageUrl: img('photo-1486406146926-c627a92ad1ab'), authorId: 'profile-001', author: n('001'), date: '2026-05-28T09:00:00Z', url: '#', viewCount: 634, likeCount: 87, tags: [{ id: 't1', name: s[0].tag }], pinned: true },
+      { id: 'n2', title: s[1].title, chapo: s[1].chapo, imageUrl: img('photo-1611974789855-9c2a0a7236a3'), authorId: 'profile-002', author: n('002'), date: '2026-05-25T14:00:00Z', url: '#', viewCount: 1208, likeCount: 142, tags: [{ id: 't2', name: s[1].tag }] },
+      { id: 'n3', title: s[2].title, chapo: s[2].chapo, imageUrl: img('photo-1550751827-4bd374c3f58b'), authorId: 'profile-004', author: n('004'), date: '2026-05-22T10:00:00Z', url: '#', viewCount: 489, likeCount: 56, tags: [{ id: 't3', name: s[2].tag }] },
+      { id: 'n4', title: s[3].title, chapo: s[3].chapo, imageUrl: img('photo-1497366216548-37526070297c'), authorId: 'profile-006', author: n('006'), date: '2026-05-19T16:00:00Z', url: '#', viewCount: 1874, likeCount: 203, tags: [{ id: 't4', name: s[3].tag }] },
+    ],
+  };
+};
+
+export const eventsSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).events;
+  return {
+    events: [
+      { id: 'e1', title: s[0].title, location: s[0].location, startDate: '2026-06-10T09:00:00', url: '#', imageUrl: img('photo-1505373877841-8d25f7d46678') },
+      { id: 'e2', title: s[1].title, location: s[1].location, startDate: '2026-06-13T14:00:00', url: '#' },
+      { id: 'e3', title: s[2].title, location: s[2].location, startDate: '2026-06-18T18:00:00', url: '#' },
+    ],
+  };
+};
+
+export const focusSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).focus;
+  return {
+    card: {
+      position: 'fill',
+      tag: { value: s.tag, alignment: 'left' },
+      title: { value: s.title, alignment: 'left', color: '#ffffff' },
+      description: { value: s.description, alignment: 'left', color: '#ffffff' },
     },
-    {
-      id: 'n2', title: 'Résultats du trimestre : une croissance soutenue',
-      chapo: 'Les performances confirment la dynamique du groupe sur l’ensemble de ses activités.',
-      imageUrl: img('photo-1611974789855-9c2a0a7236a3'), authorId: 'profile-002', author: 'Marc Lefebvre',
-      date: '2026-05-25T14:00:00Z', url: '#', viewCount: 1208, likeCount: 142,
-      tags: [{ id: 't2', name: 'Finance' }],
+    redirection: {
+      linkUrl: '#',
+      buttonProps: { value: s.button, alignment: 'left', type: 'primary', position: 'below', visible: true },
     },
-    {
-      id: 'n3', title: 'Formation cybersécurité : session de juin',
-      chapo: 'Une nouvelle session de sensibilisation est ouverte à tous les collaborateurs ce mois-ci.',
-      imageUrl: img('photo-1550751827-4bd374c3f58b'), authorId: 'profile-004', author: 'Sophie Aubert',
-      date: '2026-05-22T10:00:00Z', url: '#', viewCount: 489, likeCount: 56,
-      tags: [{ id: 't3', name: 'IT & Sécurité' }],
-    },
-    {
-      id: 'n4', title: 'Retour en images sur notre séminaire annuel',
-      chapo: 'Deux jours d’échanges et d’ateliers qui ont réuni les équipes autour de nos priorités.',
-      imageUrl: img('photo-1497366216548-37526070297c'), authorId: 'profile-006', author: 'Thomas Bernard',
-      date: '2026-05-19T16:00:00Z', url: '#', viewCount: 1874, likeCount: 203,
-      tags: [{ id: 't4', name: "Vie d'entreprise" }],
-    },
-  ],
+  };
 };
 
-export const eventsSeed = {
-  events: [
-    { id: 'e1', title: 'Assemblée générale annuelle', location: 'Auditorium', startDate: '2026-06-10T09:00:00', url: '#', imageUrl: img('photo-1505373877841-8d25f7d46678') },
-    { id: 'e2', title: 'Atelier conformité & RGPD', location: 'Salle Lyon', startDate: '2026-06-13T14:00:00', url: '#' },
-    { id: 'e3', title: 'Afterwork équipes', location: 'Rooftop', startDate: '2026-06-18T18:00:00', url: '#' },
-  ],
+export const separatorSeed = (locale: Locale) => ({
+  text: { value: getSeedStrings(locale).separator },
+  showText: true,
+});
+
+// Référence les profils de l'annuaire par ID — nom/poste/photo/date hydratés au rendu.
+export const newcomersSeed = (locale: Locale) => ({
+  people: ['011', '012', '013'].map((x) => ({ id: `profile-${x}`, displayName: profileFullName(x, locale) })),
+});
+
+export const anniversarySeed = (locale: Locale) => ({
+  people: ['005', '003', '007'].map((x) => ({ id: `profile-${x}`, displayName: profileFullName(x, locale) })),
+});
+
+// Tout l'annuaire (20 profils) — champs hydratés au rendu depuis les profils.
+export const directorySeed = (locale: Locale) => ({
+  people: createDefaultProfiles(DEFAULT_EMAIL_DOMAIN, locale).editable.map((p) => ({ id: p.id, displayName: `${p.firstName} ${p.lastName}` })),
+});
+
+export const myAppsSeed = (locale: Locale) => ({
+  links: getSeedStrings(locale).myApps.map((name, i) => ({ id: `ap${i + 1}`, name, url: '#' })),
+});
+
+export const profileSeed = (locale: Locale) => ({
+  profile: { profileId: 'profile-001', name: profileFullName('001', locale) },
+});
+
+export const docsSeed = (locale: Locale) => {
+  const t = getSeedStrings(locale).docs;
+  return {
+    files: [
+      { id: 'f1', title: t[0], extension: '.pptx', previewUrl: img('photo-1454165804606-c3d57bc86b40'), url: '#' },
+      { id: 'f2', title: t[1], extension: '.xlsx', url: '#' },
+      { id: 'f3', title: t[2], extension: '.docx', previewUrl: img('photo-1450101499163-c8848c66ca85'), url: '#' },
+      { id: 'f4', title: t[3], extension: '.pdf', url: '#' },
+    ],
+  };
 };
 
-export const newcomersSeed = {
-  // Référence les profils de l'annuaire par ID — nom/poste/photo/date hydratés au rendu.
-  people: [
-    { id: 'profile-011', displayName: 'Léa Girard' },
-    { id: 'profile-012', displayName: 'Karim Benali' },
-    { id: 'profile-013', displayName: 'Emma Petit' },
-  ],
+export const myEmailsSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).myEmails;
+  const n = (x: string) => profileFullName(x, locale);
+  // [profil expéditeur, heure, lu, PJ] zippé avec les textes (subject/preview).
+  const meta: Array<[string, string, boolean, boolean?]> = [
+    ['001', '2026-06-05T09:24:00', false, true],
+    ['005', '2026-06-05T08:47:00', false],
+    ['004', '2026-06-04T17:32:00', true],
+    ['002', '2026-06-04T11:05:00', true, true],
+    ['003', '2026-06-03T15:18:00', true],
+    ['006', '2026-06-03T09:51:00', true],
+  ];
+  return {
+    emails: meta.map(([p, receptHour, isRead, hasAttachments], i) => ({
+      id: `m${i + 1}`, displayName: n(p), receptHour, subject: s[i].subject, bodyPreview: s[i].preview, isRead, ...(hasAttachments ? { hasAttachments } : {}),
+    })),
+  };
 };
 
-export const anniversarySeed = {
-  people: [
-    { id: 'profile-005', displayName: 'Julien Moreau' },
-    { id: 'profile-003', displayName: 'Nadia Cherif' },
-    { id: 'profile-007', displayName: 'Paul Renaud' },
-  ],
+export const myMeetingsSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).myMeetings;
+  const n = (x: string) => profileFullName(x, locale);
+  return {
+    meetings: [
+      { id: 'mt1', subject: s[0], startTime: '2026-06-05T09:00:00', endTime: '2026-06-05T10:30:00', status: 'accepted' as const, isOnlineMeeting: true, isOccurrence: true, attendees: [{ name: n('001') }, { name: n('002') }, { name: n('005') }] },
+      { id: 'mt2', subject: s[1], startTime: '2026-06-05T11:00:00', endTime: '2026-06-05T11:30:00', status: 'accepted' as const, isOnlineMeeting: true, attendees: [{ name: n('003') }, { name: n('006') }] },
+      { id: 'mt3', subject: s[2], startTime: '2026-06-05T14:00:00', endTime: '2026-06-05T15:00:00', status: 'tentativelyAccepted' as const, hasAttachments: true, attendees: [{ name: n('005') }] },
+      { id: 'mt4', subject: s[3], startTime: '2026-06-05T16:00:00', endTime: '2026-06-05T17:30:00', status: 'notResponded' as const, attendees: [{ name: n('004') }, { name: n('002') }] },
+      { id: 'mt5', subject: s[4], startTime: '2026-06-06T10:00:00', endTime: '2026-06-06T11:00:00', status: 'accepted' as const, isOnlineMeeting: true, attendees: [{ name: n('001') }, { name: n('003') }] },
+      { id: 'mt6', subject: s[5], startTime: '2026-06-06T14:30:00', endTime: '2026-06-06T16:00:00', status: 'notResponded' as const, hasAttachments: true, attendees: [{ name: n('002') }] },
+    ],
+  };
 };
 
-export const directorySeed = {
-  // Tout l'annuaire (20 profils) — champs hydratés au rendu depuis les profils.
-  people: createDefaultProfiles().editable.map((p) => ({ id: p.id, displayName: `${p.firstName} ${p.lastName}` })),
+export const newshubSeed = (locale: Locale) => {
+  const c = getSeedStrings(locale).newshub;
+  const jint = img('photo-1560179707-f14e90ef3623') + '&fit=crop&w=80';
+  const academy = img('photo-1573164713988-8665fc963095') + '&fit=crop&w=80';
+  return {
+    posts: [
+      { id: 'p1', author: 'Jint', logo: jint, date: '2026-06-04T10:00:00', source: 'LinkedIn' as const, content: c[0], images: [img('photo-1522071820081-009f0129c71c')], url: '#' },
+      { id: 'p2', author: 'Jint', logo: jint, date: '2026-06-03T15:30:00', source: 'Twitter' as const, content: c[1], url: '#' },
+      { id: 'p3', author: 'Jint Academy', logo: academy, date: '2026-06-02T09:00:00', source: 'YouTube' as const, content: c[2], images: [img('photo-1551434678-e076c223a692')], isVideo: true, url: '#' },
+      { id: 'p4', author: 'Jint', logo: jint, date: '2026-06-01T14:00:00', source: 'LinkedIn' as const, content: c[3], images: [img('photo-1497366216548-37526070297c'), img('photo-1517245386807-bb43f82c33c4'), img('photo-1431540015161-0bf868a2d407'), img('photo-1505373877841-8d25f7d46678')], url: '#' },
+      { id: 'p5', author: 'Jint', logo: jint, date: '2026-05-30T11:00:00', source: 'Twitter' as const, content: c[4], url: '#' },
+      { id: 'p6', author: 'Jint Blog', logo: academy, date: '2026-05-28T08:30:00', source: 'Rss' as const, content: c[5], url: '#' },
+    ],
+  };
 };
 
-export const myAppsSeed = {
-  links: [
-    { id: 'ap1', name: 'Portail RH', url: '#' },
-    { id: 'ap2', name: 'Support IT', url: '#' },
-    { id: 'ap3', name: 'Notes de frais', url: '#' },
-    { id: 'ap4', name: 'Annuaire', url: '#' },
-    { id: 'ap5', name: 'Documents', url: '#' },
-    { id: 'ap6', name: 'Congés', url: '#' },
-  ],
+export const myTasksSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).myTasks;
+  return {
+    lists: [
+      {
+        id: 'l-important', name: s[0].name, kind: 'important' as const,
+        tasks: [
+          { id: 'tk1', title: s[0].tasks[0].title, completed: false, dueDate: '2026-06-08', checklist: [
+            { id: 'tk1a', title: s[0].tasks[0].checklist![0], checked: true },
+            { id: 'tk1b', title: s[0].tasks[0].checklist![1], checked: false },
+          ] },
+          { id: 'tk2', title: s[0].tasks[1].title, completed: false, dueDate: '2026-06-09' },
+          { id: 'tk3', title: s[0].tasks[2].title, completed: true, dueDate: '2026-06-03' },
+        ],
+      },
+      {
+        id: 'l-planned', name: s[1].name, kind: 'planned' as const,
+        tasks: [
+          { id: 'tk4', title: s[1].tasks[0].title, completed: false, dueDate: '2026-06-10' },
+          { id: 'tk5', title: s[1].tasks[1].title, completed: false, dueDate: '2026-06-12' },
+        ],
+      },
+      {
+        id: 'l-assigned', name: s[2].name, kind: 'assigned' as const,
+        tasks: [
+          { id: 'tk6', title: s[2].tasks[0].title, completed: false, dueDate: '2026-06-11', checklist: [
+            { id: 'tk6a', title: s[2].tasks[0].checklist![0], checked: false },
+          ] },
+        ],
+      },
+    ],
+  };
 };
 
-export const profileSeed = {
-  profile: { profileId: 'profile-001', name: 'Claire Fontaine' },
+// ids = profils de l'annuaire ; managerId résolu depuis profile.manager au rendu.
+export const orgChartSeed = (locale: Locale) => {
+  const e = (x: string, m: string | null) => ({ id: `profile-${x}`, displayName: profileFullName(x, locale), managerId: m ? `profile-${m}` : null });
+  return {
+    employees: [
+      e('008', null), e('001', '008'), e('002', '008'), e('005', '008'),
+      e('006', '001'), e('011', '001'), e('007', '002'), e('003', '009'), e('009', '008'),
+    ],
+  };
 };
 
-export const docsSeed = {
-  files: [
-    { id: 'f1', title: 'Plan stratégique 2026', extension: '.pptx', previewUrl: img('photo-1454165804606-c3d57bc86b40'), url: '#' },
-    { id: 'f2', title: 'Budget prévisionnel T3', extension: '.xlsx', url: '#' },
-    { id: 'f3', title: 'Compte-rendu comité de direction', extension: '.docx', previewUrl: img('photo-1450101499163-c8848c66ca85'), url: '#' },
-    { id: 'f4', title: 'Charte télétravail', extension: '.pdf', url: '#' },
-  ],
+export const imageInteractiveSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).imageInteractive;
+  return {
+    imageUrl: img('photo-1497366754035-f200968a6e72'),
+    altText: s.alt,
+    shapes: [
+      { id: 's1', type: 'pinpoint' as const, x: 28, y: 38, showTooltip: true, url: '#', tooltipItems: [
+        { type: 'title' as const, value: s.shapes[0].title, size: 'H3' as const },
+        { type: 'paragraph' as const, value: s.shapes[0].paragraph! },
+      ] },
+      { id: 's2', type: 'pinpoint' as const, x: 62, y: 55, showTooltip: true, url: '#', tooltipItems: [
+        { type: 'title' as const, value: s.shapes[1].title, size: 'H3' as const },
+        { type: 'paragraph' as const, value: s.shapes[1].paragraph! },
+      ] },
+      { id: 's3', type: 'rectangle' as const, x: 80, y: 30, width: 18, height: 22, showTooltip: true, url: '#', tooltipItems: [
+        { type: 'title' as const, value: s.shapes[2].title, size: 'H3' as const },
+      ] },
+    ],
+  };
 };
 
-export const myEmailsSeed = {
-  emails: [
-    { id: 'm1', displayName: 'Claire Fontaine', receptHour: '2026-06-05T09:24:00', subject: 'Validation de la communication interne', bodyPreview: 'Bonjour, peux-tu relire la note avant diffusion à l’ensemble des équipes ? Merci !', isRead: false, hasAttachments: true },
-    { id: 'm2', displayName: 'Julien Moreau', receptHour: '2026-06-05T08:47:00', subject: 'Entretiens annuels — planning', bodyPreview: 'Le planning des entretiens est disponible. Merci de confirmer vos créneaux avant vendredi.', isRead: false },
-    { id: 'm3', displayName: 'Sophie Aubert', receptHour: '2026-06-04T17:32:00', subject: 'Rappel : formation cybersécurité', bodyPreview: 'La session de sensibilisation a lieu jeudi à 14h en salle Lyon. Inscription obligatoire.', isRead: true },
-    { id: 'm4', displayName: 'Marc Lefebvre', receptHour: '2026-06-04T11:05:00', subject: 'Reporting T2 — chiffres consolidés', bodyPreview: 'Vous trouverez en pièce jointe le reporting consolidé du deuxième trimestre.', isRead: true, hasAttachments: true },
-    { id: 'm5', displayName: 'Nadia Cherif', receptHour: '2026-06-03T15:18:00', subject: 'Point projet hebdomadaire', bodyPreview: 'Compte-rendu du point de ce matin et prochaines étapes du déploiement.', isRead: true },
-    { id: 'm6', displayName: 'Thomas Bernard', receptHour: '2026-06-03T09:51:00', subject: 'Photos du séminaire annuel', bodyPreview: 'Les photos du séminaire sont en ligne sur l’intranet, n’hésitez pas à les partager.', isRead: true },
-  ],
-};
-
-export const myMeetingsSeed = {
-  meetings: [
-    { id: 'mt1', subject: 'Comité de direction hebdomadaire', startTime: '2026-06-05T09:00:00', endTime: '2026-06-05T10:30:00', status: 'accepted' as const, isOnlineMeeting: true, isOccurrence: true, attendees: [{ name: 'Claire Fontaine' }, { name: 'Marc Lefebvre' }, { name: 'Julien Moreau' }] },
-    { id: 'mt2', subject: 'Point projet intranet', startTime: '2026-06-05T11:00:00', endTime: '2026-06-05T11:30:00', status: 'accepted' as const, isOnlineMeeting: true, attendees: [{ name: 'Nadia Cherif' }, { name: 'Thomas Bernard' }] },
-    { id: 'mt3', subject: 'Entretien annuel — équipe communication', startTime: '2026-06-05T14:00:00', endTime: '2026-06-05T15:00:00', status: 'tentativelyAccepted' as const, hasAttachments: true, attendees: [{ name: 'Julien Moreau' }] },
-    { id: 'mt4', subject: 'Atelier conformité & RGPD', startTime: '2026-06-05T16:00:00', endTime: '2026-06-05T17:30:00', status: 'notResponded' as const, attendees: [{ name: 'Sophie Aubert' }, { name: 'Marc Lefebvre' }] },
-    { id: 'mt5', subject: 'Préparation séminaire annuel', startTime: '2026-06-06T10:00:00', endTime: '2026-06-06T11:00:00', status: 'accepted' as const, isOnlineMeeting: true, attendees: [{ name: 'Claire Fontaine' }, { name: 'Nadia Cherif' }] },
-    { id: 'mt6', subject: 'Revue budgétaire T3', startTime: '2026-06-06T14:30:00', endTime: '2026-06-06T16:00:00', status: 'notResponded' as const, hasAttachments: true, attendees: [{ name: 'Marc Lefebvre' }] },
-  ],
-};
-
-export const newshubSeed = {
-  posts: [
-    { id: 'p1', author: 'Jint', logo: img('photo-1560179707-f14e90ef3623') + '&fit=crop&w=80', date: '2026-06-04T10:00:00', source: 'LinkedIn' as const, content: 'Fiers d’annoncer le lancement de notre nouvelle expérience intranet ! Une navigation repensée, des contenus personnalisés et une recherche unifiée pour tous les collaborateurs.', images: [img('photo-1522071820081-009f0129c71c')], url: '#' },
-    { id: 'p2', author: 'Jint', logo: img('photo-1560179707-f14e90ef3623') + '&fit=crop&w=80', date: '2026-06-03T15:30:00', source: 'Twitter' as const, content: 'Notre équipe sera présente au salon Digital Workplace Paris la semaine prochaine. Venez nous rencontrer au stand B12 ! #DigitalWorkplace #Intranet', url: '#' },
-    { id: 'p3', author: 'Jint Academy', logo: img('photo-1573164713988-8665fc963095') + '&fit=crop&w=80', date: '2026-06-02T09:00:00', source: 'YouTube' as const, content: 'Nouveau tutoriel : créer une newsletter interne en 5 minutes.', images: [img('photo-1551434678-e076c223a692')], isVideo: true, url: '#' },
-    { id: 'p4', author: 'Jint', logo: img('photo-1560179707-f14e90ef3623') + '&fit=crop&w=80', date: '2026-06-01T14:00:00', source: 'LinkedIn' as const, content: 'Retour en images sur notre séminaire annuel : deux jours d’ateliers et d’échanges autour de la communication interne.', images: [img('photo-1497366216548-37526070297c'), img('photo-1517245386807-bb43f82c33c4'), img('photo-1431540015161-0bf868a2d407'), img('photo-1505373877841-8d25f7d46678')], url: '#' },
-    { id: 'p5', author: 'Jint', logo: img('photo-1560179707-f14e90ef3623') + '&fit=crop&w=80', date: '2026-05-30T11:00:00', source: 'Twitter' as const, content: 'Merci à tous nos clients pour leur confiance : 96% de satisfaction sur le support cette année ! 🎉', url: '#' },
-    { id: 'p6', author: 'Jint Blog', logo: img('photo-1573164713988-8665fc963095') + '&fit=crop&w=80', date: '2026-05-28T08:30:00', source: 'Rss' as const, content: '5 bonnes pratiques pour engager les équipes terrain avec votre intranet mobile : notifications ciblées, contenus courts, accès sans VPN…', url: '#' },
-  ],
-};
-
-export const myTasksSeed = {
-  lists: [
-    {
-      id: 'l-important', name: 'Important', kind: 'important' as const,
-      tasks: [
-        { id: 'tk1', title: 'Finaliser la note de cadrage intranet', completed: false, dueDate: '2026-06-08', checklist: [
-          { id: 'tk1a', title: 'Relire la partie gouvernance', checked: true },
-          { id: 'tk1b', title: 'Valider le planning avec la DSI', checked: false },
-        ] },
-        { id: 'tk2', title: 'Préparer le support du comité de direction', completed: false, dueDate: '2026-06-09' },
-        { id: 'tk3', title: 'Envoyer le sondage de satisfaction interne', completed: true, dueDate: '2026-06-03' },
-      ],
-    },
-    {
-      id: 'l-planned', name: 'Planifié', kind: 'planned' as const,
-      tasks: [
-        { id: 'tk4', title: 'Réserver la salle pour l’atelier RGPD', completed: false, dueDate: '2026-06-10' },
-        { id: 'tk5', title: 'Mettre à jour l’annuaire des équipes', completed: false, dueDate: '2026-06-12' },
-      ],
-    },
-    {
-      id: 'l-assigned', name: 'Qui me sont affectées', kind: 'assigned' as const,
-      tasks: [
-        { id: 'tk6', title: 'Rédiger l’article sur le séminaire', completed: false, dueDate: '2026-06-11', checklist: [
-          { id: 'tk6a', title: 'Sélectionner les photos', checked: false },
-        ] },
-      ],
-    },
-  ],
-};
-
-export const orgChartSeed = {
-  // ids = profils de l'annuaire ; managerId résolu depuis profile.manager au rendu.
-  employees: [
-    { id: 'profile-008', displayName: 'Isabelle Marchand', managerId: null },
-    { id: 'profile-001', displayName: 'Claire Fontaine', managerId: 'profile-008' },
-    { id: 'profile-002', displayName: 'Marc Lefebvre', managerId: 'profile-008' },
-    { id: 'profile-005', displayName: 'Julien Moreau', managerId: 'profile-008' },
-    { id: 'profile-006', displayName: 'Thomas Bernard', managerId: 'profile-001' },
-    { id: 'profile-011', displayName: 'Léa Girard', managerId: 'profile-001' },
-    { id: 'profile-007', displayName: 'Paul Renaud', managerId: 'profile-002' },
-    { id: 'profile-003', displayName: 'Nadia Cherif', managerId: 'profile-009' },
-    { id: 'profile-009', displayName: 'Antoine Roussel', managerId: 'profile-008' },
-  ],
-};
-
-export const imageInteractiveSeed = {
-  imageUrl: img('photo-1497366754035-f200968a6e72'),
-  altText: 'Plan des locaux',
-  shapes: [
-    { id: 's1', type: 'pinpoint' as const, x: 28, y: 38, showTooltip: true, url: '#', tooltipItems: [
-      { type: 'title' as const, value: 'Espace collaboratif', size: 'H3' as const },
-      { type: 'paragraph' as const, value: 'Open space et salles de réunion réservables.' },
-    ] },
-    { id: 's2', type: 'pinpoint' as const, x: 62, y: 55, showTooltip: true, url: '#', tooltipItems: [
-      { type: 'title' as const, value: 'Cafétéria', size: 'H3' as const },
-      { type: 'paragraph' as const, value: 'Ouverte de 8h à 16h.' },
-    ] },
-    { id: 's3', type: 'rectangle' as const, x: 80, y: 30, width: 18, height: 22, showTooltip: true, url: '#', tooltipItems: [
-      { type: 'title' as const, value: 'Accueil visiteurs', size: 'H3' as const },
-    ] },
-  ],
-};
-
-export const myResumeSeed = {
-  userName: 'Claire',
-  dashboardName: 'l’intranet',
+export const myResumeSeed = (locale: Locale) => ({
+  userName: getProfileText(locale)['001'][0],
+  dashboardName: getSeedStrings(locale).myResume.dashboardName,
   cards: [
     { cardType: 'meetings' as const, itemsLeft: 3 },
     { cardType: 'mails' as const, itemsLeft: 12 },
     { cardType: 'tasks' as const, itemsLeft: 5 },
   ],
-};
+});
 
-export const actionButtonSeed = {
-  text: 'Faire une demande',
+export const actionButtonSeed = (locale: Locale) => ({
+  text: getSeedStrings(locale).actionButton,
   url: '#',
-};
+});
 
-export const searchResultsSeed = {
-  verticals: ['Tous', 'Documents', 'Sites', 'Actualités'],
-  items: [
-    { id: 'sr1', name: 'Plan stratégique 2026', contentType: 'document' as const, extension: '.pptx', thumbnailUrl: img('photo-1454165804606-c3d57bc86b40'), url: '#', properties: [
-      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Claire Fontaine' },
-      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-06-02' },
-      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Stratégie', 'Direction'] },
-    ] },
-    { id: 'sr2', name: 'Charte télétravail', contentType: 'document' as const, extension: '.pdf', url: '#', properties: [
-      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Julien Moreau' },
-      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-05-28' },
-      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['RH'] },
-    ] },
-    { id: 'sr3', name: 'Budget prévisionnel T3', contentType: 'document' as const, extension: '.xlsx', url: '#', properties: [
-      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Marc Lefebvre' },
-      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-06-04' },
-      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Finance'] },
-    ] },
-    { id: 'sr4', name: 'Espace Communication', contentType: 'site' as const, thumbnailUrl: img('photo-1522071820081-009f0129c71c'), url: '#', properties: [
-      { name: 'author', displayName: 'Propriétaire', type: 'user' as const, value: 'Claire Fontaine' },
-      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-06-01' },
-      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Communication'] },
-    ] },
-    { id: 'sr5', name: 'Compte-rendu comité de direction', contentType: 'document' as const, extension: '.docx', url: '#', properties: [
-      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Isabelle Marchand' },
-      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-05-30' },
-      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Direction'] },
-    ] },
-    { id: 'sr6', name: 'Lancement de la nouvelle plateforme intranet', contentType: 'news' as const, thumbnailUrl: img('photo-1486406146926-c627a92ad1ab'), url: '#', properties: [
-      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Claire Fontaine' },
-      { name: 'modified', displayName: 'Publié le', type: 'date' as const, value: '2026-05-28' },
-      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Communication'] },
-    ] },
-    { id: 'sr7', name: 'Guide d’accueil des nouveaux arrivants', contentType: 'document' as const, extension: '.docx', url: '#', properties: [
-      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Julien Moreau' },
-      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-05-26' },
-      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['RH', 'Onboarding'] },
-    ] },
-    { id: 'sr8', name: 'Reporting consolidé T2', contentType: 'document' as const, extension: '.xlsx', url: '#', properties: [
-      { name: 'author', displayName: 'Auteur', type: 'user' as const, value: 'Paul Renaud' },
-      { name: 'modified', displayName: 'Modifié le', type: 'date' as const, value: '2026-06-03' },
-      { name: 'tags', displayName: 'Tags', type: 'tags' as const, value: ['Finance'] },
-    ] },
-  ],
-};
-
-export const searchFiltersSeed = {
-  facets: [
-    { name: 'fileType', displayName: 'Type de fichier', buckets: [
-      { key: '.docx', label: 'Word', count: 3 },
-      { key: '.xlsx', label: 'Excel', count: 2 },
-      { key: '.pptx', label: 'PowerPoint', count: 1 },
-      { key: '.pdf', label: 'PDF', count: 1 },
-    ] },
-    { name: 'contentType', displayName: 'Type de contenu', buckets: [
-      { key: 'document', label: 'Documents', count: 6 },
-      { key: 'site', label: 'Sites', count: 1 },
-      { key: 'news', label: 'Actualités', count: 1 },
-    ] },
-    { name: 'author', displayName: 'Auteur', buckets: [
-      { key: 'Claire Fontaine', label: 'Claire Fontaine' },
-      { key: 'Julien Moreau', label: 'Julien Moreau' },
-      { key: 'Marc Lefebvre', label: 'Marc Lefebvre' },
-    ] },
-  ],
-};
+export { searchResultsSeed, searchFiltersSeed } from './webpart-seeds.search';

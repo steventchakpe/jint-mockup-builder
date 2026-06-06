@@ -239,8 +239,8 @@ export interface SharingFlow {
 }
 
 /** Département auteur de la maquette (équipe interne Jint). */
-export type Department = 'Design' | 'Customer Success' | 'Sales' | 'Autre';
-export const DEPARTMENTS: Department[] = ['Design', 'Customer Success', 'Sales', 'Autre'];
+export type Department = 'Design' | 'Customer Success' | 'Sales' | 'Sales Canada' | 'Autre';
+export const DEPARTMENTS: Department[] = ['Design', 'Customer Success', 'Sales', 'Sales Canada', 'Autre'];
 
 export interface ProjectMetadata {
   createdBy: string;

@@ -1,11 +1,13 @@
 // Factory d'un projet vierge — point de départ du mode manuel (PRD §6.1 :
 // template SharePoint vide Jint, shell en place + 1 page « Accueil ».
-import type { Project } from '@/types/project';
+import type { Locale, Project } from '@/types/project';
 import { genId, makeSection } from './section-ops';
 import { createDefaultProfiles, DEFAULT_EMAIL_DOMAIN } from '@/lib/profiles/default-profiles';
+import { getDemoStrings } from '@/lib/i18n/get-demo-strings';
 
 /** Crée un projet vierge (mode manuel) : shell par défaut + 1 page Accueil avec 2 sections vides. */
-export function createBlankProject(name = 'Nouvelle démo'): Project {
+export function createBlankProject(name = 'Nouvelle démo', locale: Locale = 'fr-FR'): Project {
+  const s = getDemoStrings(locale);
   const now = new Date().toISOString();
   const pageId = genId('page');
   return {
@@ -19,7 +21,7 @@ export function createBlankProject(name = 'Nouvelle démo'): Project {
       emailDomain: DEFAULT_EMAIL_DOMAIN,
       logo: null,
       employeeCount: 0,
-      contentLanguage: 'fr-FR',
+      contentLanguage: locale,
     },
     theme: {
       primaryColor: '#0078d4',
@@ -36,47 +38,38 @@ export function createBlankProject(name = 'Nouvelle démo'): Project {
       layout: 'extended',
       theme: 'neutral',
       siteLogo: { type: 'initials', initials: 'CS', imageUrl: null, backgroundColor: '#0078d4' },
-      siteTitle: 'SharePoint site title',
-      labels: ['Confidential', 'Corporate Advisory +2'],
+      siteTitle: s.header.siteTitle,
+      labels: [...s.header.labels],
       hubNavigation: {
         hubLogo: { initials: 'H', backgroundColor: '#0078d4' },
-        hubTitle: 'Hub site title',
-        links: [
-          { label: 'Primary link', url: '#' },
-          { label: 'Primary link', url: '#' },
-          { label: 'Primary link', url: '#' },
-        ],
-        groups: [{ label: 'Primary group', children: [] }],
+        hubTitle: s.header.hubTitle,
+        links: s.header.hubLinks.slice(0, 3).map((label) => ({ label, url: '#' })),
+        groups: [{ label: s.header.hubLinks[3], children: [] }],
       },
       localNavigation: {
-        items: [
-          { label: 'Home', url: '#', isActive: true },
-          { label: 'Documents', url: '#', isActive: false },
-          { label: 'Pages', url: '#', isActive: false },
-          { label: 'Site contents', url: '#', isActive: false },
-        ],
+        items: s.header.localNav.map((label, i) => ({ label, url: '#', isActive: i === 0 })),
       },
       actions: { showFollowButton: true, showShareButton: true },
     },
-    profiles: createDefaultProfiles(),
+    profiles: createDefaultProfiles(DEFAULT_EMAIL_DOMAIN, locale),
     pages: [
       {
         id: pageId,
-        title: 'Accueil',
-        slug: 'accueil',
+        title: s.blank.homeTitle,
+        slug: s.blank.homeSlug,
         icon: 'Home',
         order: 0,
         sections: [makeSection('one-column'), makeSection('one-column')],
         verticalSection: null,
       },
     ],
-    navigation: { type: 'top', items: [{ label: 'Accueil', pageId }] },
+    navigation: { type: 'top', items: [{ label: s.blank.homeTitle, pageId }] },
     uex: {
       enabled: true,
       sections: {
         navigate: { links: [] },
         inform: { showEvents: true, showNews: true, maxItems: 5 },
-        search: { enabled: true, placeholder: 'Rechercher' },
+        search: { enabled: true, placeholder: s.suite.search },
         contribute: { enabled: true },
         share: { channels: ['teams', 'engage', 'newsletter'] },
       },

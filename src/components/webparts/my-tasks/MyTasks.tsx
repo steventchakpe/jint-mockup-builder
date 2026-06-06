@@ -12,6 +12,7 @@ import {
   NEUTRAL_LIGHTER,
   TITLE_HEIGHT,
 } from './MyTasks.mozzaik';
+import { useDemoStrings } from '@/lib/i18n';
 import type { MyTasksProps } from './MyTasks.types';
 
 /**
@@ -25,6 +26,7 @@ import type { MyTasksProps } from './MyTasks.types';
  */
 export function MyTasks({ config, content, isEditMode = false, locale = 'fr-FR' }: MyTasksProps) {
   const { title, height, radius } = config;
+  const tw = useDemoStrings().webparts;
   const lists = content.lists;
   const [currentId, setCurrentId] = useState(lists[0]?.id);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -82,7 +84,7 @@ export function MyTasks({ config, content, isEditMode = false, locale = 'fr-FR' 
 
         {/* TreeView */}
         {current && current.tasks.length === 0 ? (
-          <p className="text-body text-gray-500 py-xl text-center grow flex items-center justify-center">Aucune tâche</p>
+          <p className="text-body text-gray-500 py-xl text-center grow flex items-center justify-center">{tw.noTask}</p>
         ) : (
           <div className="flex flex-col" style={{ gap: GROUPS_GAP }}>
             {current?.tasks.map((task, t) => (

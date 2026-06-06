@@ -6,6 +6,7 @@ import { useElementSize } from '@/components/webparts/focus/hooks/useElementSize
 import { Shape } from './components/Shape';
 import { EditToolbar, ShapeEditorPanel, useShapeEditing } from './ImageInteractive.editor';
 import { FONT_SIZE, HEADER_HEIGHT, HEADER_PADDING } from './ImageInteractive.mozzaik';
+import { useDemoStrings } from '@/lib/i18n';
 import type { ImageInteractiveProps } from './ImageInteractive.types';
 
 /** Port de useImage : dimensions naturelles de l'image. */
@@ -32,6 +33,7 @@ function useImageDimensions(url: string) {
  */
 export function ImageInteractive({ config, content, isEditMode = false }: ImageInteractiveProps) {
   const { title, height, fullWidth } = config;
+  const tw = useDemoStrings().webparts;
   const { imageUrl, altText, shapes } = content;
   const { ref, size } = useElementSize<HTMLDivElement>();
   const dims = useImageDimensions(imageUrl);
@@ -94,7 +96,7 @@ export function ImageInteractive({ config, content, isEditMode = false }: ImageI
           <p className="text-body text-gray-500 py-xl text-center self-center">
             {isEditMode
               ? 'Renseignez l’URL de l’image dans le panneau de configuration pour créer des zones interactives.'
-              : 'Aucune image configurée.'}
+              : tw.noImage}
           </p>
         ) : (
           <div

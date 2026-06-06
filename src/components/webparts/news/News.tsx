@@ -6,6 +6,7 @@ import { NewsCarousel } from './layouts/NewsCarousel';
 import { NewsVerticalTiles } from './layouts/NewsVerticalTiles';
 import { NewsFeed } from './layouts/NewsFeed';
 import { NewsHero } from './layouts/NewsHero';
+import { useDemoStrings } from '@/lib/i18n';
 import type { NewsProps } from './News.types';
 
 /**
@@ -15,6 +16,7 @@ import type { NewsProps } from './News.types';
  */
 export function News({ config, content, isEditMode = false, onArticleClick, onShareClick }: NewsProps) {
   const { layout, newsAmount, title } = config;
+  const tw = useDemoStrings().webparts;
   const articles = content.news.slice(0, newsAmount);
 
   const handleClick = (id: string) => {
@@ -36,7 +38,7 @@ export function News({ config, content, isEditMode = false, onArticleClick, onSh
       )}
 
       {articles.length === 0 ? (
-        <p className="text-body text-gray-500 py-xl text-center">Aucune actualité à afficher.</p>
+        <p className="text-body text-gray-500 py-xl text-center">{tw.noNews}</p>
       ) : (
         <>
           {layout === 'topStory' && <NewsTopStory articles={articles} config={config} onArticleClick={handleClick} onShareClick={onShareClick} />}

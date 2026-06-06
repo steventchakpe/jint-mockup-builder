@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, NEUTRAL, radiusForStack } from '../News.mozzaik';
 import { LikeIcon, FilledLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
+import { useDemoDateLocale } from '@/lib/i18n';
 import type { NewsCustomContent, NewsItem, NewsRounded } from '../News.types';
 
 interface NewsArticleCardProps {
@@ -21,8 +22,8 @@ interface NewsArticleCardProps {
   onShareClick?: (url: string) => void;
 }
 
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const fmtDate = (iso: string, locale: string) =>
+  new Date(iso).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 const getInitials = (name: string) => {
   const p = name.trim().split(' ').filter(Boolean);
@@ -39,6 +40,7 @@ export function NewsArticleCard({
   article, index, isFirst, rounded, customContent: cc,
   topImageHeight, sideImage, titleSize, showPin, onArticleClick, onShareClick,
 }: NewsArticleCardProps) {
+  const dateLocale = useDemoDateLocale();
   const radius = radiusForStack(rounded);
   const hasTags = cc.showTags && article.tags.length > 0;
   const chapoMaxLine = isFirst ? 4 : hasTags ? 2 : 4;
@@ -167,7 +169,7 @@ export function NewsArticleCard({
                   <>
                     <span className="shrink-0 rounded-full" style={{ width: 3, height: 3, background: NEUTRAL.tertiary }} />
                     <span className="shrink-0" style={{ fontSize: FONT_SIZE.small, color: NEUTRAL.secondary }}>
-                      {fmtDate(article.date)}
+                      {fmtDate(article.date, dateLocale)}
                     </span>
                   </>
                 )}

@@ -1,4 +1,5 @@
 import { type ComponentType, type LazyExoticComponent } from 'react';
+import type { Locale } from '@/types/project';
 
 // Base props that every webpart component receives
 export interface WebpartProps<TConfig = Record<string, unknown>, TContent = Record<string, unknown>> {
@@ -6,6 +7,8 @@ export interface WebpartProps<TConfig = Record<string, unknown>, TContent = Reco
   config: TConfig;
   content: TContent;
   isEditMode: boolean;
+  /** Locale JS pour les formats de dates (dérivée de prospect.contentLanguage). */
+  locale?: string;
   onConfigChange?: (config: TConfig) => void;
   onContentChange?: (content: TContent) => void;
 }
@@ -43,7 +46,8 @@ export interface WebpartDefinition {
   skeletonComponent?: LazyExoticComponent<ComponentType<unknown>>;
   configurableProperties: ConfigurableProperty[];
   defaultConfig: Record<string, unknown>;
-  defaultContent: Record<string, unknown>;
+  /** Seed de contenu à la pose — factory par locale (seeds figées à l'insertion). */
+  defaultContent: (locale: Locale) => Record<string, unknown>;
 }
 
 export type WebpartCategory =

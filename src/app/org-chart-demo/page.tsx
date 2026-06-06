@@ -7,7 +7,7 @@ import { orgChartSeed } from '@/config/webpart-seeds';
 export default function OrgChartDemoPage() {
   return (
     <main className="w-full max-w-[1204px] mx-auto p-lg flex flex-col gap-2xl bg-white min-h-screen">
-      <OrgChart config={{ ...orgChartDefaultConfig, title: 'Organigramme', height: 700 }} content={orgChartSeed} />
+      <OrgChart config={{ ...orgChartDefaultConfig, title: 'Organigramme', height: 700 }} content={orgChartSeed('fr-FR')} />
     </main>
   );
 }

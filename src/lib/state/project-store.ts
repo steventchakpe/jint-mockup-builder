@@ -104,7 +104,7 @@ function normalizeProject(project: Project): Project {
     next.prospect = { ...next.prospect, emailDomain: DEFAULT_EMAIL_DOMAIN };
   }
   if (!next.profiles?.editable?.length) {
-    next.profiles = createDefaultProfiles(next.prospect.emailDomain);
+    next.profiles = createDefaultProfiles(next.prospect.emailDomain, next.prospect.contentLanguage);
   }
   return next;
 }

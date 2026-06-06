@@ -2,7 +2,11 @@
 
 import { useState } from 'react';
 import { useProjectStore } from '@/lib/state/project-store';
+import { useDemoStrings } from '@/lib/i18n';
+import type { DemoStrings } from '@/lib/i18n';
 import type { Profile } from '@/types/project';
+
+type AccountStrings = DemoStrings['account'];
 
 /** Initiales d'un profil. */
 const initials = (p: Profile) => `${p.firstName[0] ?? ''}${p.lastName[0] ?? ''}`.toUpperCase();
@@ -48,7 +52,7 @@ function PersonAddIcon() {
  * ombre), logo Microsoft, titre 24 semibold, tuiles de compte (avatar 48,
  * filet, hover gris), « Utiliser un autre compte », footer liens légaux.
  */
-function AccountPicker({ profiles, onPick, onClose }: { profiles: Profile[]; onPick: (id: string) => void; onClose: () => void }) {
+function AccountPicker({ profiles, t, onPick, onClose }: { profiles: Profile[]; t: AccountStrings; onPick: (id: string) => void; onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center"
@@ -61,7 +65,7 @@ function AccountPicker({ profiles, onPick, onClose }: { profiles: Profile[]; onP
     >
       <div className="bg-white w-[440px] max-w-[calc(100vw-32px)]" style={{ padding: 44, boxShadow: '0 2px 6px rgba(0,0,0,0.2)', minHeight: 338 }}>
         <MicrosoftLogo />
-        <h1 className="font-semibold text-[#1b1b1b]" style={{ fontSize: 24, margin: '16px 0 12px' }}>Choisir un compte</h1>
+        <h1 className="font-semibold text-[#1b1b1b]" style={{ fontSize: 24, margin: '16px 0 12px' }}>{t.chooseAccount}</h1>
 
         <div className="flex flex-col -mx-[44px]">
           {profiles.map((p) => (
@@ -76,7 +80,7 @@ function AccountPicker({ profiles, onPick, onClose }: { profiles: Profile[]; onP
               <span className="flex flex-col min-w-0">
                 <span className="text-[#1b1b1b] truncate" style={{ fontSize: 15, fontWeight: 600 }}>{p.firstName} {p.lastName}</span>
                 <span className="text-[#5e5e5e] truncate" style={{ fontSize: 13 }}>{p.email}</span>
-                <span className="text-[#5e5e5e]" style={{ fontSize: 13 }}>Connecté</span>
+                <span className="text-[#5e5e5e]" style={{ fontSize: 13 }}>{t.signedIn}</span>
               </span>
             </button>
           ))}
@@ -87,14 +91,14 @@ function AccountPicker({ profiles, onPick, onClose }: { profiles: Profile[]; onP
             style={{ padding: '14px 44px' }}
           >
             <span className="inline-flex items-center justify-center" style={{ width: 48 }}><PersonAddIcon /></span>
-            <span className="text-[#1b1b1b]" style={{ fontSize: 15 }}>Utiliser un autre compte</span>
+            <span className="text-[#1b1b1b]" style={{ fontSize: 15 }}>{t.useAnother}</span>
           </button>
         </div>
       </div>
 
       {/* Footer légal (bas droite, comme login.microsoftonline.com) */}
       <div className="fixed bottom-0 right-0 flex" style={{ fontSize: 12 }}>
-        {['Conditions d’utilisation', 'Confidentialité et cookies', '···'].map((l) => (
+        {[t.terms, t.privacy, '···'].map((l) => (
           <span key={l} className="text-white/90 hover:bg-black/20 cursor-pointer" style={{ padding: '8px 12px' }}>{l}</span>
         ))}
       </div>
@@ -108,7 +112,7 @@ function AccountPicker({ profiles, onPick, onClose }: { profiles: Profile[]; onP
  * semibold, email 12, liens « Afficher le compte » / « Mon profil Microsoft
  * 365 », pied « Se connecter avec un autre compte ».
  */
-function MeControl({ active, company, onSignOut, onSwitch, onClose }: { active: Profile; company: string; onSignOut: () => void; onSwitch: () => void; onClose: () => void }) {
+function MeControl({ active, company, t, onSignOut, onSwitch, onClose }: { active: Profile; company: string; t: AccountStrings; onSignOut: () => void; onSwitch: () => void; onClose: () => void }) {
   return (
     <>
       <div className="fixed inset-0 z-[90]" onClick={onClose} />
@@ -117,7 +121,7 @@ function MeControl({ active, company, onSignOut, onSwitch, onClose }: { active: 
         <div className="flex items-center justify-between" style={{ height: 48, padding: '0 12px 0 16px' }}>
           <span className="font-semibold truncate" style={{ fontSize: 14 }}>{company || 'Contoso'}</span>
           <button type="button" onClick={onSignOut} className="text-[#323130] hover:underline shrink-0" style={{ fontSize: 12 }}>
-            Se déconnecter
+            {t.signOut}
           </button>
         </div>
 
@@ -127,8 +131,8 @@ function MeControl({ active, company, onSignOut, onSwitch, onClose }: { active: 
           <span className="flex flex-col min-w-0 justify-center" style={{ gap: 2 }}>
             <span className="font-bold truncate" style={{ fontSize: 18 }}>{active.firstName} {active.lastName}</span>
             <span className="text-[#605e5c] truncate" style={{ fontSize: 12 }}>{active.email}</span>
-            <span className="text-sp-primary hover:underline cursor-pointer" style={{ fontSize: 12 }}>Afficher le compte</span>
-            <span className="text-sp-primary hover:underline cursor-pointer" style={{ fontSize: 12 }}>Mon profil Microsoft 365</span>
+            <span className="text-sp-primary hover:underline cursor-pointer" style={{ fontSize: 12 }}>{t.viewAccount}</span>
+            <span className="text-sp-primary hover:underline cursor-pointer" style={{ fontSize: 12 }}>{t.myProfile}</span>
           </span>
         </div>
 
@@ -140,7 +144,7 @@ function MeControl({ active, company, onSignOut, onSwitch, onClose }: { active: 
           style={{ padding: '12px 16px', fontSize: 14 }}
         >
           <span className="text-[#605e5c]"><PersonAddIcon /></span>
-          Se connecter avec un autre compte
+          {t.signInAnother}
         </button>
       </div>
     </>
@@ -154,6 +158,7 @@ function MeControl({ active, company, onSignOut, onSwitch, onClose }: { active: 
 export function AccountSwitcher() {
   const project = useProjectStore((s) => s.project);
   const setActiveProfile = useProjectStore((s) => s.setActiveProfile);
+  const t = useDemoStrings();
   const [menuOpen, setMenuOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
 
@@ -165,7 +170,7 @@ export function AccountSwitcher() {
 
   if (!active) {
     return (
-      <button className="w-12 h-12 flex items-center justify-center shrink-0" aria-label="Compte">
+      <button className="w-12 h-12 flex items-center justify-center shrink-0" aria-label={t.suite.account}>
         <span className="w-8 h-8 rounded-full bg-[#ca5010] flex items-center justify-center">
           <span className="text-white text-caption font-semibold">JD</span>
         </span>
@@ -175,13 +180,14 @@ export function AccountSwitcher() {
 
   return (
     <>
-      <button className="w-12 h-12 flex items-center justify-center shrink-0 hover:bg-white/10" aria-label="Compte" onClick={() => setMenuOpen((o) => !o)}>
+      <button className="w-12 h-12 flex items-center justify-center shrink-0 hover:bg-white/10" aria-label={t.suite.account} onClick={() => setMenuOpen((o) => !o)}>
         <Avatar profile={active} size={32} />
       </button>
 
       {menuOpen && (
         <MeControl
           active={active}
+          t={t.account}
           company={project?.prospect.company ?? ''}
           onSignOut={() => { setMenuOpen(false); setPickerOpen(true); }}
           onSwitch={() => { setMenuOpen(false); setPickerOpen(true); }}
@@ -192,6 +198,7 @@ export function AccountSwitcher() {
       {pickerOpen && (
         <AccountPicker
           profiles={switchable}
+          t={t.account}
           onPick={(id) => { setActiveProfile(id); setPickerOpen(false); }}
           onClose={() => setPickerOpen(false)}
         />

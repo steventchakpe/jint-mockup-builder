@@ -11,7 +11,7 @@ import { useProjectStore } from '@/lib/state/project-store';
 import { Button, Input, Skeleton, Modal, MetricCard, SidebarItem, JintLogo } from './dashboard-ui';
 import { ProjectCard } from './ProjectCard';
 import { currentUser, getRelativeTime, type DashProject } from './dashboard-utils';
-import { DEPARTMENTS } from '@/types/project';
+import { DEPARTMENTS, type Locale } from '@/types/project';
 import type { ShareAnalytics } from '@/types/providers';
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' };
@@ -35,6 +35,9 @@ export function Dashboard() {
   const [projectToDelete, setProjectToDelete] = useState<DashProject | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newLocale, setNewLocale] = useState<Locale>('fr-FR');
   const [analytics, setAnalytics] = useState<Record<string, ShareAnalytics>>({});
 
   /** Métriques de partage (self-hosted) — pour la liste de projets fournie. */
@@ -70,10 +73,12 @@ export function Dashboard() {
 
   const openProject = (id: string) => router.push(`/edit/${id}`);
 
+  const openCreateModal = () => { setNewName(''); setNewLocale('fr-FR'); setShowCreate(true); };
+
   const handleCreateProject = () => {
     setIsCreating(true);
     // Pas de POST ici : la maquette n'est persistée qu'au premier clic sur « Sauvegarder » (PRD §6.8).
-    const project = createBlankProject();
+    const project = createBlankProject(newName.trim() || undefined, newLocale);
     loadProjectIntoStore(project, { dirty: true });
     router.push(`/edit/${project.id}`);
   };
@@ -184,7 +189,7 @@ export function Dashboard() {
                 <Button variant="outline" className="pointer-events-none opacity-50"><Sparkles className="mr-2 h-4 w-4" /> Créer avec l’IA</Button>
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-3 py-1.5 bg-[#0A1F19] text-white font-bold text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">Disponible prochainement</div>
               </div>
-              <Button onClick={handleCreateProject} disabled={isCreating}>
+              <Button onClick={openCreateModal} disabled={isCreating}>
                 {isCreating ? <div className="h-5 w-5 rounded-full border-2 border-[#0A1F19]/30 border-t-[#0A1F19] animate-spin mr-2" /> : <Plus className="mr-2 h-5 w-5" />}
                 Nouvelle maquette
               </Button>
@@ -242,7 +247,7 @@ export function Dashboard() {
               <div className="h-24 w-24 bg-[#F5F4F0] rounded-full flex items-center justify-center mb-6"><FolderOpen className="h-10 w-10 text-[#0A1F19]" /></div>
               <h3 className="text-2xl font-extrabold mb-3">Aucune maquette trouvée</h3>
               <p className="text-[#4A5D58] font-medium max-w-[28rem] mx-auto text-center mb-8 text-base">{searchQuery ? 'Aucune maquette ne correspond à votre recherche.' : 'Vous n’avez pas encore créé de maquette. Commencez pour vos prospects.'}</p>
-              {!searchQuery && <Button onClick={handleCreateProject}><Plus className="mr-2 h-5 w-5" /> Créer ma première maquette</Button>}
+              {!searchQuery && <Button onClick={openCreateModal}><Plus className="mr-2 h-5 w-5" /> Créer ma première maquette</Button>}
             </div>
           ) : (
             <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'space-y-4'}>
@@ -253,6 +258,45 @@ export function Dashboard() {
           )}
         </div>
       </main>
+
+      {/* CRÉATION — nom + langue du contenu (la langue pilote le template vide et les seeds) */}
+      <Modal
+        isOpen={showCreate}
+        onClose={() => setShowCreate(false)}
+        title="Nouvelle maquette"
+        description="Choisissez le nom et la langue du contenu de la démo."
+      >
+        <div className="flex flex-col gap-5">
+          <label className="flex flex-col gap-2">
+            <span className="text-sm font-bold">Nom de la maquette</span>
+            <Input
+              autoFocus
+              placeholder="Nouvelle démo"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleCreateProject(); }}
+            />
+          </label>
+          <label className="flex flex-col gap-2">
+            <span className="text-sm font-bold">Langue du contenu</span>
+            <select
+              className="h-11 w-full rounded-full border-2 border-[#E8E6DF] bg-white px-4 text-sm font-medium focus:outline-none focus:border-[#0A1F19] cursor-pointer"
+              value={newLocale}
+              onChange={(e) => setNewLocale(e.target.value as Locale)}
+            >
+              <option value="fr-FR">Français (France)</option>
+              <option value="fr-CA">Français (Canada)</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-3">
+            <Button variant="outline" onClick={() => setShowCreate(false)} disabled={isCreating} className="w-full sm:w-auto">Annuler</Button>
+            <Button onClick={handleCreateProject} disabled={isCreating} className="w-full sm:w-auto">
+              {isCreating ? 'Création…' : 'Créer la maquette'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       <Modal
         isOpen={!!projectToDelete}

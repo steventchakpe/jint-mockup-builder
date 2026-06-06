@@ -48,7 +48,7 @@ const col = (id: string, index: number, wp: WebpartInstance) => ({ id, index, we
 const myApps: WebpartInstance = {
   id: 'wp-apps', type: 'my-apps', order: 0,
   config: { ...myAppsDefaultConfig } as unknown as Record<string, unknown>,
-  content: myAppsSeed as unknown as Record<string, unknown>,
+  content: myAppsSeed('fr-FR') as unknown as Record<string, unknown>,
   flex: { x: 0, w: 12, y: 0, z: 1 },
 };
 

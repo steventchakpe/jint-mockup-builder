@@ -11,6 +11,7 @@ import {
   NEUTRAL_SECONDARY,
   TOTAL_COUNT_MARGIN,
 } from './SearchResults.mozzaik';
+import { useDemoStrings } from '@/lib/i18n';
 import type { SearchResultsLayout, SearchResultsProps } from './SearchResults.types';
 
 const VIEWS: Array<{ key: SearchResultsLayout; label: string }> = [
@@ -30,6 +31,7 @@ const VIEWS: Array<{ key: SearchResultsLayout; label: string }> = [
  */
 export function SearchResults({ config, content, isEditMode = false, locale = 'fr-FR' }: SearchResultsProps) {
   const { title, height, showVerticals, enableViewSwitch, layout, autoConnect } = config;
+  const tw = useDemoStrings().webparts;
   const [view, setView] = useState<SearchResultsLayout>(layout);
   // La « Vue par défaut » du panneau de config doit s'appliquer immédiatement
   // (le switcher du toolbar reste prioritaire jusqu'au prochain changement de config)
@@ -119,14 +121,14 @@ export function SearchResults({ config, content, isEditMode = false, locale = 'f
 
         <div className="overflow-y-auto grow" style={{ padding: CONTAINER_PADDING }}>
           {visible.length === 0 ? (
-            <p className="text-body text-gray-500 py-xl text-center">Aucun résultat</p>
+            <p className="text-body text-gray-500 py-xl text-center">{tw.noResult}</p>
           ) : (
             <View items={visible} config={config} locale={locale} />
           )}
           {items.length > shown && (
             <div className="flex justify-center items-center" style={{ minHeight: 64, padding: 8 }}>
               <button type="button" onClick={() => setShown((s) => s + 8)} className="h-8 px-md bg-white border border-[#8a8886] rounded-xs text-[#323130] font-semibold hover:bg-sp-lighter-alt" style={{ fontSize: FONT_SIZE.BodyText }}>
-                Afficher plus
+                {tw.showMore}
               </button>
             </div>
           )}

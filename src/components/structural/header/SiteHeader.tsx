@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { useProjectStore } from '@/lib/state/project-store';
+import { useDemoStrings } from '@/lib/i18n';
 import { svgToCurrentColor } from '@/lib/svg';
 import {
   ChevronDownIcon,
@@ -58,22 +59,24 @@ const THEME: Record<HeaderTheme, { bg: string; text: string; muted: string }> = 
 export function SiteHeader({
   theme: themeProp,
   showHubNav: showHubNavProp,
-  hubTitle = 'Hub site title',
-  hubLinks = ['Primary link', 'Primary link', 'Primary link', 'Primary group'],
+  hubTitle,
+  hubLinks,
   logoInitials = 'CS',
   logoImageUrl,
-  siteTitle = 'SharePoint site title',
-  labels = ['Confidential', 'Corporate Advisory +2'],
-  localNav = [
-    { label: 'Home', active: true },
-    { label: 'Documents' },
-    { label: 'Pages' },
-    { label: 'Site contents' },
-  ],
+  siteTitle,
+  labels,
+  localNav,
   following = false,
   showShare = true,
   membersCount = 27,
 }: SiteHeaderProps) {
+  // Chrome localisé selon la langue du projet (fr-FR / fr-CA / en)
+  const tr = useDemoStrings().header;
+  hubTitle ??= tr.hubTitle;
+  hubLinks ??= [...tr.hubLinks];
+  siteTitle ??= tr.siteTitle;
+  labels ??= [...tr.labels];
+  localNav ??= tr.localNav.map((label, i) => ({ label, active: i === 0 }));
   // Variante header pilotée par le projet (source de vérité) — props prioritaires (pages démo).
   const headerCfg = useProjectStore((s) => s.project?.header);
   const layout = headerCfg?.layout ?? 'extended';
@@ -124,7 +127,7 @@ export function SiteHeader({
       {/* Comm header */}
       <div className="flex items-center gap-5 px-8 py-md">
         {/* Hamburger — <1024, ou toujours en disposition « compact » */}
-        <button type="button" aria-label="Menu" className={cn('shrink-0 text-current', !compact && '@[1024px]:hidden')}>
+        <button type="button" aria-label={tr.menu} className={cn('shrink-0 text-current', !compact && '@[1024px]:hidden')}>
           <NavigationIcon className="w-6 h-6" />
         </button>
 
@@ -186,7 +189,7 @@ export function SiteHeader({
               ))}
               <button type="button" className="text-current hover:opacity-80"><MoreIcon className="w-4 h-4" /></button>
               {canEdit && (
-                <button type="button" className={cn('text-body hover:underline', strong ? 'text-white' : 'text-sp-primary')}>Edit</button>
+                <button type="button" className={cn('text-body hover:underline', strong ? 'text-white' : 'text-sp-primary')}>{tr.edit}</button>
               )}
             </nav>
           </div>
@@ -195,18 +198,18 @@ export function SiteHeader({
           <div className={cn('flex items-center gap-lg shrink-0', t.text)}>
             <button type="button" className="flex items-center gap-[6px] text-body whitespace-nowrap hover:opacity-80">
               <FollowIcon className="w-3.5 h-3.5" />
-              <span className="hidden @[1024px]:inline">{following ? 'Following' : 'Not following'}</span>
+              <span className="hidden @[1024px]:inline">{following ? tr.following : tr.notFollowing}</span>
             </button>
             {showShare && (
               <button type="button" className="flex items-center gap-[6px] text-body hover:opacity-80">
                 <ShareIcon className="w-3.5 h-3" />
-                <span className="hidden @[1024px]:inline">Share</span>
+                <span className="hidden @[1024px]:inline">{tr.share}</span>
               </button>
             )}
             {typeof membersCount === 'number' && (
               <button type="button" className="hidden @[1024px]:flex items-center gap-[6px] text-body whitespace-nowrap hover:opacity-80">
                 <MembersIcon className="w-3 h-3.5" />
-                {membersCount} members
+                {tr.members(membersCount)}
               </button>
             )}
           </div>

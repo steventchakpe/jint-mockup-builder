@@ -7,9 +7,9 @@ import { newshubSeed } from '@/config/webpart-seeds';
 export default function NewshubDemoPage() {
   return (
     <main className="w-full max-w-[1204px] mx-auto p-lg flex flex-col gap-2xl bg-[#faf9f8] min-h-screen">
-      <Newshub config={{ ...newshubDefaultConfig, title: 'Sur les réseaux' }} content={newshubSeed} />
+      <Newshub config={{ ...newshubDefaultConfig, title: 'Sur les réseaux' }} content={newshubSeed('fr-FR')} />
       <div className="max-w-[560px]">
-        <Newshub config={{ ...newshubDefaultConfig, radius: 4, shadow: 'medium' }} content={newshubSeed} />
+        <Newshub config={{ ...newshubDefaultConfig, radius: 4, shadow: 'medium' }} content={newshubSeed('fr-FR')} />
       </div>
     </main>
   );

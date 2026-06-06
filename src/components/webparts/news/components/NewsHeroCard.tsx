@@ -4,10 +4,11 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, SHADOW, radiusForStack } from '../News.mozzaik';
 import { LikeIcon, FilledLikeIcon, ThumbLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
+import { useDemoDateLocale } from '@/lib/i18n';
 import type { NewsItem, NewsProps } from '../News.types';
 
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const fmtDate = (iso: string, locale: string) =>
+  new Date(iso).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 const getInitials = (name: string) => {
   const p = name.trim().split(' ').filter(Boolean);
   return (p.length >= 2 ? p[0][0] + p[p.length - 1][0] : p[0]?.slice(0, 2) ?? '').toUpperCase();
@@ -28,6 +29,7 @@ interface HeroCardProps {
  */
 export function NewsHeroCard({ article: a, index, config, onArticleClick, onShareClick }: HeroCardProps) {
   const { rounded, shadow, customContent: cc, showPin } = config;
+  const dateLocale = useDemoDateLocale();
   const radius = radiusForStack(rounded);
 
   // jintan: showAuthor = !isSmall && customContent.showAuthor (isSmall = carte < 380px).
@@ -106,7 +108,7 @@ export function NewsHeroCard({ article: a, index, config, onArticleClick, onShar
                 </>
               )}
               {cc.showDate && a.date && (
-                <span className="opacity-90" style={{ fontSize: FONT_SIZE.small }}>{showAuthor ? '· ' : ''}{fmtDate(a.date)}</span>
+                <span className="opacity-90" style={{ fontSize: FONT_SIZE.small }}>{showAuthor ? '· ' : ''}{fmtDate(a.date, dateLocale)}</span>
               )}
             </span>
           )}

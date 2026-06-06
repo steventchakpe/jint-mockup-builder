@@ -2,17 +2,11 @@
 
 import { cn } from '@/lib/utils';
 import { useProjectStore } from '@/lib/state/project-store';
+import { useDemoStrings } from '@/lib/i18n';
 import { AddIcon, AppsIcon, CompassIcon, SearchUexIcon } from './Uex.icons';
 
 /** Sections UEX (icônes du pill). */
 export type UexSection = 'navigate' | 'apps' | 'search' | 'add';
-
-const ITEMS: { key: UexSection; label: string; Icon: typeof CompassIcon }[] = [
-  { key: 'navigate', label: 'Naviguer', Icon: CompassIcon },
-  { key: 'apps', label: 'Applications', Icon: AppsIcon },
-  { key: 'search', label: 'Rechercher', Icon: SearchUexIcon },
-  { key: 'add', label: 'Contribuer', Icon: AddIcon },
-];
 
 interface UexProps {
   /** Section dont le panneau est ouvert (null = fermé). */
@@ -30,6 +24,13 @@ export function Uex({ active, onSelect }: UexProps) {
   // US-31 : « Contribuer » (+) réservé au profil contributeur.
   // Sans profils chargés (pages démo) : visible (comportement historique).
   const profiles = useProjectStore((s) => s.project?.profiles);
+  const t = useDemoStrings().uex;
+  const ITEMS: { key: UexSection; label: string; Icon: typeof CompassIcon }[] = [
+    { key: 'navigate', label: t.navigate, Icon: CompassIcon },
+    { key: 'apps', label: t.apps, Icon: AppsIcon },
+    { key: 'search', label: t.search, Icon: SearchUexIcon },
+    { key: 'add', label: t.contribute, Icon: AddIcon },
+  ];
   const activeProfile = profiles?.editable.find((p) => p.id === profiles.activeProfileId);
   const isContributor = !activeProfile || activeProfile.role === 'contributor';
   const items = isContributor ? ITEMS : ITEMS.filter((i) => i.key !== 'add');

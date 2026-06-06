@@ -1,5 +1,7 @@
 'use client';
 
+'use client';
+
 import type { CSSProperties } from 'react';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { DocCard } from './components/DocCard';
@@ -10,6 +12,7 @@ import {
   ROWS_BREAKPOINTS,
   SHADOW,
 } from './Docs.mozzaik';
+import { useDemoStrings } from '@/lib/i18n';
 import type { DocsProps } from './Docs.types';
 
 /** getGridTemplateRowsByHeight — port fidèle (mozzaik-ui Grid). */
@@ -30,6 +33,7 @@ function rowsForHeight(height: number): number {
  */
 export function Docs({ config, content, isEditMode = false, onFileClick }: DocsProps) {
   const { title, height, padding, radius, shadow } = config;
+  const tw = useDemoStrings().webparts;
   const files = content.files;
 
   // BaseLayout container — boxShadow/borderRadius seulement si padding (fidèle)
@@ -62,7 +66,7 @@ export function Docs({ config, content, isEditMode = false, onFileClick }: DocsP
 
       <div className="@container" style={{ height }}>
         {files.length === 0 ? (
-          <p className="text-body text-gray-500 py-xl text-center">Aucun fichier récent</p>
+          <p className="text-body text-gray-500 py-xl text-center">{tw.noFiles}</p>
         ) : (
           <div
             className="grid h-full grid-cols-1 @[480px]:grid-cols-2 @[768px]:grid-cols-3 @[1024px]:grid-cols-4"

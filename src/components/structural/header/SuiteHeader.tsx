@@ -1,6 +1,7 @@
 'use client';
 
 import { AccountSwitcher } from './AccountSwitcher';
+import { useDemoStrings } from '@/lib/i18n';
 
 /**
  * Suite header (barre M365) — reconstruit responsive depuis Figma (axe « Size »).
@@ -66,15 +67,18 @@ export interface SuiteHeaderProps {
 
 export function SuiteHeader({
   tenantLogoText = 'Tenant Logo',
-  appName = 'SharePoint',
-  searchPlaceholder = 'Search this site',
+  appName,
+  searchPlaceholder,
   avatarInitials = 'JD',
 }: SuiteHeaderProps) {
+  const t = useDemoStrings().suite;
+  appName ??= t.appName;
+  searchPlaceholder ??= t.searchPlaceholder;
   return (
     <header className="h-12 bg-sp-primary flex items-center shrink-0 sticky top-0 z-50">
       {/* Left */}
       <div className="flex items-center shrink-0">
-        <button className={ICON_BTN} aria-label="Applications"><Waffle /></button>
+        <button className={ICON_BTN} aria-label={t.apps}><Waffle /></button>
         <div className="flex items-center gap-sm pr-sm">
           {/* Tenant logo — ≥1024 */}
           <div className="hidden lg:flex bg-[#107c10] px-xs py-2xs">
@@ -96,13 +100,13 @@ export function SuiteHeader({
       {/* Right */}
       <div className="flex items-center shrink-0">
         {/* Search icon — <640 */}
-        <button className={`${ICON_BTN} sm:hidden`} aria-label="Rechercher"><SearchGlyph /></button>
-        <button className={ICON_BTN} aria-label="Notifications"><Megaphone /></button>
+        <button className={`${ICON_BTN} sm:hidden`} aria-label={t.search}><SearchGlyph /></button>
+        <button className={ICON_BTN} aria-label={t.notifications}><Megaphone /></button>
         {/* Settings + Help — ≥1024 */}
-        <button className={`${ICON_BTN} hidden lg:flex`} aria-label="Paramètres"><Settings /></button>
-        <button className={`${ICON_BTN} hidden lg:flex`} aria-label="Aide"><Help /></button>
+        <button className={`${ICON_BTN} hidden lg:flex`} aria-label={t.settings}><Settings /></button>
+        <button className={`${ICON_BTN} hidden lg:flex`} aria-label={t.help}><Help /></button>
         {/* More — <1024 */}
-        <button className={`${ICON_BTN} flex lg:hidden`} aria-label="Plus"><MoreHorizontal /></button>
+        <button className={`${ICON_BTN} flex lg:hidden`} aria-label={t.more}><MoreHorizontal /></button>
         {/* Avatar — always (profil actif + switch de compte, US-28) */}
         <div className="relative">
           <AccountSwitcher />

@@ -12,10 +12,10 @@ export default function SearchDemoPage() {
       <Search config={searchDefaultConfig} />
       <div className="flex gap-xl items-start">
         <div className="w-[280px] shrink-0">
-          <SearchFilters config={searchFiltersDefaultConfig} content={searchFiltersSeed} />
+          <SearchFilters config={searchFiltersDefaultConfig} content={searchFiltersSeed('fr-FR')} />
         </div>
         <div className="grow min-w-0">
-          <SearchResults config={{ ...searchResultsDefaultConfig, height: 700, layout: 'cards' }} content={searchResultsSeed} />
+          <SearchResults config={{ ...searchResultsDefaultConfig, height: 700, layout: 'cards' }} content={searchResultsSeed('fr-FR')} />
         </div>
       </div>
     </main>

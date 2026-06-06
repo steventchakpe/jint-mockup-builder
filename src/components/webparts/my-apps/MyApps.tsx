@@ -3,6 +3,7 @@
 import { LinkCard } from './components/LinkCard';
 import { GRID_GAP, SIZE } from './MyApps.mozzaik';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
+import { useDemoStrings } from '@/lib/i18n';
 import type { MyAppsProps } from './MyApps.types';
 
 /**
@@ -15,6 +16,7 @@ import type { MyAppsProps } from './MyApps.types';
  */
 export function MyApps({ config, content, onNavigate, isEditMode = false }: MyAppsProps) {
   const { title, cardSize, radius, shadow } = config;
+  const tw = useDemoStrings().webparts;
   const links = content.links;
   const min = SIZE[cardSize].min;
 
@@ -32,7 +34,7 @@ export function MyApps({ config, content, onNavigate, isEditMode = false }: MyAp
       )}
 
       {links.length === 0 ? (
-        <p className="text-body text-gray-500 py-xl text-center">Aucune application.</p>
+        <p className="text-body text-gray-500 py-xl text-center">{tw.noApps}</p>
       ) : (
         <div
           className="grid"

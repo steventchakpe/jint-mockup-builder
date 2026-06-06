@@ -8,7 +8,7 @@ import { imageInteractiveSeed } from '@/config/webpart-seeds';
 
 /** Page démo temporaire — vérification visuelle du webpart Image interactive (+ mode édition). */
 export default function ImageInteractiveDemoPage() {
-  const [content, setContent] = useState<ImageInteractiveContent>(imageInteractiveSeed as ImageInteractiveContent);
+  const [content, setContent] = useState<ImageInteractiveContent>(imageInteractiveSeed('fr-FR') as ImageInteractiveContent);
   return (
     <main className="w-full max-w-[1204px] mx-auto p-lg flex flex-col gap-2xl bg-[#faf9f8] min-h-screen">
       <ImageInteractive config={{ ...imageInteractiveDefaultConfig, title: 'Nos locaux' }} content={content} />

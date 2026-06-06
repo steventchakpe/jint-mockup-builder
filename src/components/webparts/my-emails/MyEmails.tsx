@@ -19,6 +19,7 @@ import {
   NAV_BUTTON_SIZE,
   rowsForHeight,
 } from './MyEmails.mozzaik';
+import { useDemoStrings } from '@/lib/i18n';
 import type { MyEmailsProps } from './MyEmails.types';
 
 /**
@@ -31,6 +32,7 @@ import type { MyEmailsProps } from './MyEmails.types';
  */
 export function MyEmails({ config, content, isEditMode = false, locale = 'fr-FR' }: MyEmailsProps) {
   const { title, height } = config;
+  const tw = useDemoStrings().webparts;
   const emails = content.emails;
   const [slide, setSlide] = useState(0);
 
@@ -66,7 +68,7 @@ export function MyEmails({ config, content, isEditMode = false, locale = 'fr-FR'
 
       <div style={{ height: height - CARD_HEADER }}>
         {emails.length === 0 ? (
-          <p className="text-body text-gray-500 py-xl text-center">Aucun e-mail</p>
+          <p className="text-body text-gray-500 py-xl text-center">{tw.noEmail}</p>
         ) : (
           <div className="flex flex-col h-full">
             {/* Slide courante */}

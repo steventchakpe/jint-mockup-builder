@@ -6,6 +6,7 @@ import { DirectorySearchBox } from './components/DirectorySearchBox';
 import { ProfileDetail } from './components/ProfileDetail';
 import { RESULTS_GAP } from './EmployeeDirectory.mozzaik';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
+import { useDemoStrings } from '@/lib/i18n';
 import type { DirectoryPerson, EmployeeDirectoryProps } from './EmployeeDirectory.types';
 
 /**
@@ -23,6 +24,7 @@ export function EmployeeDirectory({
   onSelectPerson,
 }: EmployeeDirectoryProps) {
   const { title, description, pageSize, rounded, shadow } = config;
+  const tw = useDemoStrings().webparts;
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export function EmployeeDirectory({
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-body text-gray-500 py-xl text-center">Aucune personne trouvée.</p>
+        <p className="text-body text-gray-500 py-xl text-center">{tw.noPerson}</p>
       ) : (
         <div className="flex flex-col gap-2xl">
           <div className="flex flex-wrap justify-center" style={{ gap: RESULTS_GAP }}>
@@ -121,7 +123,7 @@ export function EmployeeDirectory({
                 onClick={() => setPage((p) => p + 1)}
                 className="text-sp-primary font-semibold hover:underline"
               >
-                Afficher plus
+                {tw.showMore}
               </button>
             </div>
           )}

@@ -110,9 +110,11 @@ export function EditableCanvas({ pageId }: { pageId?: string }) {
     const def = getWebpart(type);
     if (!def) return;
     const section = sections.find((s) => s.id === sid);
+    // Seed dans la langue du projet — figée à l'insertion (changement de langue ≠ re-seed).
+    const locale = useProjectStore.getState().project?.prospect.contentLanguage ?? 'fr-FR';
     const wp: WebpartInstance = {
       id: genId('wp'), type, order: 0,
-      config: { ...def.defaultConfig }, content: { ...def.defaultContent },
+      config: { ...def.defaultConfig }, content: { ...def.defaultContent(locale) },
     };
     // En section flexible : placement par défaut tuilé (2 colonnes, snap vertical).
     if (section?.layout === 'flexible') {

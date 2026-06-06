@@ -10,6 +10,7 @@ import {
   PhoneVibrateIcon,
   EngageIcon,
 } from './UexContrib.icons';
+import { useDemoStrings } from '@/lib/i18n';
 import type { UexSection } from './Uex';
 
 interface UexPanelProps {
@@ -51,12 +52,13 @@ export function UexPanel({ section }: UexPanelProps) {
 
 /* Bandeau d'alerte (haut de panneau) — fond primaire, texte blanc italique + pastille « ! ». */
 function AlertBanner() {
+  const t = useDemoStrings().uex;
   return (
     <div className="relative flex items-start gap-sm rounded-md p-md bg-sp-primary text-white" style={{ boxShadow: '0 1.6px 3.6px rgba(0,0,0,.13)' }}>
       <p className="italic text-body leading-snug pr-6">
-        Information importante — consultez les dernières mises à jour du moment.
+        {t.alertText}
         <br />
-        <a href="#" onClick={(e) => e.preventDefault()} className="underline font-medium">En savoir plus</a>
+        <a href="#" onClick={(e) => e.preventDefault()} className="underline font-medium">{t.learnMore}</a>
       </p>
       <span className="absolute top-md right-md inline-flex items-center justify-center w-6 h-6 rounded-full bg-white text-sp-primary shrink-0">
         <AlertCircle className="w-4 h-4" />
@@ -67,34 +69,35 @@ function AlertBanner() {
 
 const heading = 'text-[18px] font-bold text-[#201f1e]';
 
-const NAV_LINKS = ['Accueil', 'Actualités', 'Événements', 'Annuaire', 'Documents'];
-const FEED = [
-  { title: 'Lancement de notre nouvelle plateforme intranet', img: 'photo-1486406146926-c627a92ad1ab' },
-  { title: 'Résultats du trimestre : une croissance soutenue', img: 'photo-1611974789855-9c2a0a7236a3' },
-  { title: 'Formation cybersécurité : session de juin', img: 'photo-1550751827-4bd374c3f58b' },
-  { title: 'Retour en images sur notre séminaire annuel', img: 'photo-1497366216548-37526070297c' },
+/** Vignettes Unsplash du feed « S'informer » (titres localisés via le dictionnaire). */
+const FEED_IMGS = [
+  'photo-1486406146926-c627a92ad1ab',
+  'photo-1611974789855-9c2a0a7236a3',
+  'photo-1550751827-4bd374c3f58b',
+  'photo-1497366216548-37526070297c',
 ];
 function NavigatePanel() {
+  const t = useDemoStrings().uex;
   return (
     <>
       <section className="flex flex-col gap-sm">
-        <h2 className={heading}>Naviguer</h2>
+        <h2 className={heading}>{t.navigate}</h2>
         <nav className="flex flex-col gap-2xs">
-          {NAV_LINKS.map((l) => (
+          {t.navLinks.map((l) => (
             <a key={l} href="#" onClick={(e) => e.preventDefault()} className="py-xs text-body text-[#323130] hover:text-sp-primary">{l}</a>
           ))}
         </nav>
       </section>
       <section className="flex flex-col gap-md">
-        <h2 className={heading}>S’informer</h2>
+        <h2 className={heading}>{t.inform}</h2>
         <div className="flex flex-col gap-md">
-          {FEED.map((a) => (
-            <a key={a.title} href="#" onClick={(e) => e.preventDefault()} className="flex items-start gap-md group">
+          {t.feed.map((title, i) => (
+            <a key={title} href="#" onClick={(e) => e.preventDefault()} className="flex items-start gap-md group">
               <span
                 className="shrink-0 w-[76px] h-[57px] bg-cover bg-center bg-sp-lighter-alt"
-                style={{ backgroundImage: `url("https://images.unsplash.com/${a.img}?w=200&auto=format")` }}
+                style={{ backgroundImage: `url("https://images.unsplash.com/${FEED_IMGS[i % FEED_IMGS.length]}?w=200&auto=format")` }}
               />
-              <span className="text-body text-[#323130] leading-snug line-clamp-3 group-hover:text-sp-primary">{a.title}</span>
+              <span className="text-body text-[#323130] leading-snug line-clamp-3 group-hover:text-sp-primary">{title}</span>
             </a>
           ))}
         </div>
@@ -104,37 +107,40 @@ function NavigatePanel() {
 }
 
 function SearchPanel() {
+  const t = useDemoStrings().uex;
   return (
     <div className="flex items-center gap-sm rounded-sm bg-[#f3f2f1] border border-sp-primary px-sm h-10">
       <Search className="w-4 h-4 text-[#605e5c]" />
-      <input placeholder="Aller à" className="flex-1 bg-transparent outline-none text-body text-[#323130] placeholder:text-[#605e5c]" />
+      <input placeholder={t.goTo} className="flex-1 bg-transparent outline-none text-body text-[#323130] placeholder:text-[#605e5c]" />
     </div>
   );
 }
 
 /* Applications — listes groupées (icône + nom + étoile favori). Icônes = pastilles colorées (logos de marque à brancher). */
 type App = { name: string; color: string; fav: boolean };
-const APP_GROUPS: { title: string; apps: App[] }[] = [
-  { title: 'Mes applications', apps: [
-    { name: 'Outlook', color: '#0F6CBD', fav: true }, { name: 'SAP', color: '#0FAAFF', fav: true },
-    { name: 'Service Now', color: '#62D84E', fav: true }, { name: 'ADP Canada', color: '#D0021B', fav: true },
-    { name: 'EdCast', color: '#111827', fav: true }, { name: 'Support IT', color: '#F2A60C', fav: true },
-    { name: 'Espace RH', color: '#F2A60C', fav: true },
-  ] },
-  { title: 'Communication', apps: [
-    { name: 'SAP', color: '#0FAAFF', fav: true }, { name: 'Service Now', color: '#62D84E', fav: true }, { name: 'Outlook', color: '#0F6CBD', fav: true },
-  ] },
-  { title: 'RH', apps: [
-    { name: 'ADP Canada', color: '#D0021B', fav: true }, { name: 'Espace RH', color: '#F2A60C', fav: true },
-  ] },
-  { title: 'Formation', apps: [
-    { name: 'EdCast', color: '#111827', fav: true }, { name: 'Formations', color: '#F2A60C', fav: false },
-  ] },
-  { title: 'Support', apps: [
-    { name: 'Base Doc', color: '#F2A60C', fav: false }, { name: 'Support IT', color: '#F2A60C', fav: true },
-  ] },
-];
 function AppsPanel() {
+  const g = useDemoStrings().uex.appGroups;
+  // Noms d'applications = marques (non traduits) ; titres de groupes localisés.
+  const APP_GROUPS: { title: string; apps: App[] }[] = [
+    { title: g.myApps, apps: [
+      { name: 'Outlook', color: '#0F6CBD', fav: true }, { name: 'SAP', color: '#0FAAFF', fav: true },
+      { name: 'Service Now', color: '#62D84E', fav: true }, { name: 'ADP Canada', color: '#D0021B', fav: true },
+      { name: 'EdCast', color: '#111827', fav: true }, { name: 'Support IT', color: '#F2A60C', fav: true },
+      { name: 'Espace RH', color: '#F2A60C', fav: true },
+    ] },
+    { title: g.communication, apps: [
+      { name: 'SAP', color: '#0FAAFF', fav: true }, { name: 'Service Now', color: '#62D84E', fav: true }, { name: 'Outlook', color: '#0F6CBD', fav: true },
+    ] },
+    { title: g.hr, apps: [
+      { name: 'ADP Canada', color: '#D0021B', fav: true }, { name: 'Espace RH', color: '#F2A60C', fav: true },
+    ] },
+    { title: g.training, apps: [
+      { name: 'EdCast', color: '#111827', fav: true }, { name: 'Formations', color: '#F2A60C', fav: false },
+    ] },
+    { title: g.support, apps: [
+      { name: 'Base Doc', color: '#F2A60C', fav: false }, { name: 'Support IT', color: '#F2A60C', fav: true },
+    ] },
+  ];
   return (
     <div className="flex flex-col gap-lg">
       {APP_GROUPS.map((g) => (
@@ -148,11 +154,12 @@ function AppsPanel() {
 }
 function AppRow({ app }: { app: App }) {
   const [fav, setFav] = useState(app.fav);
+  const favLabel = useDemoStrings().uex.favorite;
   return (
     <a href="#" onClick={(e) => e.preventDefault()} className="flex items-center gap-sm py-xs group">
       <span className="shrink-0 w-6 h-6 rounded-sm flex items-center justify-center text-white text-caption font-bold" style={{ background: app.color }}>{app.name[0]}</span>
       <span className="flex-1 text-body text-[#201f1e]">{app.name}</span>
-      <button type="button" aria-label="Favori" onClick={(e) => { e.preventDefault(); setFav((f) => !f); }} className="shrink-0 text-[#201f1e]">
+      <button type="button" aria-label={favLabel} onClick={(e) => { e.preventDefault(); setFav((f) => !f); }} className="shrink-0 text-[#201f1e]">
         <Star className="w-5 h-5" fill={fav ? 'currentColor' : 'none'} />
       </button>
     </a>
@@ -178,24 +185,25 @@ function SquareButton({ label, children, onClick }: { label: string; children: R
 }
 
 function ContributePanel() {
+  const t = useDemoStrings().uex;
   return (
     <>
       <section className="flex flex-col" style={{ gap: 12 }}>
-        <h2 className="font-semibold text-[#323130]" style={{ fontSize: 18 }}>Centre de contribution</h2>
+        <h2 className="font-semibold text-[#323130]" style={{ fontSize: 18 }}>{t.contributionCenter}</h2>
         <div className="flex flex-wrap" style={{ gap: 8 }}>
-          <SquareButton label="Article"><NewsIcon style={{ color: '#201f1e' }} /></SquareButton>
-          <SquareButton label="Page"><DocumentBulletListIcon style={{ color: '#201f1e' }} /></SquareButton>
-          <SquareButton label="Paramètres"><SettingsIcon style={{ color: '#201f1e' }} /></SquareButton>
+          <SquareButton label={t.article}><NewsIcon style={{ color: '#201f1e' }} /></SquareButton>
+          <SquareButton label={t.page}><DocumentBulletListIcon style={{ color: '#201f1e' }} /></SquareButton>
+          <SquareButton label={t.settings}><SettingsIcon style={{ color: '#201f1e' }} /></SquareButton>
         </div>
       </section>
       <section className="flex flex-col" style={{ gap: 12 }}>
-        <h2 className="font-semibold text-[#323130]" style={{ fontSize: 18 }}>Partage du contenu</h2>
+        <h2 className="font-semibold text-[#323130]" style={{ fontSize: 18 }}>{t.contentSharing}</h2>
         <div className="flex flex-wrap" style={{ gap: 8 }}>
           {/* Teams : SVG exact exporté du Figma (public/icons/teams.svg) */}
-          <SquareButton label="Teams"><img src="/icons/teams.svg" alt="" style={{ width: 24, height: 24 }} /></SquareButton>
-          <SquareButton label="Engage"><EngageIcon /></SquareButton>
-          <SquareButton label="Newsletter"><MailMultipleIcon style={{ color: '#201f1e' }} /></SquareButton>
-          <SquareButton label="Notification"><PhoneVibrateIcon style={{ color: '#201f1e' }} /></SquareButton>
+          <SquareButton label={t.teams}><img src="/icons/teams.svg" alt="" style={{ width: 24, height: 24 }} /></SquareButton>
+          <SquareButton label={t.engage}><EngageIcon /></SquareButton>
+          <SquareButton label={t.newsletter}><MailMultipleIcon style={{ color: '#201f1e' }} /></SquareButton>
+          <SquareButton label={t.notification}><PhoneVibrateIcon style={{ color: '#201f1e' }} /></SquareButton>
         </div>
       </section>
     </>

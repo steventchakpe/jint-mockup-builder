@@ -4,10 +4,11 @@ import type { CSSProperties } from 'react';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
 import { FONT_SIZE, NEUTRAL, SHADOW, radiusForStack } from '../News.mozzaik';
 import { LikeIcon, FilledLikeIcon, ShareIcon, ViewIcon, PinIcon } from '../News.icons';
+import { useDemoDateLocale } from '@/lib/i18n';
 import type { NewsItem, NewsProps } from '../News.types';
 
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const fmtDate = (iso: string, locale: string) =>
+  new Date(iso).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 const getInitials = (name: string) => {
   const p = name.trim().split(' ').filter(Boolean);
   return (p.length >= 2 ? p[0][0] + p[p.length - 1][0] : p[0]?.slice(0, 2) ?? '').toUpperCase();
@@ -27,6 +28,7 @@ interface VerticalTilesProps {
  */
 export function NewsVerticalTiles({ articles, config, onArticleClick, onShareClick }: VerticalTilesProps) {
   const { rounded, shadow, customContent: cc, showPin } = config;
+  const dateLocale = useDemoDateLocale();
   const radius = radiusForStack(rounded);
 
   return (
@@ -105,7 +107,7 @@ export function NewsVerticalTiles({ articles, config, onArticleClick, onShareCli
                       {a.authorAvatar ? <img src={a.authorAvatar} alt={a.author} className="w-full h-full object-cover" /> : getInitials(a.author)}
                     </span>
                     <span className="truncate text-sp-darker" style={{ fontSize: FONT_SIZE.small }}>{a.author}</span>
-                    {cc.showDate && a.date && <span className="shrink-0" style={{ fontSize: FONT_SIZE.small, color: NEUTRAL.secondary }}>· {fmtDate(a.date)}</span>}
+                    {cc.showDate && a.date && <span className="shrink-0" style={{ fontSize: FONT_SIZE.small, color: NEUTRAL.secondary }}>· {fmtDate(a.date, dateLocale)}</span>}
                   </span>
                 )}
                 {(cc.showViewCount || cc.showLikeCount) && (

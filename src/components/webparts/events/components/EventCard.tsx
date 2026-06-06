@@ -1,6 +1,9 @@
+'use client';
+
 import type { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
 import { InlineText } from '@/components/canvas/edit/inline-edit';
+import { useDemoStrings } from '@/lib/i18n';
 import { LocationRegular, ClockRegular, CalendarAddRegular } from '../Events.icons';
 import {
   CARD_CONTAINER_GAP,
@@ -45,6 +48,7 @@ export function EventCard({
   onClick,
   onAddToCalendar,
 }: EventCardProps) {
+  const tw = useDemoStrings().webparts;
   const { title, location, startDate, isAllDay, imageUrl } = event;
   const start = new Date(startDate);
 
@@ -122,7 +126,7 @@ export function EventCard({
             <InlineText
               as="span"
               path={['events', index, 'location']}
-              value={location ?? 'Aucun lieu'}
+              value={location ?? tw.noLocation}
               placeholder="Lieu"
               className="truncate"
               style={{
@@ -154,7 +158,7 @@ export function EventCard({
       {showAddToCalendar && (
         <button
           type="button"
-          aria-label="Ajouter au calendrier"
+          aria-label={tw.addToCalendar}
           data-testid="add-to-calendar-button"
           onClick={handleAddToCalendar}
           className="shrink-0 self-start p-xs rounded-sm hover:bg-sp-lighter-alt transition-colors"
