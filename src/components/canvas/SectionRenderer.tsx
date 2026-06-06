@@ -31,6 +31,8 @@ export function SectionRenderer({ section, isEditMode = false }: SectionRenderer
   const { layout, background, backgroundImage, title, columns } = section;
   const isFullWidth = layout === 'full-width';
   const isFlexible = layout === 'flexible';
+  // Full-width ET flexible s'étendent bord à bord du canvas (comme SharePoint)
+  const isBleed = isFullWidth || isFlexible;
   const hasFill = background !== 'none';
 
   // Section flexible : les webparts (toutes colonnes confondues) sont positionnés
@@ -55,16 +57,17 @@ export function SectionRenderer({ section, isEditMode = false }: SectionRenderer
       data-layout={layout}
       className={cn(
         '@container',
-        // full-width : bleed sur toute la largeur du viewport
-        isFullWidth && 'relative left-1/2 w-screen -translate-x-1/2',
+        // bleed sur toute la largeur du canvas (100cqw = container ancêtre,
+        // posé sur le <main> du PageShell) — pas le viewport, sinon rognage par le card.
+        isBleed && 'relative left-1/2 w-[100cqw] -translate-x-1/2',
         getSectionBackgroundClass(background),
         // padding quand un fond est appliqué (comme SharePoint)
         hasFill && 'p-xl',
       )}
       style={style}
     >
-      {/* full-width recentre son contenu à 1204px sauf si le webpart bleed lui-même */}
-      <div className={cn(isFullWidth && 'max-w-[1204px] mx-auto px-lg')}>
+      {/* full-width : bleed pur — le webpart colle les bords du canvas (comme SharePoint) */}
+      <div>
         {title && (
           <h2 className="text-heading-sm font-semibold text-sp-darker mb-md">{title}</h2>
         )}
@@ -73,7 +76,7 @@ export function SectionRenderer({ section, isEditMode = false }: SectionRenderer
         ) : (
           <div className={cn(getSectionGridClass(layout), SECTION_GAP)}>
             {orderedColumns.map((column) => (
-              <ColumnRenderer key={column.id} column={column} isEditMode={isEditMode} />
+              <ColumnRenderer key={column.id} column={column} isEditMode={isEditMode} fullWidth={isFullWidth} />
             ))}
           </div>
         )}

@@ -11,6 +11,8 @@ import type { WebpartInstance } from '@/types/project';
 interface WebpartHostProps {
   instance: WebpartInstance;
   isEditMode?: boolean;
+  /** Section pleine largeur : le webpart bleed bord à bord, radius forcé à 0 (comme SharePoint). */
+  fullWidth?: boolean;
 }
 
 /**
@@ -25,8 +27,11 @@ const PERSONAL_CONTENT_MAP: Record<string, { from: 'tasks' | 'emails' | 'meeting
   'my-meetings': { from: 'meetings', to: 'meetings' },
 };
 
-export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) {
+export function WebpartHost({ instance, isEditMode = false, fullWidth = false }: WebpartHostProps) {
   const def = getWebpart(instance.type);
+  // Pleine largeur : radius 0 + padding BaseLayout désactivé (le webpart colle
+  // les bords du canvas, sans ombre — comportement jintan/SharePoint)
+  const config = fullWidth ? { ...instance.config, radius: 0, padding: false } : instance.config;
   // US-30 : les webparts personnalisés affichent le contenu du profil actif
   const profiles = useProjectStore((s) => s.project?.profiles);
   const mapping = PERSONAL_CONTENT_MAP[instance.type];
@@ -69,7 +74,7 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
     <Suspense fallback={Skeleton ? <Skeleton /> : null}>
       <Component
         id={instance.id}
-        config={instance.config}
+        config={config}
         content={content}
         isEditMode={isEditMode}
       />
@@ -80,7 +85,7 @@ export function WebpartHost({ instance, isEditMode = false }: WebpartHostProps) 
   return (
     <WebpartEditProvider
       content={content}
-      config={instance.config}
+      config={config}
       commitContent={(next) => {
         const store = useProjectStore.getState();
         // Édition inline d'un champ lié à un profil → reportée dans l'annuaire

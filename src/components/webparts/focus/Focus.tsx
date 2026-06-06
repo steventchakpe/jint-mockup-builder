@@ -22,15 +22,16 @@ function getCardJustify(position?: FocusContentPosition): string {
  * zone devient cliquable.
  */
 export function Focus({ config, content, isEditMode = false, onRedirect }: FocusProps) {
-  const { title, height, radius, shadow = 'Strong', background } = config;
+  const { title, height, radius, shadow = 'Strong', background, padding = true } = config;
   const { card, redirection } = content;
   const position = card.position;
 
-  // BaseLayout container : hauteur, radius, ombre, fond (image plein cadre / couleur)
+  // BaseLayout container : hauteur, radius, ombre, fond (image plein cadre / couleur).
+  // jintan : padding falsy → ni radius ni ombre (cas section full-width).
   const containerStyle: CSSProperties = {
     height,
-    borderRadius: radius,
-    boxShadow: SHADOW[shadow],
+    borderRadius: padding ? radius : undefined,
+    boxShadow: padding ? SHADOW[shadow] : undefined,
     overflow: 'hidden',
   };
   if (background?.type === 'image') {
@@ -70,7 +71,7 @@ export function Focus({ config, content, isEditMode = false, onRedirect }: Focus
   );
 
   return (
-    <section className="flex flex-col gap-md p-md">
+    <section className={cn('flex flex-col gap-md', padding && 'p-md')}>
       {title && <h2 className="text-heading font-semibold text-sp-darker">{title}</h2>}
 
       <div style={containerStyle}>

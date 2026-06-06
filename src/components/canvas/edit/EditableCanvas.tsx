@@ -186,9 +186,16 @@ function SectionEditFrame({
 }) {
   const [pickLayout, setPickLayout] = useState(false);
   const isFlexible = section.layout === 'flexible';
+  const isFullWidth = section.layout === 'full-width';
+  // Full-width ET flexible s'étendent bord à bord du canvas (comme en présentation)
+  const isBleed = isFullWidth || isFlexible;
 
   return (
-    <div className="@container relative group/sec border border-transparent hover:border-sp-primary/40 rounded-sm transition-colors">
+    <div className={cn(
+      '@container relative group/sec border border-transparent hover:border-sp-primary/40 rounded-sm transition-colors',
+      // Centrage 1204px par section ; full-width/flexible bleed en annulant le padding du canvas (px-lg).
+      isBleed ? '-mx-lg' : 'max-w-[1204px] mx-auto w-full',
+    )}>
       {/* Barre d'outils de section (au survol) */}
       <div className="absolute -top-3 left-2 z-20 hidden group-hover/sec:flex items-center gap-xs">
         <span className="bg-[#323130] text-white text-caption px-sm py-2xs rounded-sm">Section</span>
@@ -203,7 +210,7 @@ function SectionEditFrame({
 
       {isFlexible ? (
         // La section flexible se gère librement ; on garde une zone d'ajout sur sa colonne unique.
-        <div className="p-md">
+        <div>
           <FlexibleSectionRenderer
             webparts={section.columns.flatMap((c) => c.webparts)}
             isEditMode
@@ -216,12 +223,14 @@ function SectionEditFrame({
           </div>
         </div>
       ) : (
-        <div className={cn(getSectionGridClass(section.layout), SECTION_GAP, 'p-md')}>
+        // full-width : pas de padding interne — le webpart bleed bord à bord comme en présentation
+        <div className={cn(getSectionGridClass(section.layout), SECTION_GAP, isFullWidth ? 'p-0' : 'p-md')}>
           {section.columns.map((col) => (
             <EditColumn
               key={col.id}
               sectionId={section.id}
               column={col}
+              fullWidth={isFullWidth}
               onAdd={(type, at) => onAddWebpart(col.id, type, at)}
               onRemoveWebpart={(wpId) => onRemoveWebpart(col.id, wpId)}
             />
@@ -235,10 +244,11 @@ function SectionEditFrame({
 /** Une colonne en édition : droppable + tri vertical (DnD), webparts empilés,
  *  zones « + Ajouter un webpart » entre chaque (empilement) + grand placeholder si vide. */
 function EditColumn({
-  sectionId, column, onAdd, onRemoveWebpart,
+  sectionId, column, fullWidth = false, onAdd, onRemoveWebpart,
 }: {
   sectionId: string;
   column: Column;
+  fullWidth?: boolean;
   onAdd: (type: string, at?: number) => void;
   onRemoveWebpart: (wpId: string) => void;
 }) {
@@ -250,7 +260,7 @@ function EditColumn({
   if (webparts.length === 0) {
     return (
       <div ref={setNodeRef} className={cn('rounded-md transition-colors', isOver && 'ring-2 ring-sp-primary/50')}>
-        <AddWebpartZone compact={false} onPick={(type) => onAdd(type, 0)} />
+        <AddWebpartZone compact={false} fullWidth={fullWidth} onPick={(type) => onAdd(type, 0)} />
       </div>
     );
   }
@@ -260,17 +270,18 @@ function EditColumn({
       ref={setNodeRef}
       className={cn('group/col flex flex-col gap-md min-w-0 rounded-md transition-colors', isOver && 'ring-2 ring-sp-primary/40')}
     >
-      <AddWebpartZone compact onPick={(type) => onAdd(type, 0)} />
+      <AddWebpartZone compact fullWidth={fullWidth} onPick={(type) => onAdd(type, 0)} />
       <SortableContext items={webparts.map((w) => `wp:${w.id}`)} strategy={verticalListSortingStrategy}>
         {webparts.map((wp, i) => (
           <div key={wp.id}>
             <SortableWebpart
               instance={wp}
+              fullWidth={fullWidth}
               data={{ kind: 'wp', sectionId, columnId: column.id, webpartId: wp.id }}
               onRemove={() => onRemoveWebpart(wp.id)}
             />
             {/* Zone d'ajout SOUS chaque webpart (insère à i+1). */}
-            <AddWebpartZone compact onPick={(type) => onAdd(type, i + 1)} />
+            <AddWebpartZone compact fullWidth={fullWidth} onPick={(type) => onAdd(type, i + 1)} />
           </div>
         ))}
       </SortableContext>
@@ -280,10 +291,11 @@ function EditColumn({
 
 /** Webpart triable (DnD) avec poignée de déplacement + bouton supprimer (au survol). */
 function SortableWebpart({
-  instance, data, onRemove,
+  instance, data, fullWidth = false, onRemove,
 }: {
   instance: WebpartInstance;
   data: DndWp;
+  fullWidth?: boolean;
   onRemove: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -314,14 +326,14 @@ function SortableWebpart({
         type="button" title="Supprimer le webpart" onClick={onRemove} data-testid="wp-delete"
         className="absolute -top-2 -right-2 z-20 hidden group-hover/wp:flex w-6 h-6 rounded-full bg-white border border-gray-300 text-[#605e5c] hover:text-red-600 hover:border-red-300 items-center justify-center text-caption shadow-sm"
       >🗑</button>
-      <WebpartHost instance={instance} isEditMode />
+      <WebpartHost instance={instance} isEditMode fullWidth={fullWidth} />
     </div>
   );
 }
 
 /** Zone d'ajout de webpart. `compact` = ligne fine (entre webparts, visible au survol de la colonne) ;
  *  sinon grand placeholder (colonne vide). */
-function AddWebpartZone({ compact, onPick }: { compact: boolean; onPick: (type: string) => void }) {
+function AddWebpartZone({ compact, fullWidth = false, onPick }: { compact: boolean; fullWidth?: boolean; onPick: (type: string) => void }) {
   const [open, setOpen] = useState(false);
   return (
     <div className={cn('relative', compact && 'group/addwp flex items-center justify-center py-xs cursor-pointer transition-opacity',
@@ -342,7 +354,7 @@ function AddWebpartZone({ compact, onPick }: { compact: boolean; onPick: (type: 
           <span className="text-heading-sm leading-none">+</span> Ajouter un webpart
         </button>
       )}
-      {open && <WebpartCatalog onPick={(t) => { onPick(t); setOpen(false); }} onClose={() => setOpen(false)} />}
+      {open && <WebpartCatalog fullWidthOnly={fullWidth} onPick={(t) => { onPick(t); setOpen(false); }} onClose={() => setOpen(false)} />}
     </div>
   );
 }

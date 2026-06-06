@@ -22,6 +22,11 @@ interface PageRendererProps {
 export function PageRenderer({ page, isEditMode = false }: PageRendererProps) {
   const sections = [...page.sections].sort((a, b) => a.order - b.order);
   const hasVertical = !!page.verticalSection && page.verticalSection.webparts.length > 0;
+  // Section bleed (full-width/flexible) en 1re/dernière position :
+  // collée à la toolbar / au footer (pas de padding vertical)
+  const isBleedLayout = (l?: string) => l === 'full-width' || l === 'flexible';
+  const firstFullWidth = isBleedLayout(sections[0]?.layout);
+  const lastFullWidth = isBleedLayout(sections[sections.length - 1]?.layout);
 
   const main = (
     <div className="flex flex-col gap-2xl min-w-0 flex-1">
@@ -33,7 +38,7 @@ export function PageRenderer({ page, isEditMode = false }: PageRendererProps) {
 
   return (
     <div className="@container w-full">
-      <div className="max-w-[1204px] mx-auto px-lg py-xl">
+      <div className={cn('max-w-[1204px] mx-auto px-lg', !firstFullWidth && 'pt-xl', !lastFullWidth && 'pb-xl')}>
         <div className={cn('flex flex-col gap-2xl', hasVertical && '@[1024px]:flex-row')}>
           {main}
           {hasVertical && (

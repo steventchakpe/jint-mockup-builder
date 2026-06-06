@@ -36,6 +36,8 @@ export interface WebpartDefinition {
   icon: string; // Lucide icon name or SVG path
   wave: 1 | 2 | 3;
   source: 'jint' | 'sharepoint';
+  /** Éligible aux sections pleine largeur (comme SharePoint : seuls certains webparts le sont). */
+  fullWidthEligible?: boolean;
   component: LazyExoticComponent<ComponentType<WebpartProps>>;
   editorComponent?: LazyExoticComponent<ComponentType<WebpartProps>>;
   skeletonComponent?: LazyExoticComponent<ComponentType<unknown>>;

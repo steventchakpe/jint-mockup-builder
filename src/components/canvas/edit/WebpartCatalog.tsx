@@ -5,20 +5,24 @@ import { getAllWebparts } from '@/config/webpart-registry';
 interface WebpartCatalogProps {
   onPick: (typeId: string) => void;
   onClose: () => void;
+  /** Section pleine largeur : seuls les webparts éligibles sont proposés (comme SharePoint). */
+  fullWidthOnly?: boolean;
 }
 
 /**
  * Catalogue visuel des webparts (US-08) — liste depuis le registry.
  * Affiché au clic sur « + Ajouter un webpart » dans une colonne.
  */
-export function WebpartCatalog({ onPick, onClose }: WebpartCatalogProps) {
-  const webparts = getAllWebparts();
+export function WebpartCatalog({ onPick, onClose, fullWidthOnly = false }: WebpartCatalogProps) {
+  const webparts = getAllWebparts().filter((wp) => !fullWidthOnly || wp.fullWidthEligible);
 
   return (
     <>
       <div className="fixed inset-0 z-20" onClick={onClose} />
       <div className="absolute z-30 mt-sm left-1/2 -translate-x-1/2 w-[320px] max-h-[360px] overflow-auto bg-white rounded-md shadow-xl border border-gray-200 p-sm">
-        <p className="text-caption text-gray-400 px-sm pb-xs">Catalogue de webparts</p>
+        <p className="text-caption text-gray-400 px-sm pb-xs">
+          {fullWidthOnly ? 'Webparts compatibles avec la largeur complète' : 'Catalogue de webparts'}
+        </p>
         <div className="grid grid-cols-2 gap-xs">
           {webparts.map((wp) => (
             <button

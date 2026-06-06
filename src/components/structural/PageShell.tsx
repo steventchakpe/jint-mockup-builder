@@ -40,9 +40,11 @@ export function PageShell({ children, header }: PageShellProps) {
             {/* Toolbar contributeur (US-31) — rendue seulement si profil contributeur */}
             <ContributorToolbar />
             {/* main grandit → pousse le footer en bas ; le contenu scrolle s'il dépasse */}
-            <main className="flex-1 bg-white">
+            {/* @container : référence de largeur pour le bleed des sections full-width (100cqw = largeur du card).
+                Le centrage 1204px est géré par les renderers (PageRenderer / EditableCanvas). */}
+            <main className="flex-1 bg-white @container">
               {/* prospect-font : la font prospect s'applique au contenu (US-18) */}
-              <div className="max-w-[1204px] mx-auto w-full prospect-font">{children}</div>
+              <div className="w-full prospect-font">{children}</div>
             </main>
             <SiteFooter />
           </div>

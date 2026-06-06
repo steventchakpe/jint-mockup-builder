@@ -1,6 +1,8 @@
 import { PageShell } from '@/components/structural/PageShell';
-import { SectionRenderer } from '@/components/canvas';
-import type { Section, WebpartInstance } from '@/types/project';
+import { PageRenderer } from '@/components/canvas';
+import type { Page, Section, WebpartInstance } from '@/types/project';
+import { myAppsDefaultConfig } from '@/components/webparts/my-apps';
+import { myAppsSeed } from '@/config/webpart-seeds';
 
 const focusWp: WebpartInstance = {
   id: 'wp-focus', type: 'focus', order: 0,
@@ -43,20 +45,29 @@ const newcomers: WebpartInstance = {
 
 const col = (id: string, index: number, wp: WebpartInstance) => ({ id, index, webparts: [wp] });
 
+const myApps: WebpartInstance = {
+  id: 'wp-apps', type: 'my-apps', order: 0,
+  config: { ...myAppsDefaultConfig } as unknown as Record<string, unknown>,
+  content: myAppsSeed as unknown as Record<string, unknown>,
+  flex: { x: 0, w: 12, y: 0, z: 1 },
+};
+
 const sections: Section[] = [
-  { id: 's0', order: 0, layout: 'one-column', background: 'none', backgroundImage: null, collapsible: false, title: null, columns: [col('c0', 0, focusWp)] },
-  { id: 's1', order: 1, layout: 'one-column', background: 'none', backgroundImage: null, collapsible: false, title: null, columns: [col('cs', 0, sep)] },
+  { id: 's0', order: 0, layout: 'full-width', background: 'none', backgroundImage: null, collapsible: false, title: null, columns: [col('c0', 0, focusWp)] },
+  { id: 'sf', order: 1, layout: 'flexible', background: 'none', backgroundImage: null, collapsible: false, title: null, columns: [col('cf', 0, myApps)] },
+  { id: 's1', order: 2, layout: 'one-column', background: 'none', backgroundImage: null, collapsible: false, title: null, columns: [col('cs', 0, sep)] },
   { id: 's2', order: 2, layout: 'two-column', background: 'none', backgroundImage: null, collapsible: false, title: null, columns: [col('c1', 0, events), col('c2', 1, newcomers)] },
 ];
+
+const demoPage: Page = {
+  id: 'demo', title: 'Accueil', slug: 'accueil', icon: '', order: 0,
+  sections, verticalSection: null,
+};
 
 export default function FullPage() {
   return (
     <PageShell>
-      <div className="flex flex-col gap-2xl px-lg py-xl">
-        {sections.map((s) => (
-          <SectionRenderer key={s.id} section={s} />
-        ))}
-      </div>
+      <PageRenderer page={demoPage} />
     </PageShell>
   );
 }

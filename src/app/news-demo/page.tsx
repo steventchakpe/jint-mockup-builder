@@ -78,7 +78,7 @@ const newsConfig: NewsConfig = {
 export default function NewsDemoPage() {
   return (
     <PageShell>
-      <div className="px-lg py-xl">
+      <div className="max-w-[1204px] mx-auto w-full px-lg py-xl">
         <News config={newsConfig} content={demoContent} />
       </div>
     </PageShell>

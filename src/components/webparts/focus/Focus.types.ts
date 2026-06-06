@@ -86,6 +86,8 @@ export interface FocusConfig {
   shadow?: FocusShadow;
   /** Fond du focus (image par défaut dans le webpart jintan). */
   background?: FocusBackground;
+  /** Padding BaseLayout (jintan : falsy = pas de padding, ni radius, ni ombre — cas full-width). */
+  padding?: boolean;
 }
 
 export interface FocusContent {

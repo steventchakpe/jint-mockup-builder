@@ -526,6 +526,20 @@ const registry: Record<string, WebpartDefinition> = {
   // 'world-clock': { ... },
 };
 
+/**
+ * Webparts éligibles aux sections pleine largeur — réplique le catalogue
+ * SharePoint « colonne à largeur complète » (seuls certains webparts y sont proposés).
+ * Source : panneau d'ajout SharePoint réel (capture Steven, 2026-06).
+ */
+const FULL_WIDTH_ELIGIBLE = new Set([
+  'focus', 'news', 'events', 'employee-directory', 'search', 'search-results',
+  'search-filters', 'newcomers', 'anniversary', 'separator', 'my-apps',
+  'profile', 'org-chart', 'action-button',
+]);
+for (const [typeId, def] of Object.entries(registry)) {
+  def.fullWidthEligible = FULL_WIDTH_ELIGIBLE.has(typeId);
+}
+
 export function getWebpart(typeId: string): WebpartDefinition | undefined {
   return registry[typeId];
 }
