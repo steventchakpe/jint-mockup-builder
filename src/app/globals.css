@@ -68,3 +68,12 @@ body {
   background: #fff;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Masquer la barre de scroll tout en gardant le scroll actif */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}

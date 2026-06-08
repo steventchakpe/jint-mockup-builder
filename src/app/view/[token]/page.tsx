@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { PresentationView } from '@/components/presentation/PresentationView';
+import { PosthogReplay } from '@/components/presentation/PosthogReplay';
 import { useShareTracking } from '@/components/presentation/useShareTracking';
 import { useProjectStore } from '@/lib/state/project-store';
 
@@ -15,7 +16,7 @@ export default function SharedViewPage() {
   const loadProject = useProjectStore((s) => s.loadProject);
   const [status, setStatus] = useState<'loading' | 'ready' | 'notfound'>('loading');
 
-  // Tracking du lien partagé (self-hosted) — actif uniquement sur cette route.
+  // Métriques canoniques (server-side) — actif uniquement sur cette route.
   useShareTracking(token);
 
   useEffect(() => {
@@ -40,5 +41,15 @@ export default function SharedViewPage() {
       </div>
     );
   }
-  return <PresentationView />;
+  return (
+    <>
+      {/* Session replay + enrichissement — lien partagé uniquement (RGPD/Loi 25 : inputs masqués). */}
+      <PosthogReplay token={token} />
+      <PresentationView />
+      {/* Mention légale discrète exigée par le session replay. */}
+      <p className="py-md text-center text-caption text-sp-tertiary/70">
+        Navigation analysée à des fins de démonstration.
+      </p>
+    </>
+  );
 }

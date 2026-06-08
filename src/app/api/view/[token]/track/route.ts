@@ -1,17 +1,11 @@
-import { createHash } from 'crypto';
 import { createStorageProvider } from '@/lib/storage';
+import { createAnalyticsProvider } from '@/lib/analytics';
+import { visitorKey } from '@/lib/analytics/visitor-key';
 import type { VisitEvent } from '@/types/providers';
 
 export const runtime = 'nodejs';
 
 type Ctx = { params: Promise<{ token: string }> };
-
-/** Clé visiteur opaque = hash(IP + user-agent) — pas de stockage d'IP en clair. */
-function visitorKey(req: Request): string {
-  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'local';
-  const ua = req.headers.get('user-agent') ?? '';
-  return createHash('sha256').update(`${ip}|${ua}`).digest('hex').slice(0, 24);
-}
 
 /** POST /api/view/[token]/track — événement de visite (lien partagé uniquement). */
 export async function POST(req: Request, { params }: Ctx) {
@@ -23,7 +17,15 @@ export async function POST(req: Request, { params }: Ctx) {
     return new Response(null, { status: 400 });
   }
   try {
-    await createStorageProvider().recordVisit(token, visitorKey(req), event);
+    const storage = createStorageProvider();
+    const projectId = await storage.resolveProjectId(token);
+    if (!projectId) return new Response(null, { status: 204 }); // token inconnu → silencieux
+    let company: string | undefined;
+    try { company = (await storage.getMeta(projectId)).prospectCompany; } catch { /* sans metadata */ }
+    await createAnalyticsProvider().recordVisit(
+      { projectId, shareToken: token, visitorKey: visitorKey(req), company },
+      event,
+    );
   } catch {
     /* tracking best-effort — ne jamais bloquer la consultation */
   }

@@ -166,7 +166,7 @@ export function ProjectCard({ project, view, analytics, onOpen, onDuplicate, onD
       <div className={`relative transition-transform duration-500 [transform-style:preserve-3d] ${flipped ? '[transform:rotateY(180deg)]' : ''}`}>
         {/* FACE AVANT */}
         <div className="flex flex-col bg-white border border-[#E8E6DF] rounded-3xl hover:shadow-xl hover:border-[#0A1F19]/10 transition-shadow duration-300 [backface-visibility:hidden]">
-          <button onClick={() => onOpen(project.id)} className={`relative h-44 w-full rounded-t-3xl overflow-hidden bg-gradient-to-br ${getGradientFromName(project.name)}`}>
+          <button onClick={() => onOpen(project.id)} className={`relative h-44 w-full rounded-t-3xl overflow-hidden bg-gradient-to-br ${getGradientFromName(project.name)} [transform:translateZ(0)] [mask-image:-webkit-radial-gradient(white,black)]`}>
             {project.thumbnail
               ? <img src={project.thumbnail} alt={project.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
               : <span className="absolute inset-0 flex items-center justify-center"><MonitorPlay className="h-14 w-14 text-[#0A1F19]/20" /></span>}

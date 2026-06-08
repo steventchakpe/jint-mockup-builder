@@ -419,6 +419,8 @@ Données trackées par lien :
 
 L'utilisateur voit ces métriques dans le dashboard multi-projets, à côté de chaque projet qui a un lien actif. Phase cible : Phase 2 (génération du lien) + Phase 4 (métriques avancées).
 
+> **✅ Implémenté.** Provider abstrait `AnalyticsProvider` (`ANALYTICS_PROVIDER=local|posthog`), mode **hybride** PostHog (capture server-side pour les métriques + `posthog-js` client pour session replay/enrichissement, reverse-proxy `/jint-relay` anti ad-blocker, `distinct_id` partagé). Dashboard PostHog **auto-créé par maquette** au premier partage. Détail complet, conformité RGPD/Loi 25 et **prérequis prod** : voir **`docs/ANALYTICS.md`**.
+
 ### 6.8 Architecture de stockage (sans BDD)
 
 Voir section 8 — Architecture conceptuelle.

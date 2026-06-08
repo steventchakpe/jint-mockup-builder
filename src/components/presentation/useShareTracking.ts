@@ -6,7 +6,8 @@ import { useProjectStore } from '@/lib/state/project-store';
 const HEARTBEAT_MS = 15_000;
 
 /**
- * Tracking d'un lien partagé (`/view/{token}`) — self-hosted, sans PostHog.
+ * Tracking d'un lien partagé (`/view/{token}`) — métriques canoniques server-side
+ * (le serveur relaie vers le provider d'analytics : local ou PostHog).
  * Émis UNIQUEMENT depuis le lien prospect (jamais en édition ni en preview Sales).
  * Envoie : ouverture (view), changement de page (pageview), battements de cœur
  * (durée de session) et fermeture (end via sendBeacon).

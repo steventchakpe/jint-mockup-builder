@@ -17,3 +17,7 @@ out/
 
 # Local project storage (LocalStorageProvider)
 /data
+
+# Env (secrets — ne jamais committer)
+.env
+.env*.local

@@ -134,7 +134,7 @@ export function MetricCard({ title, value, icon: Icon, trend, isPositive }: { ti
         <div className="p-2.5 bg-[#F5F4F0] rounded-xl text-[#0A1F19]"><Icon className="h-5 w-5" /></div>
       </div>
       <div className="flex items-baseline gap-2">
-        <span className="text-3xl font-extrabold text-[#0A1F19]">{value}</span>
+        <span className="text-[24px] leading-none font-extrabold text-[#0A1F19]">{value}</span>
         {trend && (
           <span className={`text-sm font-bold flex items-center ${isPositive ? 'text-emerald-600' : isPositive === false ? 'text-red-600' : 'text-[#4A5D58]'}`}>
             {isPositive ? <ArrowUpRight className="h-4 w-4 mr-0.5" /> : isPositive === false ? <ArrowDownRight className="h-4 w-4 mr-0.5" /> : null}

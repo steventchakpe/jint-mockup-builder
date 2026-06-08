@@ -19,7 +19,7 @@ const JSON_HEADERS = { 'Content-Type': 'application/json' };
 /**
  * Dashboard multi-maquettes (PRD §6.10) — design Jint.
  * Branché sur l'API réelle (`/api/projects`) + création via createBlankProject + navigation Next.
- * Métriques de partage = mock (Phase 4 / PostHog).
+ * Métriques de partage = analytics réelles (provider local ou PostHog selon ANALYTICS_PROVIDER).
  */
 export function Dashboard() {
   const router = useRouter();
@@ -177,7 +177,7 @@ export function Dashboard() {
           </div>
         </header>
 
-        <div className="flex-1 overflow-auto p-6 lg:p-10 lg:max-w-[80rem] lg:mx-auto w-full">
+        <div className="flex-1 overflow-auto scrollbar-hide p-6 lg:p-10 lg:max-w-[80rem] lg:mx-auto w-full">
           {/* HEADER */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>

@@ -11,13 +11,60 @@ export interface StorageProvider {
   duplicateProject(id: string, newName: string): Promise<string>;
   uploadImage(projectId: string, file: File): Promise<string>;
   deleteImage(url: string): Promise<void>;
+  /** Écrit la miniature (capture de la page d'accueil) et retourne son URL servie par l'API. */
+  setThumbnail(projectId: string, buffer: Buffer): Promise<string>;
   getShareUrl(projectId: string): Promise<string>;
   loadSharedProject(shareToken: string): Promise<Project>;
-  // ---- Tracking des liens partagés (self-hosted, sans PostHog) ----
-  /** Enregistre un événement de visite sur un lien partagé (mode Présentation). */
-  recordVisit(shareToken: string, visitorKey: string, event: VisitEvent): Promise<void>;
-  /** Métriques agrégées du lien partagé d'un projet (dashboard). */
+  /** Résout le project-id d'un share-token (null si inconnu). */
+  resolveProjectId(shareToken: string): Promise<string | null>;
+  /** Lit les métadonnées d'un projet (dashboard, partage). */
+  getMeta(projectId: string): Promise<ProjectMeta>;
+  /** Met à jour partiellement les métadonnées (shareToken, url dashboard PostHog…). */
+  updateMeta(projectId: string, patch: Partial<ProjectMeta>): Promise<void>;
+}
+
+// ============================================
+// Analytics Provider — local (self-hosted) | posthog
+// Tracking des liens partagés (mode Présentation uniquement).
+// ============================================
+export interface AnalyticsProvider {
+  /** Enregistre un événement de visite (lien partagé). */
+  recordVisit(ctx: VisitContext, event: VisitEvent): Promise<void>;
+  /** Métriques agrégées du lien partagé d'un projet (stats par maquette). */
   getAnalytics(projectId: string): Promise<ShareAnalytics>;
+  /** Métriques globales tous projets confondus (cards du dashboard). */
+  getGlobalMetrics(): Promise<GlobalMetrics>;
+  /**
+   * Provisionne le dashboard d'analytics du lien partagé et renvoie son URL
+   * (ouvrable depuis la carte du dashboard). Retourne null si non applicable
+   * (provider local). L'idempotence est gérée par l'appelant via
+   * ProjectMeta.posthogDashboardUrl.
+   */
+  ensureDashboard(projectId: string, opts: DashboardOpts): Promise<string | null>;
+}
+
+/** Contexte d'une visite, résolu côté serveur avant l'enregistrement. */
+export interface VisitContext {
+  projectId: string;
+  shareToken: string;
+  /** Clé visiteur opaque = hash(IP+UA) — sert de distinct_id. */
+  visitorKey: string;
+  /** Nom du prospect (injecté serveur) — propriété d'event pour le lastView global. */
+  company?: string;
+}
+
+/** Métriques globales affichées sur les cards du dashboard. */
+export interface GlobalMetrics {
+  /** Total de vues (toutes maquettes partagées). */
+  totalViews: number;
+  /** Dernière consultation prospect, tous projets confondus. */
+  lastView: { at: string | null; company: string | null };
+}
+
+export interface DashboardOpts {
+  shareToken: string;
+  projectName: string;
+  company: string;
 }
 
 /** Événement de tracking émis depuis le lien partagé `/view/{token}`. */
@@ -55,6 +102,10 @@ export interface ProjectMeta {
   department?: string;
   /** Prénom du créateur (affiché dans les statistiques). */
   createdBy?: string;
+  /** Date de création du lien de partage, ISO — stampée au premier partage. */
+  shareCreatedAt?: string | null;
+  /** URL du dashboard PostHog de la maquette (créé au premier partage). */
+  posthogDashboardUrl?: string | null;
 }
 
 // ============================================

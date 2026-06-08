@@ -10,11 +10,6 @@ export const currentUser = {
   avatarUrl: 'https://i.pravatar.cc/150?u=steven',
 };
 
-// TODO: Phase 4 — brancher PostHog (valeurs simulées isolées ici).
-export const mockMetrics = {
-  totalViews: { value: '1 248', trend: '+12%', isPositive: true as boolean | null },
-  lastProspectView: { value: 'Il y a 3h', trend: 'Acme Corp', isPositive: null as boolean | null },
-};
 
 export function getRelativeTime(dateString: string): string {
   const date = new Date(dateString);

@@ -648,6 +648,8 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       set({ project: updated, isDirty: false, saveStatus: 'saved' });
+      // Régénère la miniature (capture page d'accueil) — secondaire, ne bloque pas la sauvegarde.
+      fetch(`/api/projects/${project.id}/thumbnail`, { method: 'POST' }).catch(() => {});
     } catch (e) {
       set({ saveStatus: 'error', error: e instanceof Error ? e.message : 'Échec de la sauvegarde' });
     }
