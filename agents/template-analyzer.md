@@ -15,8 +15,11 @@ Jint Builder is an AI-first tool that generates SharePoint intranet demos. The u
 
 ## Workflow
 
-1. **Identify the page type** — Is this a homepage, HR page, IT helpdesk, communications page, etc.?
-2. **Detect the sector** — From visual cues (imagery, content, branding) and folder path, identify the industry sector.
+1. **Identify the page type** — Assign exactly one value from the **closed `pageType` list** (figée 2026-06-08) :
+   `accueil` (Accueil) · `espace-perso` (Espace personnel) · `rh` (Espace RH) ·
+   `documentation` (Espace documentation) · `it` (Espace IT) · `metier` (Espace métier) ·
+   `annuaire` (Annuaire). N'invente aucune autre valeur. Voir `docs/AI-GENERATION.md` §4.
+2. **Sector — from the folder path ONLY** — The sector is taken **exclusively** from the folder where the PNG lives (`templates/screenshots/{sector}/...`). Do NOT infer the sector from visual cues / imagery / branding.
 3. **Map the layout** — Create an ASCII representation of the page structure showing sections, column splits, and webpart placement.
 4. **Inventory webparts** — List every webpart visible, using the standard Jint Builder type IDs from `docs/webparts/`. If a webpart doesn't match a known type, describe it and suggest a type ID.
 5. **Analyze content patterns** — Note the editorial tone, types of content, imagery style, and color palette.

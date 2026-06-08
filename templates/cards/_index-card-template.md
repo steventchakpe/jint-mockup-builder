@@ -11,7 +11,7 @@
 |-------|--------|
 | **Fichier source** | `{chemin vers le screenshot}` |
 | **Secteur** | `{bancaire \| municipal \| retail-pharmacie \| energie \| assurance \| tech \| sante \| education \| general}` |
-| **Type de page** | `{accueil \| rh \| it-helpdesk \| communications \| direction \| evenements \| projets \| onboarding}` |
+| **Type de page** | `{accueil \| espace-perso \| rh \| documentation \| it \| metier \| annuaire}` |
 | **Langue** | `{fr \| en \| bilingue}` |
 | **Ambiance** | `{corporate-sobre \| moderne-dynamique \| chaleureux-communautaire \| technique-fonctionnel}` |
 

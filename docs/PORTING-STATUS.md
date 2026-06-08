@@ -1,10 +1,10 @@
 # État d'avancement & roadmap — Jint Builder
 
-_Mis à jour : 2026-06-04. Voir la méthode dans [WEBPART-PORTING.md](./WEBPART-PORTING.md)._
+_Mis à jour : 2026-06-08 (vérif code réelle). Voir la méthode dans [WEBPART-PORTING.md](./WEBPART-PORTING.md)._
 
-> **Wave 1 complète (8/8).** Recherche = `search` (barre seule), conforme au PRD.
-> Les webparts jintan `mzkSearchFilters` (Filtre de recherche) et `search-results`
-> (Résultats de recherche) existent mais ne sont **pas** dans les 31 du PRD → **reportés en Phase 2**.
+> **Webparts : 20 faits / 31.** Vérifié dans `src/components/webparts/` : 11 dossiers
+> sont encore des stubs (`index.ts` "not generated yet"). Voir tableaux ci-dessous.
+> IA (Phase 3) : voir [AI-GENERATION.md](./AI-GENERATION.md) — génération par formulaire, pas de chat.
 
 ## Légende disponibilité source jintan
 - 🟢 **package** : module compilé dispo (`@mozzaik365/components/dist/{x}`)
@@ -28,39 +28,46 @@ _Mis à jour : 2026-06-04. Voir la méthode dans [WEBPART-PORTING.md](./WEBPART-
 | 5 | Search | ✅ | 🔵 `searchBox` (mzkSearchBox) — bannière glassmorphism/classic |
 | 6 | Newcomers | ✅ | 🟢 `people` mode `Newcomers` (composant partagé) |
 | 7 | Anniversary | ✅ | 🟢 `people` mode `Anniversaries` (anniversaires pro, même composant) |
-| 8 | Separator | ⬜ | 🟢 `separator` |
+| 8 | Separator | ✅ | 🟢 `separator` |
 
 ### Wave 2 — Productivité & engagement
 | # | Webpart | Statut | Source jintan |
 |---|---------|--------|---------------|
-| 9 | My apps | ⬜ | 🟢 `links` / `mobility` (à confirmer) |
-| 10 | Org chart | ⬜ | 🟢 `organization-chart` |
-| 11 | Profile | ⬜ | 🟢 `profile` |
-| 12 | Newshub | ⬜ | 🟢 `news-hub` |
-| 13 | My tasks | ⬜ | 🟢 `my-tasks` |
-| 14 | Docs | ⬜ | 🟢 `my-files` / `file-explorer` |
-| 15 | My emails | ⬜ | 🟢 `my-emails` |
-| 16 | My meetings | ⬜ | 🟢 `my-meetings` |
-| 17 | Viva engage | ⬜ | 🔴 absent |
-| 18 | Text | ⬜ | ⚪ natif SP |
+| 9 | My apps | ✅ | 🟢 `links` mode myApps |
+| 10 | Org chart | ✅ | 🟢 `organization-chart` |
+| 11 | Profile | ✅ | 🟢 `profile` |
+| 12 | Newshub | ✅ | 🟢 `news-hub` |
+| 13 | My tasks | ✅ | 🟢 `my-tasks` |
+| 14 | Docs | ✅ | 🟢 `my-files` / `file-explorer` |
+| 15 | My emails | ✅ | 🟢 `my-emails` |
+| 16 | My meetings | ✅ | 🟢 `my-meetings` |
+| 17 | Viva engage | 🟡 stub | 🔴 absent → **modèle requis** |
+| 18 | Text | 🟡 stub | ⚪ natif SP → **modèle requis** |
 
 ### Wave 3 — Compléments & widgets
 | # | Webpart | Statut | Source jintan |
 |---|---------|--------|---------------|
-| 19 | News V2 | ⬜ | 🟢 `news-feed` |
-| 20 | Focus V3 | ⬜ | 🟢 `focus` (variantes) |
-| 21 | Image interactive | ⬜ | 🟢 `image-map` |
-| 22 | My resume | ⬜ | 🟢 `my-summary` |
-| 23 | Action button | ⬜ | 🟢 `action-button` |
-| 24 | Barre de recherche | ⬜ | 🔵 `searchBox` |
-| 25 | Sondage | ⬜ | 🔴 absent |
-| 26 | Boîte à idées | ⬜ | 🔴 absent |
-| 27 | Vidéo | ⬜ | ⚪ natif SP |
-| 28 | Incorporation (embed) | ⬜ | 🟢 `embed` |
-| 29 | Weather | ⬜ | ⚪ natif SP |
-| 30 | World Clock | ⬜ | ⚪ natif SP |
+| 19 | News V2 | 🟡 stub | 🟢 `news-feed` (package) → **portable** |
+| 20 | Focus V3 | 🟡 stub | 🟢 `focus` / `focusV2` → **portable** (V2=V3 ? à confirmer) |
+| 21 | Image interactive | ✅ | 🟢 `image-map` |
+| 22 | My resume | ✅ | 🟢 `my-summary` |
+| 23 | Action button | ✅ | 🟢 `action-button` |
+| 24 | Barre de recherche | 🟡 stub | 🔵 `searchBox` → **portable** |
+| 25 | Sondage | 🟡 stub | 🔴 absent → **modèle requis** |
+| 26 | Boîte à idées | 🟡 stub | 🔴 absent → **modèle requis** |
+| 27 | Vidéo | 🟡 stub | ⚪ natif SP → **modèle requis** |
+| 28 | Incorporation (embed) | 🟡 stub | 🟢 `embed` (package) → **portable** |
+| 29 | Weather | 🟡 stub | ⚪ natif SP → **modèle requis** |
+| 30 | World Clock | 🟡 stub | ⚪ natif SP → **modèle requis** |
 
-**Couverture jintan : ~22/31 webparts** ont une source directe. Manquants (🔴) : Newcomers, Anniversary, Viva engage, Sondage, Boîte à idées, (My apps à confirmer). Natifs (⚪) à construire : Text, Vidéo, Weather, World Clock.
+> Note : `search-filters` + `search-results` (Recherche connectée) sont **faits** en plus
+> des 31 du PRD (issus de `searchFilters`/`searchResults` jintan).
+
+**Bilan webparts : 20 faits / 31.**
+- **4 stubs portables maintenant** (source jintan dispo) : `search-bar` (`searchBox`),
+  `news-v2` (`news-feed`), `focus-v3` (`focusV2`), `embed` (package).
+- **7 stubs en attente de modèle** : `viva-engage`, `poll`, `idea-box` (absents de jintan)
+  + natifs SP `text`, `video`, `weather`, `world-clock` (jintan ≠ natifs SharePoint).
 
 ---
 
