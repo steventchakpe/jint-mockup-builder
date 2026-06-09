@@ -24,6 +24,11 @@ export interface SeedStrings {
     items: ReadonlyArray<{ name: string; tags: readonly string[] }>;
     facets: { fileType: string; contentType: string; author: string; contentBuckets: readonly string[] };
   };
+  ideaBox: {
+    ideas: ReadonlyArray<{ title: string; idea: string }>;
+    answer: { state: string; text: string };
+  };
+  poll: { title: string; question: string; options: readonly string[] };
   /** Contenu « My * » des profils switchables 002/003 (US-30). */
   personal: {
     listName: string;

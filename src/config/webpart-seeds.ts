@@ -224,4 +224,34 @@ export const actionButtonSeed = (locale: Locale) => ({
   url: '#',
 });
 
+export const pollSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).poll;
+  const votes = [58, 34, 12];
+  return {
+    question: s.question,
+    userHasVoted: false,
+    options: s.options.map((label, i) => ({ id: `opt-${i + 1}`, label, votes: votes[i] ?? 0 })),
+  };
+};
+
+export const ideaBoxSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).ideaBox;
+  // Auteur de la réponse = profil contributeur (001), cohérent avec l'annuaire.
+  const author = createDefaultProfiles(DEFAULT_EMAIL_DOMAIN, locale).editable[0];
+  const votes = [42, 28, 17, 11, 6];
+  return {
+    ideas: s.ideas.map((it, i) => ({
+      id: `idea-${i + 1}`,
+      title: it.title,
+      idea: it.idea,
+      votes: votes[i] ?? 0,
+      userHasVoted: i === 1,
+      // La 1re idée (la plus votée) a une réponse officielle de l'équipe.
+      answer: i === 0
+        ? { authorName: `${author.firstName} ${author.lastName}`, authorTitle: author.jobTitle, authorAvatar: author.avatar, state: s.answer.state, text: s.answer.text }
+        : null,
+    })),
+  };
+};
+
 export { searchResultsSeed, searchFiltersSeed } from './webpart-seeds.search';

@@ -47,27 +47,37 @@ _Mis à jour : 2026-06-08 (vérif code réelle). Voir la méthode dans [WEBPART-
 ### Wave 3 — Compléments & widgets
 | # | Webpart | Statut | Source jintan |
 |---|---------|--------|---------------|
-| 19 | News V2 | 🟡 stub | 🟢 `news-feed` (package) → **portable** |
+| 19 | ~~News V2~~ | ❌ supprimé | retiré du catalogue (décision Steven 2026-06-09) |
 | 20 | Focus V3 | 🟡 stub | 🟢 `focus` / `focusV2` → **portable** (V2=V3 ? à confirmer) |
 | 21 | Image interactive | ✅ | 🟢 `image-map` |
 | 22 | My resume | ✅ | 🟢 `my-summary` |
 | 23 | Action button | ✅ | 🟢 `action-button` |
 | 24 | Barre de recherche | 🟡 stub | 🔵 `searchBox` → **portable** |
-| 25 | Sondage | 🟡 stub | 🔴 absent → **modèle requis** |
-| 26 | Boîte à idées | 🟡 stub | 🔴 absent → **modèle requis** |
+| 25 | Sondage | ✅ | 🔵 `webpart_legacy/mzkSurvey` |
+| 26 | Boîte à idées | ✅ | 🔵 `webpart_legacy/mzkSuggestionBox` |
 | 27 | Vidéo | 🟡 stub | ⚪ natif SP → **modèle requis** |
 | 28 | Incorporation (embed) | 🟡 stub | 🟢 `embed` (package) → **portable** |
 | 29 | Weather | 🟡 stub | ⚪ natif SP → **modèle requis** |
 | 30 | World Clock | 🟡 stub | ⚪ natif SP → **modèle requis** |
 
+### Ajouts catalogue (2026-06-09, décision Steven) — +2 webparts
+| # | Webpart | Statut | Source |
+|---|---------|--------|--------|
+| 31 | Mes documents | ⬜ à faire | 🔵 `webpart_legacy/mzkMyDocuments` (MyRecentDocuments) — docs récents perso (≠ `docs`) |
+| 32 | Mes abonnements | ⬜ à faire | 🔵 `jintan/news-feed` (NewsFeed.tsx + myFeed/subscriptionPickerPanel) — fil type News par abonnements |
+
 > Note : `search-filters` + `search-results` (Recherche connectée) sont **faits** en plus
 > des 31 du PRD (issus de `searchFilters`/`searchResults` jintan).
 
-**Bilan webparts : 20 faits / 31.**
-- **4 stubs portables maintenant** (source jintan dispo) : `search-bar` (`searchBox`),
-  `news-v2` (`news-feed`), `focus-v3` (`focusV2`), `embed` (package).
-- **7 stubs en attente de modèle** : `viva-engage`, `poll`, `idea-box` (absents de jintan)
-  + natifs SP `text`, `video`, `weather`, `world-clock` (jintan ≠ natifs SharePoint).
+**Bilan webparts : 22 faits / 32** (News V2 retiré le 2026-06-09 ; poll + idea-box
+portés depuis webpart_legacy ; +2 ajouts Mes documents / Mes abonnements).
+- **À porter** : `mes-documents` (`webpart_legacy/mzkMyDocuments`), `mes-abonnements` (`jintan/news-feed`).
+- **3 stubs portables** : `search-bar` (`searchBox`), `focus-v3` (`focusV2`), `embed` (package).
+- **5 stubs en attente de modèle** : `viva-engage` (absent partout) + natifs SharePoint
+  `text`, `video`, `weather`, `world-clock`.
+
+> **2 sources de vérité** désormais : `~/Projets/jintan` (oldparts + packages compilés)
+> ET `~/Projets/webpart_legacy` (SPFx legacy, ~39 webparts mzk* + dossier Newsletter).
 
 ---
 

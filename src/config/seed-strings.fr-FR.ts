@@ -80,6 +80,21 @@ export const seedFrFR: SeedStrings = {
     ],
     facets: { fileType: 'Type de fichier', contentType: 'Type de contenu', author: 'Auteur', contentBuckets: ['Documents', 'Sites', 'Actualités'] },
   },
+  ideaBox: {
+    ideas: [
+      { title: 'Mettre en place une journée télétravail supplémentaire', idea: 'Proposer une 3e journée de télétravail hebdomadaire pour les équipes dont l’activité le permet, afin d’améliorer l’équilibre vie pro / vie perso.' },
+      { title: 'Créer un espace de covoiturage interne', idea: 'Un module dédié sur l’intranet pour organiser le covoiturage domicile-travail entre collègues, avec géolocalisation des trajets.' },
+      { title: 'Installer des bornes de recharge électrique', idea: 'Équiper le parking du siège de bornes de recharge pour encourager la mobilité électrique des collaborateurs.' },
+      { title: 'Petit-déjeuner d’équipe mensuel', idea: 'Organiser un petit-déjeuner convivial le premier vendredi de chaque mois pour renforcer la cohésion entre les services.' },
+      { title: 'Programme de mentorat interne', idea: 'Mettre en relation les nouveaux arrivants avec des collaborateurs expérimentés volontaires pour faciliter l’intégration.' },
+    ],
+    answer: { state: 'À l’étude', text: 'Merci pour cette proposition ! Le sujet est en cours d’analyse avec les RH et la direction. Un retour sera communiqué avant la fin du trimestre.' },
+  },
+  poll: {
+    title: 'Sondage de la semaine',
+    question: 'Quel format préférez-vous pour le prochain séminaire d’équipe ?',
+    options: ['Une journée en présentiel', 'Un format hybride sur deux jours', 'Un évènement 100 % à distance'],
+  },
   personal: {
     listName: 'Tâches',
     p2: {

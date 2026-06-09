@@ -25,7 +25,6 @@ const SYNC_RULES: Record<string, { listKey: string; refKey: (item: Item) => stri
   'employee-directory': { listKey: 'people', refKey: (i) => i.id as string, fields: { displayName: splitName, title: str('jobTitle'), department: str('department'), location: str('location'), imageUrl: str('avatar'), bio: str('bio') } },
   'org-chart': { listKey: 'employees', refKey: (i) => (i.profileId ?? i.id) as string, fields: { displayName: splitName, jobTitle: str('jobTitle'), department: str('department'), location: str('location'), imageUrl: str('avatar') } },
   'news': { listKey: 'news', refKey: (i) => i.authorId as string | undefined, fields: { author: splitName, authorAvatar: str('avatar') } },
-  'news-v2': { listKey: 'news', refKey: (i) => i.authorId as string | undefined, fields: { author: splitName, authorAvatar: str('avatar') } },
 };
 
 export interface ProfileSync {

@@ -105,7 +105,6 @@ const HYDRATORS: Record<string, (content: Content, byId: ById) => Content> = {
   'org-chart': hydrateOrgChart,
   'profile': hydrateProfileCard,
   'news': hydrateNews,
-  'news-v2': hydrateNews,
 };
 
 /** Résout les références aux profils dans le contenu d'un webpart (no-op si type non concerné). */

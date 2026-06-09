@@ -53,6 +53,8 @@ import { myResumeDefaultConfig, myResumeConfigMeta } from '@/components/webparts
 import { actionButtonDefaultConfig, actionButtonConfigMeta } from '@/components/webparts/action-button';
 import { searchResultsDefaultConfig, searchResultsConfigMeta } from '@/components/webparts/search-results';
 import { searchFiltersDefaultConfig, searchFiltersConfigMeta } from '@/components/webparts/search-filters';
+import { ideaBoxDefaultConfig, ideaBoxConfigMeta } from '@/components/webparts/idea-box';
+import { pollDefaultConfig, pollConfigMeta } from '@/components/webparts/poll';
 import {
   newsSeed,
   eventsSeed,
@@ -74,6 +76,8 @@ import {
   actionButtonSeed,
   searchResultsSeed,
   searchFiltersSeed,
+  ideaBoxSeed,
+  pollSeed,
 } from './webpart-seeds';
 
 /**
@@ -421,7 +425,6 @@ const registry: Record<string, WebpartDefinition> = {
   // WAVE 3 — Complements & variants (Phase 4)
   // ============================================
 
-  // 'news-v2': { ... },
   // 'focus-v3': { ... },
   'image-interactive': {
     typeId: imageInteractiveConfigMeta.typeId,
@@ -509,8 +512,34 @@ const registry: Record<string, WebpartDefinition> = {
     defaultContent: searchFiltersSeed,
   },
   // 'search-bar': couvert par le webpart 'search' (mzkSearchBox) porté en Wave 1.
-  // 'poll': { ... },
-  // 'idea-box': { ... },
+  'poll': {
+    typeId: pollConfigMeta.typeId,
+    name: 'Sondage',
+    nameEn: pollConfigMeta.displayName,
+    category: pollConfigMeta.category as WebpartDefinition['category'],
+    icon: pollConfigMeta.icon,
+    wave: pollConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/poll').then((m) => ({ default: m.Poll as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/poll/Poll.skeleton').then((m) => ({ default: m.PollSkeleton as never }))),
+    configurableProperties: buildProps(pollConfigMeta.configurableProps as RawProp[], pollDefaultConfig as unknown as Record<string, unknown>),
+    defaultConfig: pollDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: pollSeed,
+  },
+  'idea-box': {
+    typeId: ideaBoxConfigMeta.typeId,
+    name: 'Boîte à idées',
+    nameEn: ideaBoxConfigMeta.displayName,
+    category: ideaBoxConfigMeta.category as WebpartDefinition['category'],
+    icon: ideaBoxConfigMeta.icon,
+    wave: ideaBoxConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/idea-box').then((m) => ({ default: m.IdeaBox as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/idea-box/IdeaBox.skeleton').then((m) => ({ default: m.IdeaBoxSkeleton as never }))),
+    configurableProperties: buildProps(ideaBoxConfigMeta.configurableProps as RawProp[], ideaBoxDefaultConfig as unknown as Record<string, unknown>),
+    defaultConfig: ideaBoxDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: ideaBoxSeed,
+  },
   // 'video': { ... },
   // 'embed': { ... },
   // 'weather': { ... },

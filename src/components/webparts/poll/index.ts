@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { Poll } from './Poll';
+export { PollSkeleton } from './Poll.skeleton';
+export { pollDefaultConfig, pollConfigMeta } from './Poll.config';
+export type { PollConfig, PollContent, PollProps, PollOption } from './Poll.types';

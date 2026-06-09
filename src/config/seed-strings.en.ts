@@ -80,6 +80,21 @@ export const seedEn: SeedStrings = {
     ],
     facets: { fileType: 'File type', contentType: 'Content type', author: 'Author', contentBuckets: ['Documents', 'Sites', 'News'] },
   },
+  ideaBox: {
+    ideas: [
+      { title: 'Add an extra remote-work day', idea: 'Offer a third weekly remote-work day for teams whose activity allows it, to improve work-life balance.' },
+      { title: 'Create an internal carpooling space', idea: 'A dedicated intranet module to organise home-to-work carpooling between colleagues, with route matching.' },
+      { title: 'Install EV charging stations', idea: 'Equip the headquarters car park with charging stations to encourage employees’ electric mobility.' },
+      { title: 'Monthly team breakfast', idea: 'Host a friendly breakfast on the first Friday of each month to strengthen cohesion across departments.' },
+      { title: 'Internal mentoring programme', idea: 'Pair new joiners with experienced volunteer colleagues to make onboarding smoother.' },
+    ],
+    answer: { state: 'Under review', text: 'Thanks for this suggestion! The topic is being reviewed with HR and management. We will share an update before the end of the quarter.' },
+  },
+  poll: {
+    title: 'Poll of the week',
+    question: 'Which format do you prefer for the next team offsite?',
+    options: ['A full day on-site', 'A two-day hybrid format', 'A fully remote event'],
+  },
   personal: {
     listName: 'Tasks',
     p2: {
