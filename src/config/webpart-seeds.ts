@@ -224,6 +224,31 @@ export const actionButtonSeed = (locale: Locale) => ({
   url: '#',
 });
 
+export const vivaEngageSeed = (locale: Locale) => {
+  const s = getSeedStrings(locale).vivaEngage;
+  const profiles = createDefaultProfiles(DEFAULT_EMAIL_DOMAIN, locale).editable;
+  const times = ['Il y a 8m', 'Il y a 2h'];
+  return {
+    conversations: s.conversations.map((conv, i) => {
+      const author = profiles[i % profiles.length];
+      return {
+        id: `viva-${i + 1}`,
+        type: 'discussion' as const,
+        authorName: `${author.firstName} ${author.lastName}`,
+        authorAvatar: author.avatar,
+        time: times[i % times.length],
+        text: conv.text,
+        likeCount: i === 0 ? 3 : 0,
+        likedByUser: false,
+        comments: conv.comments.map((text, ci) => {
+          const ca = profiles[(i + ci + 1) % profiles.length];
+          return { id: `viva-${i + 1}-c${ci + 1}`, authorName: `${ca.firstName} ${ca.lastName}`, authorAvatar: ca.avatar, time: 'Il y a 5m', text };
+        }),
+      };
+    }),
+  };
+};
+
 export const mesDocumentsSeed = (locale: Locale) => {
   const titles = getSeedStrings(locale).mesDocuments.documents;
   const profiles = createDefaultProfiles(DEFAULT_EMAIL_DOMAIN, locale).editable;

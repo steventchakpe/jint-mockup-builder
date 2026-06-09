@@ -95,6 +95,12 @@ export const seedEn: SeedStrings = {
     question: 'Which format do you prefer for the next team offsite?',
     options: ['A full day on-site', 'A two-day hybrid format', 'A fully remote event'],
   },
+  vivaEngage: {
+    conversations: [
+      { text: 'Welcome to our new Viva Engage space! Share your ideas, ask questions and celebrate the team’s wins. 🎉', comments: ['Great initiative, looking forward to chatting here!', 'Finally a place to talk all together 👏'] },
+      { text: 'Quick reminder: the workshop on the new remote-work policy is on Thursday at 2 PM. Feel free to bring your questions.', comments: ['I’ll be there, thanks for the heads-up.'] },
+    ],
+  },
   mesDocuments: {
     documents: [
       '2026 strategic plan',

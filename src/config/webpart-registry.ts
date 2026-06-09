@@ -57,6 +57,7 @@ import { ideaBoxDefaultConfig, ideaBoxConfigMeta } from '@/components/webparts/i
 import { pollDefaultConfig, pollConfigMeta } from '@/components/webparts/poll';
 import { mesDocumentsDefaultConfig, mesDocumentsConfigMeta } from '@/components/webparts/mes-documents';
 import { mesAbonnementsDefaultConfig, mesAbonnementsConfigMeta } from '@/components/webparts/mes-abonnements';
+import { vivaEngageDefaultConfig, vivaEngageConfigMeta } from '@/components/webparts/viva-engage';
 import {
   newsSeed,
   eventsSeed,
@@ -81,6 +82,7 @@ import {
   ideaBoxSeed,
   pollSeed,
   mesDocumentsSeed,
+  vivaEngageSeed,
 } from './webpart-seeds';
 
 /**
@@ -421,7 +423,20 @@ const registry: Record<string, WebpartDefinition> = {
     defaultConfig: myMeetingsDefaultConfig as unknown as Record<string, unknown>,
     defaultContent: myMeetingsSeed,
   },
-  // 'viva-engage': { ... },
+  'viva-engage': {
+    typeId: vivaEngageConfigMeta.typeId,
+    name: 'Viva Engage',
+    nameEn: vivaEngageConfigMeta.displayName,
+    category: vivaEngageConfigMeta.category as WebpartDefinition['category'],
+    icon: vivaEngageConfigMeta.icon,
+    wave: vivaEngageConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/viva-engage').then((m) => ({ default: m.VivaEngage as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/viva-engage/VivaEngage.skeleton').then((m) => ({ default: m.VivaEngageSkeleton as never }))),
+    configurableProperties: buildProps(vivaEngageConfigMeta.configurableProps as RawProp[], vivaEngageDefaultConfig as unknown as Record<string, unknown>),
+    defaultConfig: vivaEngageDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: vivaEngageSeed,
+  },
   // 'text': { ... },
 
   // ============================================

@@ -1,5 +1,4 @@
-// This webpart has not been generated yet.
-// To generate it:
-// 1. Select the component in Figma Desktop
-// 2. Run: /jint:generate-webpart <type-id>
-export {};
+export { VivaEngage } from './VivaEngage';
+export { VivaEngageSkeleton } from './VivaEngage.skeleton';
+export { vivaEngageDefaultConfig, vivaEngageConfigMeta } from './VivaEngage.config';
+export type { VivaEngageConfig, VivaEngageContent, VivaEngageProps, VivaConversation, VivaComment, ConversationType } from './VivaEngage.types';

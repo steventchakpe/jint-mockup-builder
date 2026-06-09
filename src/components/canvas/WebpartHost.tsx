@@ -81,6 +81,7 @@ export function WebpartHost({ instance, isEditMode = false, fullWidth = false }:
         content={content}
         isEditMode={isEditMode}
         locale={dateLocale}
+        activeProfile={active ?? null}
       />
     </Suspense>
   );

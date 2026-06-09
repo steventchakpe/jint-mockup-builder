@@ -9,6 +9,9 @@ export interface WebpartProps<TConfig = Record<string, unknown>, TContent = Reco
   isEditMode: boolean;
   /** Locale JS pour les formats de dates (dérivée de prospect.contentLanguage). */
   locale?: string;
+  /** Profil actif (connecté) injecté par WebpartHost — utilisé par les webparts
+   * dont l'auteur dépend de l'utilisateur courant (ex : Viva Engage). */
+  activeProfile?: { firstName: string; lastName: string; avatar: string } | null;
   onConfigChange?: (config: TConfig) => void;
   onContentChange?: (content: TContent) => void;
 }

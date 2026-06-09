@@ -30,6 +30,7 @@ export interface SeedStrings {
   };
   poll: { title: string; question: string; options: readonly string[] };
   mesDocuments: { documents: readonly string[] };
+  vivaEngage: { conversations: ReadonlyArray<{ text: string; comments: readonly string[] }> };
   /** Contenu « My * » des profils switchables 002/003 (US-30). */
   personal: {
     listName: string;

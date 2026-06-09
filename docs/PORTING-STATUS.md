@@ -41,7 +41,7 @@ _Mis à jour : 2026-06-08 (vérif code réelle). Voir la méthode dans [WEBPART-
 | 14 | Docs | ✅ | 🟢 `my-files` / `file-explorer` |
 | 15 | My emails | ✅ | 🟢 `my-emails` |
 | 16 | My meetings | ✅ | 🟢 `my-meetings` |
-| 17 | Viva engage | 🟡 stub | 🔴 absent → **modèle requis** |
+| 17 | Viva engage | ✅ | 🟣 modèle Figma fourni (pas de source jintan) — fil Conversations + composer + menu ⋮ (Supprimer fonctionnel) |
 | 18 | Text | 🟡 stub | ⚪ natif SP → **modèle requis** |
 
 ### Wave 3 — Compléments & widgets
@@ -69,11 +69,10 @@ _Mis à jour : 2026-06-08 (vérif code réelle). Voir la méthode dans [WEBPART-
 > Note : `search-filters` + `search-results` (Recherche connectée) sont **faits** en plus
 > des 31 du PRD (issus de `searchFilters`/`searchResults` jintan).
 
-**Bilan webparts : 24 faits / 31** (News V2 et Barre de recherche retirés ; poll + idea-box
-portés depuis webpart_legacy ; Mes documents + Mes abonnements portés le 2026-06-09).
+**Bilan webparts : 25 faits / 31** (News V2 et Barre de recherche retirés ; poll + idea-box
+portés depuis webpart_legacy ; Mes documents + Mes abonnements + Viva Engage portés le 2026-06-09).
 - **2 stubs portables** : `focus-v3` (`focusV2`), `embed` (package).
-- **5 stubs en attente de modèle** : `viva-engage` (absent partout) + natifs SharePoint
-  `text`, `video`, `weather`, `world-clock`.
+- **4 stubs en attente de modèle** : natifs SharePoint `text`, `video`, `weather`, `world-clock`.
 
 > **2 sources de vérité** désormais : `~/Projets/jintan` (oldparts + packages compilés)
 > ET `~/Projets/webpart_legacy` (SPFx legacy, ~39 webparts mzk* + dossier Newsletter).

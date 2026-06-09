@@ -95,6 +95,12 @@ export const seedFrFR: SeedStrings = {
     question: 'Quel format préférez-vous pour le prochain séminaire d’équipe ?',
     options: ['Une journée en présentiel', 'Un format hybride sur deux jours', 'Un évènement 100 % à distance'],
   },
+  vivaEngage: {
+    conversations: [
+      { text: 'Bienvenue sur notre nouvel espace Viva Engage ! Partagez vos idées, posez vos questions et célébrez les réussites de l’équipe. 🎉', comments: ['Super initiative, hâte d’échanger ici !', 'Enfin un espace pour discuter tous ensemble 👏'] },
+      { text: 'Petit rappel : l’atelier sur la nouvelle politique de télétravail a lieu jeudi à 14 h. N’hésitez pas à venir avec vos questions.', comments: ['Je serai présent, merci pour l’info.'] },
+    ],
+  },
   mesDocuments: {
     documents: [
       'Plan stratégique 2026',
