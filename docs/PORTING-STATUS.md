@@ -52,7 +52,7 @@ _Mis à jour : 2026-06-08 (vérif code réelle). Voir la méthode dans [WEBPART-
 | 21 | Image interactive | ✅ | 🟢 `image-map` |
 | 22 | My resume | ✅ | 🟢 `my-summary` |
 | 23 | Action button | ✅ | 🟢 `action-button` |
-| 24 | Barre de recherche | 🟡 stub | 🔵 `searchBox` → **portable** |
+| 24 | ~~Barre de recherche~~ | ❌ supprimé | retiré du catalogue (2026-06-09) — couvert par `search` (même source `searchBox`) |
 | 25 | Sondage | ✅ | 🔵 `webpart_legacy/mzkSurvey` |
 | 26 | Boîte à idées | ✅ | 🔵 `webpart_legacy/mzkSuggestionBox` |
 | 27 | Vidéo | 🟡 stub | ⚪ natif SP → **modèle requis** |
@@ -63,16 +63,15 @@ _Mis à jour : 2026-06-08 (vérif code réelle). Voir la méthode dans [WEBPART-
 ### Ajouts catalogue (2026-06-09, décision Steven) — +2 webparts
 | # | Webpart | Statut | Source |
 |---|---------|--------|--------|
-| 31 | Mes documents | ⬜ à faire | 🔵 `webpart_legacy/mzkMyDocuments` (MyRecentDocuments) — docs récents perso (≠ `docs`) |
-| 32 | Mes abonnements | ⬜ à faire | 🔵 `jintan/news-feed` (NewsFeed.tsx + myFeed/subscriptionPickerPanel) — fil type News par abonnements |
+| 31 | Mes documents | ✅ | 🔵 `webpart_legacy/mzkMyDocuments` (visuel Links L) — docs récents perso (≠ `docs`) |
+| 32 | Mes abonnements | ✅ | = webpart **News** + paramètre my-feed (`jintan/.../news/MyFeed` extends NewsBaseWebPart). Réutilise le composant News à l'identique + bouton « Choisir mes abonnements ». Layouts MyFeed = News sans carousel. |
 
 > Note : `search-filters` + `search-results` (Recherche connectée) sont **faits** en plus
 > des 31 du PRD (issus de `searchFilters`/`searchResults` jintan).
 
-**Bilan webparts : 22 faits / 32** (News V2 retiré le 2026-06-09 ; poll + idea-box
-portés depuis webpart_legacy ; +2 ajouts Mes documents / Mes abonnements).
-- **À porter** : `mes-documents` (`webpart_legacy/mzkMyDocuments`), `mes-abonnements` (`jintan/news-feed`).
-- **3 stubs portables** : `search-bar` (`searchBox`), `focus-v3` (`focusV2`), `embed` (package).
+**Bilan webparts : 24 faits / 31** (News V2 et Barre de recherche retirés ; poll + idea-box
+portés depuis webpart_legacy ; Mes documents + Mes abonnements portés le 2026-06-09).
+- **2 stubs portables** : `focus-v3` (`focusV2`), `embed` (package).
 - **5 stubs en attente de modèle** : `viva-engage` (absent partout) + natifs SharePoint
   `text`, `video`, `weather`, `world-clock`.
 

@@ -224,6 +224,23 @@ export const actionButtonSeed = (locale: Locale) => ({
   url: '#',
 });
 
+export const mesDocumentsSeed = (locale: Locale) => {
+  const titles = getSeedStrings(locale).mesDocuments.documents;
+  const profiles = createDefaultProfiles(DEFAULT_EMAIL_DOMAIN, locale).editable;
+  const types = ['pptx', 'xlsx', 'docx', 'pdf', 'docx'];
+  const dates = ['2026-06-05', '2026-06-03', '2026-05-31', '2026-05-28', '2026-05-26'];
+  return {
+    documents: titles.map((title, i) => ({
+      id: `mydoc-${i + 1}`,
+      title,
+      url: '#',
+      fileType: types[i % types.length],
+      modifiedDate: dates[i % dates.length],
+      modifiedBy: `${profiles[i % profiles.length].firstName} ${profiles[i % profiles.length].lastName}`,
+    })),
+  };
+};
+
 export const pollSeed = (locale: Locale) => {
   const s = getSeedStrings(locale).poll;
   const votes = [58, 34, 12];

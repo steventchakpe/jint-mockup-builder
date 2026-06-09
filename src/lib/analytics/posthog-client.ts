@@ -14,6 +14,23 @@ export interface PosthogConfig {
   projectId: string;      // 119943
 }
 
+/**
+ * fetch avec timeout dur (AbortController). Si PostHog est lent/injoignable,
+ * on abandonne vite au lieu de pendre → ne JAMAIS bloquer la conception de maquette.
+ * Timeouts courts pour la lecture (dashboard), plus longs pour le provisioning (one-shot).
+ */
+const TIMEOUT = { query: 6000, capture: 3000, provision: 10000 } as const;
+
+async function fetchWithTimeout(url: string, init: RequestInit, ms: number): Promise<Response> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { ...init, signal: ctrl.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /** Lit la config depuis l'env ; null si incomplète (→ fallback géré en amont). */
 export function getPosthogConfig(): PosthogConfig | null {
   const appHost = (process.env.POSTHOG_HOST || '').replace(/\/$/, '');
@@ -35,7 +52,7 @@ export async function capture(
   timestamp?: string,
 ): Promise<void> {
   try {
-    await fetch(`${cfg.ingestionHost}/capture/`, {
+    await fetchWithTimeout(`${cfg.ingestionHost}/capture/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -46,19 +63,19 @@ export async function capture(
         timestamp: timestamp ?? new Date().toISOString(),
       }),
       keepalive: true,
-    });
+    }, TIMEOUT.capture);
   } catch {
-    /* tracking best-effort */
+    /* tracking best-effort (timeout inclus) */
   }
 }
 
 /** Exécute une requête HogQL et renvoie les lignes (results). Lève en cas d'échec. */
 export async function hogql(cfg: PosthogConfig, query: string): Promise<unknown[][]> {
-  const res = await fetch(`${cfg.appHost}/api/projects/${cfg.projectId}/query/`, {
+  const res = await fetchWithTimeout(`${cfg.appHost}/api/projects/${cfg.projectId}/query/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.personalApiKey}` },
     body: JSON.stringify({ query: { kind: 'HogQLQuery', query } }),
-  });
+  }, TIMEOUT.query);
   if (!res.ok) throw new Error(`PostHog query ${res.status}: ${await res.text()}`);
   const json = (await res.json()) as { results?: unknown[][] };
   return json.results ?? [];
@@ -71,11 +88,11 @@ export function sql(value: string): string {
 
 /** Crée un dashboard et renvoie son id. */
 async function createDashboard(cfg: PosthogConfig, name: string, description: string): Promise<number> {
-  const res = await fetch(`${cfg.appHost}/api/projects/${cfg.projectId}/dashboards/`, {
+  const res = await fetchWithTimeout(`${cfg.appHost}/api/projects/${cfg.projectId}/dashboards/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.personalApiKey}` },
     body: JSON.stringify({ name, description }),
-  });
+  }, TIMEOUT.provision);
   if (!res.ok) throw new Error(`PostHog dashboard ${res.status}: ${await res.text()}`);
   return ((await res.json()) as { id: number }).id;
 }
@@ -88,7 +105,7 @@ async function createInsight(
   source: Record<string, unknown>,
 ): Promise<void> {
   try {
-    await fetch(`${cfg.appHost}/api/projects/${cfg.projectId}/insights/`, {
+    await fetchWithTimeout(`${cfg.appHost}/api/projects/${cfg.projectId}/insights/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.personalApiKey}` },
       body: JSON.stringify({
@@ -96,7 +113,7 @@ async function createInsight(
         query: { kind: 'InsightVizNode', source },
         dashboards: [dashboardId],
       }),
-    });
+    }, TIMEOUT.provision);
   } catch {
     /* insight best-effort — le dashboard existe déjà */
   }

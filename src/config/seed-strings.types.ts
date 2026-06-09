@@ -29,6 +29,7 @@ export interface SeedStrings {
     answer: { state: string; text: string };
   };
   poll: { title: string; question: string; options: readonly string[] };
+  mesDocuments: { documents: readonly string[] };
   /** Contenu « My * » des profils switchables 002/003 (US-30). */
   personal: {
     listName: string;

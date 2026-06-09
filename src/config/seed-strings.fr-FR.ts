@@ -95,6 +95,15 @@ export const seedFrFR: SeedStrings = {
     question: 'Quel format préférez-vous pour le prochain séminaire d’équipe ?',
     options: ['Une journée en présentiel', 'Un format hybride sur deux jours', 'Un évènement 100 % à distance'],
   },
+  mesDocuments: {
+    documents: [
+      'Plan stratégique 2026',
+      'Budget prévisionnel T3',
+      'Compte-rendu comité de direction',
+      'Politique de télétravail',
+      'Guide d’accueil des nouveaux arrivants',
+    ],
+  },
   personal: {
     listName: 'Tâches',
     p2: {

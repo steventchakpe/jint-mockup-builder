@@ -57,6 +57,12 @@ export interface NewsConfig {
   showPin: boolean;
   title: string;
   customContent: NewsCustomContent;
+  /**
+   * Mode « Mes abonnements » (MyFeed = News + paramètre my-feed) : rendu News à
+   * l'identique + un bouton d'abonnement (« Choisir mes abonnements »).
+   * Absent/undefined sur le webpart News standard.
+   */
+  subscriptionButton?: { show: boolean; text: string };
 }
 
 export interface NewsContent {

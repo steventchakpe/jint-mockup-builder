@@ -95,6 +95,15 @@ export const seedEn: SeedStrings = {
     question: 'Which format do you prefer for the next team offsite?',
     options: ['A full day on-site', 'A two-day hybrid format', 'A fully remote event'],
   },
+  mesDocuments: {
+    documents: [
+      '2026 strategic plan',
+      'Q3 forecast budget',
+      'Executive committee minutes',
+      'Remote work policy',
+      'New starter onboarding guide',
+    ],
+  },
   personal: {
     listName: 'Tasks',
     p2: {

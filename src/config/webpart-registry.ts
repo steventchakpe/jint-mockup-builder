@@ -55,6 +55,8 @@ import { searchResultsDefaultConfig, searchResultsConfigMeta } from '@/component
 import { searchFiltersDefaultConfig, searchFiltersConfigMeta } from '@/components/webparts/search-filters';
 import { ideaBoxDefaultConfig, ideaBoxConfigMeta } from '@/components/webparts/idea-box';
 import { pollDefaultConfig, pollConfigMeta } from '@/components/webparts/poll';
+import { mesDocumentsDefaultConfig, mesDocumentsConfigMeta } from '@/components/webparts/mes-documents';
+import { mesAbonnementsDefaultConfig, mesAbonnementsConfigMeta } from '@/components/webparts/mes-abonnements';
 import {
   newsSeed,
   eventsSeed,
@@ -78,6 +80,7 @@ import {
   searchFiltersSeed,
   ideaBoxSeed,
   pollSeed,
+  mesDocumentsSeed,
 } from './webpart-seeds';
 
 /**
@@ -511,7 +514,7 @@ const registry: Record<string, WebpartDefinition> = {
     defaultConfig: searchFiltersDefaultConfig as unknown as Record<string, unknown>,
     defaultContent: searchFiltersSeed,
   },
-  // 'search-bar': couvert par le webpart 'search' (mzkSearchBox) porté en Wave 1.
+  // 'search-bar' retiré du catalogue (2026-06-09) : couvert par 'search' (mzkSearchBox), même source.
   'poll': {
     typeId: pollConfigMeta.typeId,
     name: 'Sondage',
@@ -525,6 +528,35 @@ const registry: Record<string, WebpartDefinition> = {
     configurableProperties: buildProps(pollConfigMeta.configurableProps as RawProp[], pollDefaultConfig as unknown as Record<string, unknown>),
     defaultConfig: pollDefaultConfig as unknown as Record<string, unknown>,
     defaultContent: pollSeed,
+  },
+  'mes-abonnements': {
+    typeId: mesAbonnementsConfigMeta.typeId,
+    name: 'Mes abonnements',
+    nameEn: mesAbonnementsConfigMeta.displayName,
+    category: mesAbonnementsConfigMeta.category as WebpartDefinition['category'],
+    icon: mesAbonnementsConfigMeta.icon,
+    wave: mesAbonnementsConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    // Réutilise le composant News (= MyFeed extends NewsBaseWebPart) — rendu trait pour trait.
+    component: lazy(() => import('@/components/webparts/mes-abonnements').then((m) => ({ default: m.MesAbonnements as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/mes-abonnements').then((m) => ({ default: m.MesAbonnementsSkeleton as never }))),
+    configurableProperties: buildProps(mesAbonnementsConfigMeta.configurableProps as RawProp[], mesAbonnementsDefaultConfig as unknown as Record<string, unknown>),
+    defaultConfig: mesAbonnementsDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: newsSeed,
+  },
+  'mes-documents': {
+    typeId: mesDocumentsConfigMeta.typeId,
+    name: 'Mes documents',
+    nameEn: mesDocumentsConfigMeta.displayName,
+    category: mesDocumentsConfigMeta.category as WebpartDefinition['category'],
+    icon: mesDocumentsConfigMeta.icon,
+    wave: mesDocumentsConfigMeta.wave as 1 | 2 | 3,
+    source: 'jint',
+    component: lazy(() => import('@/components/webparts/mes-documents').then((m) => ({ default: m.MesDocuments as never }))),
+    skeletonComponent: lazy(() => import('@/components/webparts/mes-documents/MesDocuments.skeleton').then((m) => ({ default: m.MesDocumentsSkeleton as never }))),
+    configurableProperties: buildProps(mesDocumentsConfigMeta.configurableProps as RawProp[], mesDocumentsDefaultConfig as unknown as Record<string, unknown>),
+    defaultConfig: mesDocumentsDefaultConfig as unknown as Record<string, unknown>,
+    defaultContent: mesDocumentsSeed,
   },
   'idea-box': {
     typeId: ideaBoxConfigMeta.typeId,
